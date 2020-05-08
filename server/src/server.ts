@@ -37,7 +37,7 @@ console.log(`[delete-listing]: http://localhost:${PORT}/delete-listing`);
 
 /*
 Can use curl to delete a listing 
-    curl -X POST http://localhost:9000/delete-listing \
-        -H 'Content-Type: application/json' \
-        -d '{"id":"001"}'
+curl -X POST http://localhost:3002/delete-listing \
+    -H 'Content-Type: application/json' \
+    -d '{"id":"001"}'
 */
