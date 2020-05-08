@@ -1,0 +1,27 @@
+{
+	"name": "home-sharing-app",
+	"version": "1.0.0",
+	"description": "GraphQL, Apollo, Typescript, Node, React, MongoDB Atlas, Stripe, Cloudinary, Google OAuth and Geocode API",
+	"main": "server.js",
+	"scripts": {
+		"devStart": "nodemon server.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/DopamineDriven/home-sharing-app.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/DopamineDriven/home-sharing-app/issues"
+	},
+	"homepage": "https://github.com/DopamineDriven/home-sharing-app#readme",
+	"devDependencies": {
+		"nodemon": "^2.0.3"
+	},
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^4.17.1"
+	}
+}
