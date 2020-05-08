@@ -2,7 +2,7 @@
 	"name": "home-sharing-app",
 	"version": "1.0.0",
 	"description": "GraphQL, Apollo, Typescript, Node, React, MongoDB Atlas, Stripe, Cloudinary, Google OAuth and Geocode API",
-	"main": "server.js",
+	"main": "server.ts",
 	"scripts": {
 		"devStart": "nodemon server.js"
 	},
