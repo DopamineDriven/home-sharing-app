@@ -9,12 +9,14 @@ app.use(
     express.urlencoded({ extended: true })    
 );
 
-const a: number = 1.5;
-const b: number = 3.14;
+const a = 1.5;
+const b = 3.14;
 
-app.get("/", (req, res) => res.send(`1.5*3.14=${a*b}`));
+// req param though unused must be called for res param to be called
+// to indicate to tslint that it is okay, prepend an underscore
+app.get("/", (_req, res) => res.send(`1.5*3.14=${a*b}`));
 
 // invoke server
-app.listen(PORT)
+app.listen(PORT);
 
 console.log(`[app]: http://localhost:${PORT}`);
