@@ -4,7 +4,8 @@
 	"description": "GraphQL, Apollo, Typescript, Node, React, MongoDB Atlas, Stripe, Cloudinary, Google OAuth and Geocode API",
 	"main": "server.ts",
 	"scripts": {
-		"devStart": "nodemon server.ts"
+		"devStart": "nodemon ./src/server.ts",
+		"build": "tsc -p ./"
 	},
 	"repository": {
 		"type": "git",
