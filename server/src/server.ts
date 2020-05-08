@@ -20,3 +20,11 @@ app.get("/", (_req, res) => res.send(`1.5*3.14=${a*b}`));
 app.listen(PORT);
 
 console.log(`[app]: http://localhost:${PORT}`);
+
+
+/*
+Can use curl to delete a listing 
+    curl -X POST http://localhost:9000/delete-listing \
+        -H 'Content-Type: application/json' \
+        -d '{"id":"001"}'
+*/
