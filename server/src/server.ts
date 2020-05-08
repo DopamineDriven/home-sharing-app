@@ -1,7 +1,8 @@
 import express from "express";
-import cors from 'cors';
+import cors from "cors";
+import { listings } from './listings';
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 app.use(
     cors(),
@@ -16,10 +17,18 @@ const b = 3.14;
 // to indicate to tslint that it is okay, prepend an underscore
 app.get("/", (_req, res) => res.send(`1.5*3.14=${a*b}`));
 
+// listings route
+app.get("/listings", (_req, res) => {
+    res.send(listings)
+});
+
+// delete-listings route
+
 // invoke server
 app.listen(PORT);
 
 console.log(`[app]: http://localhost:${PORT}`);
+console.log(`[listings]: http://localhost:${PORT}/listings`);
 
 
 /*
