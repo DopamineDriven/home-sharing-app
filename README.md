@@ -82,6 +82,108 @@ https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
             - scalar Date
         - Implementation determines how this type should be serialized, deserialized, and validated
 
+#### Enum (enumeration) Types
+- Special type of scalar restricted to set of allowed values
+    - (1) Validate any args of this type are one of the predetermined vals
+    - (2) Communicate through type system that a field will be one of a finite set of vals
+------------------------------------------
+enum Episode {
+    NEWHOPE
+    EMPIRE
+    JEDI
+}
+
+------------------------------------------
+- Three predefined vals for Episode type
+    - JS doesn't have enum support, so vals might be internally mapped to a set of integers for example
+
+#### Types that can be defined in GraphQL
+- Object Types
+- Scalar Types
+- Enumeration Types (Enum)
+
+#### Lists and Non-Null
+- Type-modifiers
+    - affect validation of types
+- Adding an ! in front of a string -> String! -> non-nullable
+- Wrapping a type in [] signifies a List
+- myField: [String!]
+    - myField: null // valid
+    - myField: [] // valid
+    - myField: ['a', 'b'] // valid
+    - myField: ['a', null, 'b'] // error
+        - the list itself can be null, but cannot contain null strings
+        - however, [String]! -> list itself cannot be null, but it can contain null values (strings)
+
+#### Input Types (and an interface example)
+- input CreateListingInput
+    - id: ID!
+    - title: String!
+    - address: String!
+    - price: Int!
+
+- keyword input instead of type
+- cannot have args on their fields
+
+#### Interfaces
+- an abstract type that includes a certain set of fields that a type must include to implement the interface
+- interface Character {
+    - id: ID!
+    - name: String!
+    - friends: [Character]
+    - appearsIn: [Episode]!
+}
+- type Human implements Character {
+    - id: ID!
+    - name: String!
+    - friends: [Character]
+    - appearsIn: [Episode]!
+    - starships: [Starship]
+    - totalCredits: Int
+}
+- type Droid implements Character {
+    - id: ID!
+    - name: String!
+    - friends: [Character]
+    - appearsIn: [Episode]!
+    - starships: [Starship]
+    - primaryFunction: String
+}
+
+- Both Human and Droid types have all the fields from the Character interface as well as one or more extra fields
+- consider the following
+- query HeroForEpisode($ep: Episode!) {
+    - hero(episode: $ep) {
+        - name
+        - primaryFunction
+    }
+}
+---Variables---
+{
+    "ep": "JEDI"
+}
+
+- this query produces an error because primaryFunction doesn't exist on the character interface
+- must use an inline-fragment for as for a field on a specific object type not part of predefined interface
+- so for primaryFunction
+...
+- name
+- ... on Droid {
+    - primaryFunction
+}
+...
+
+- Union types are also a feature 
+    - union result = a|b|c -> (a, b, or c)
+    - must be concrete object types
+
+#### Resolver Args
+- (1) obj - object returned from parent resolver
+- (2) args - arguments provided to the field
+- (3) context - val provided to every resolver
+- (4) info - info about the execution state of the query
 
 
-
+## Apollo Server Package
+- https://www.apollographql.com/docs/apollo-server/
+- 

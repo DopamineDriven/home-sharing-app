@@ -1,8 +1,12 @@
 import express from "express";
 import cors from "cors";
 import { listings } from './listings';
+import { ApolloServer } from "apollo-server-express";
 const app = express();
+const server = new ApolloServer({});
 const PORT = process.env.PORT || 3002;
+
+server.applyMiddleware({ app, path: "/api" })
 
 app.use(
     cors(),
