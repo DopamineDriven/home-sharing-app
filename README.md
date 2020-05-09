@@ -21,6 +21,8 @@ https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
         - interactive environment
 
 ### GraphQL Concepts
+- https://graphql.org/learn/schema/
+- Query and Mutation represent the entry point of every GraphQL query
 ------------------------------------------
 #### Schema Object Types
 - type Character {
@@ -46,7 +48,6 @@ https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
         - non-nullable--an array with 0 or more items will always be returned when queried
     - Episode! string is also non-nullable
         - can expect every item of the arr to be an episode object
-- https://graphql.org/learn/schema/
 
 #### Arguments
 ------------------------------------------
@@ -63,6 +64,24 @@ https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
     - length field has one defined argument; unit
 - Args can be required or optional
     - optional ? default val : !default val
+
+#### Scalar types
+- Scalar types cannot have sub-selections
+    - Think Newtonian mechanics; unidimensional quantity
+- Default scalar types out of the box
+    - Int: signed 32-bit integer (2^32)
+    - Float: signed double-precision floating-point value
+    - String: UTF-8 character sequence
+    - Boolean: T v F
+    - ID: unique identifier
+        - often used to refetch an object or as the key for a cache
+        - serialized in the same way as a string
+        - however, defining it as an ID signifies that it is not intended to be human-readable unlike a string
+    - Custom scalar type specification
+        - Consider a Date type:
+            - scalar Date
+        - Implementation determines how this type should be serialized, deserialized, and validated
+
 
 
 
