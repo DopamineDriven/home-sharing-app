@@ -186,4 +186,8 @@ enum Episode {
 
 ## Apollo Server Package
 - https://www.apollographql.com/docs/apollo-server/
-- 
+
+
+### GraphQL Resolvers
+- have access to up to four positional args
+    - if an arg is unused prefix with underscore (_root)

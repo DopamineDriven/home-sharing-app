@@ -44,6 +44,14 @@ const mutation = new GraphQLObjectType({
             type: GraphQLNonNull(Listing),
             args: {
                 id: { type: GraphQLNonNull(GraphQLID) }
+            },
+            resolve: (_root, { id }) => {
+                for (let i=0; i<listings.length; i++) {
+                    if (listings[i].id === id) {
+                        return listings.splice(i, 1)[0];
+                    }
+                }
+                throw new Error("failed to delete listing")
             }
         }
     }
@@ -52,5 +60,5 @@ const mutation = new GraphQLObjectType({
 
 export const schema = new GraphQLSchema({
     query,
-    mutation,
+    mutation
 });
