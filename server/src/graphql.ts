@@ -67,7 +67,7 @@ export const schema = new GraphQLSchema({
 
 
 /*
-How to create GraphQL schemas without using schema definition language (hard way)
+How to create GraphQL schemas without using schema definition language (long way)
 
 const Listing = new GraphQLObjectType({
     name: "Listing",
