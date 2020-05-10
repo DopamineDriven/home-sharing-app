@@ -1,23 +1,31 @@
-import express from "express";
+require("dotenv").config();
+import express, { Application } from "express";
 import cors from "cors";
 import { typeDefs, resolvers } from "./graphql/index";
 import { ApolloServer } from "apollo-server-express";
+import { connectDatabase } from "./database/index";
 const app = express();
-const server = new ApolloServer({ typeDefs, resolvers });
-const PORT = process.env.PORT || 3002;
+
+app.use(cors());
 
 // instantiate apollo server
-server.applyMiddleware({ app, path: "/api" })
+const mount = async (app: Application) => {
+	const db = await connectDatabase();
+	const server = new ApolloServer({
+		typeDefs,
+		resolvers,
+		context: () => ({ db }),
+	});
 
-app.use(
-    cors()
-);
+	server.applyMiddleware({ app, path: "/api" });
+	// invoke server
+	app.listen(process.env.PORT);
+    console.log(`[app]: http://localhost:${process.env.PORT}/api`);
+    const listings = await db.listings.find({}).toArray();
+    console.log(listings);
+};
 
-// invoke server
-app.listen(PORT);
-
-console.log(`[app]: http://localhost:${PORT}/api`);
-
+mount(express());
 
 /*
 Can use curl to delete a listing 
