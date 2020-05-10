@@ -194,3 +194,31 @@ enum Episode {
 
 ### Apollo-Server-Express Package
 - allows for creating schema with the easier GraphQL schema Language
+
+### GQL Tag -- Function returning a parsed template literal
+- Installed GraphQL extension for syntax support
+- gql tag parses the string created into a GraphQL Abstract Syntax Tree
+    - Apollo Server requires its use to wrap the schema
+- Note
+    - gql is a function that takes a string as an argument
+    - string arg must be constructed with template literals
+        - ES6 feature known as "tagged template literals"
+- Takeaway
+    - gql is a tag(function) where the argument is derived from
+    - the template literal applied alongisde it
+        - takes the string -> returns a GraphQL Tree
+
+### Resolvers
+- resolvers object returns a map
+    - map relates schema fields to functions that resolve that field
+
+### IResolvers Interface
+- IResolvers interface imported from apollo-server-express
+    - can type define resolvers map in this way (resolvers: IResolvers)
+- Provides support for enforcing resolvers map object
+    - map obj can only contain resolver fields or resolver functions
+    - for example, introducing a field with a string val would generate a warning
+- A TypeScript generic that allows for defining types of obj and context arguments in resolver functions by passing in type variables
+    - IResolvers<TSource, TContext>
+    - This makes for reusable code templates
+    - However, explicitly defined the types of parameters in each resolver function in this case

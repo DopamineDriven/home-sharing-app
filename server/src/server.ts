@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
-import { schema } from "./graphql";
+import { typeDefs, resolvers } from "./graphql/index";
 import { ApolloServer } from "apollo-server-express";
 const app = express();
-const server = new ApolloServer({ schema });
+const server = new ApolloServer({ typeDefs, resolvers });
 const PORT = process.env.PORT || 3002;
 
 server.applyMiddleware({ app, path: "/api" })
