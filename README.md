@@ -222,3 +222,16 @@ enum Episode {
     - IResolvers<TSource, TContext>
     - This makes for reusable code templates
     - However, explicitly defined the types of parameters in each resolver function in this case
+
+
+--------------------------------------------------------------------------------
+
+## MongoDB
+- utilizing MongoDB Atlas for DBaaS
+
+### NoSQL 
+- dynamic schema (or no schema at all) for unstructured data
+    - can be stored in many ways (document oriented for example)
+    - flexibility -> can change data structure as app evolves
+        - with great power comes great responsibility
+        - additional checks needed to ensure app logic can handle data of varying structures
