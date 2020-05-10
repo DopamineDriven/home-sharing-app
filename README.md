@@ -191,3 +191,6 @@ enum Episode {
 ### GraphQL Resolvers
 - have access to up to four positional args
     - if an arg is unused prefix with underscore (_root)
+
+### Apollo-Server-Express Package
+- allows for creating schema with the easier GraphQL schema Language
