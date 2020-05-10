@@ -4,7 +4,8 @@ import {
     GraphQLString,
     GraphQLID,
     GraphQLInt,
-    GraphQLFloat 
+    GraphQLFloat, 
+    GraphQLNonNull
 } from "graphql";
 
 const query = new GraphQLObjectType({
@@ -30,19 +31,19 @@ const mutation = new GraphQLObjectType({
 const Listing = new GraphQLObjectType({
     name: "Listing",
     fields: {
-        id: { type: GraphQLID },
-        title: { type: GraphQLString },
-        image: { type: GraphQLString },
-        address: { type: GraphQLString },
-        price: { type: GraphQLInt },
-        numOfGuests: { type: GraphQLInt },
-        numOfBeds: { type: GraphQLInt },
-        numOfBaths: { type: GraphQLInt },
-        rating: { type: GraphQLFloat }
+        id: { type: GraphQLNonNull(GraphQLID) },
+        title: { type: GraphQLNonNull(GraphQLString) },
+        image: { type:  GraphQLNonNull(GraphQLString) },
+        address: { type:  GraphQLNonNull(GraphQLString) },
+        price: { type:  GraphQLNonNull(GraphQLInt) },
+        numOfGuests: { type: GraphQLNonNull(GraphQLInt) },
+        numOfBeds: { type: GraphQLNonNull(GraphQLInt) },
+        numOfBaths: { type: GraphQLNonNull(GraphQLInt) },
+        rating: { type: GraphQLNonNull(GraphQLFloat) }
     }
 });
 
 export const schema = new GraphQLSchema({
     query,
-    mutation
+    mutation,
 });
