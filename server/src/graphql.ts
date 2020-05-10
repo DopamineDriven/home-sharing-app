@@ -45,6 +45,8 @@ const mutation = new GraphQLObjectType({
             args: {
                 id: { type: GraphQLNonNull(GraphQLID) }
             },
+            // root type unused -> prefix with underscore
+            // destructuring id type and removing targeted listing via splice
             resolve: (_root, { id }) => {
                 for (let i=0; i<listings.length; i++) {
                     if (listings[i].id === id) {
