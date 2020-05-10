@@ -1,42 +1,43 @@
 import express from "express";
 import cors from "cors";
-import { listings } from './listings';
+// import { listings } from './listings';
+import { schema } from "./graphql";
 import { ApolloServer } from "apollo-server-express";
 const app = express();
-const server = new ApolloServer({});
+const server = new ApolloServer({ schema });
 const PORT = process.env.PORT || 3002;
 
 server.applyMiddleware({ app, path: "/api" })
 
 app.use(
-    cors(),
-    express.json(),
-    express.urlencoded({ extended: true })    
+    cors()
+    // express.json(),
+    // express.urlencoded({ extended: true })    
 );
 
 // req param though unused must be called for res param to be called
 // to indicate to tslint that it is okay, prepend an underscore
-app.get("/listings", (_req, res) => {
-    res.send(listings)
-});
+// app.get("/listings", (_req, res) => {
+//     res.send(listings)
+// });
 
-// delete-listings route
-app.post('/delete-listing', (req, res) => {
-    const id: string = req.body.id;
-    for (let i=0; i < listings.length; i++) {
-        if (listings[i].id === id) {
-            return res.send(listings.splice(i, 1)[0])
-        }
-    }
-    return res.send("failed to delete listing")
-});
+// // delete-listings route
+// app.post('/delete-listing', (req, res) => {
+//     const id: string = req.body.id;
+//     for (let i=0; i < listings.length; i++) {
+//         if (listings[i].id === id) {
+//             return res.send(listings.splice(i, 1)[0])
+//         }
+//     }
+//     return res.send("failed to delete listing")
+// });
 
 // invoke server
 app.listen(PORT);
 
-console.log(`[app]: http://localhost:${PORT}`);
-console.log(`[listings]: http://localhost:${PORT}/listings`);
-console.log(`[delete-listing]: http://localhost:${PORT}/delete-listing`);
+console.log(`[app]: http://localhost:${PORT}/api`);
+// console.log(`[listings]: http://localhost:${PORT}/listings`);
+// console.log(`[delete-listing]: http://localhost:${PORT}/delete-listing`);
 
 
 /*
