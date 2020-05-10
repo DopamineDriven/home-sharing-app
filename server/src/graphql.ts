@@ -1,4 +1,3 @@
-import { GraphQLString } from 'graphql';
 import { 
     GraphQLSchema, 
     GraphQLObjectType, 
@@ -35,8 +34,13 @@ const Listing = new GraphQLObjectType({
         title: { type: GraphQLString },
         image: { type: GraphQLString },
         address: { type: GraphQLString },
+        price: { type: GraphQLInt },
+        numOfGuests: { type: GraphQLInt },
+        numOfBeds: { type: GraphQLInt },
+        numOfBaths: { type: GraphQLInt },
+        rating: { type: GraphQLFloat }
     }
-})
+});
 
 export const schema = new GraphQLSchema({
     query,
