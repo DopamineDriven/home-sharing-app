@@ -6,6 +6,7 @@ const app = express();
 const server = new ApolloServer({ typeDefs, resolvers });
 const PORT = process.env.PORT || 3002;
 
+// instantiate apollo server
 server.applyMiddleware({ app, path: "/api" })
 
 app.use(
