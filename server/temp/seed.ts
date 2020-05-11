@@ -48,7 +48,11 @@ const seed = async () => {
 				numOfBaths: 2,
 				rating: 3
 			}
-		];
+        ];
+        for (const listing of listings) {
+            await db.listings.insertOne(listing);
+        }
+        console.log(`[seed]: success`)
 	} catch (error) {
 		throw new Error("failed to seed database");
 	}
