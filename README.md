@@ -249,3 +249,14 @@ enum Episode {
 - Confer ability to abstract type vals allowing functions and vars to work with a range of different types
 - Create Reusable components that can work with a variety of types
     - Abstraction of types used in functions or variables
+- see server/src/lib/types.ts for extensive commenting on generics
+
+--------------------------------------------------------------------------------
+
+## Seeding Mock Data to MongoDB Atlas
+- seed.ts is located outside of the rootDir/
+    - why?
+    - it is only used in development
+- Therefore, TS should not copile it to valid JS
+    - this requires updating the tsconfig.json file
+        - use the "exclude" option
