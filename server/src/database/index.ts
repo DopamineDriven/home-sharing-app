@@ -19,4 +19,3 @@ export const connectDatabase = async (): Promise<Database> => {
 // ts natively provides promise interface which accepts a type variable
 // connectDatabase async returns a promise that when resolved will be an obj of type Database
 // listing field in obj to be returned will now be inferred as a Collection<Listing>
-// 

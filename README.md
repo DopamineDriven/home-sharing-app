@@ -260,3 +260,9 @@ enum Episode {
 - Therefore, TS should not copile it to valid JS
     - this requires updating the tsconfig.json file
         - use the "exclude" option
+
+## Modularizing Resolvers
+- consider a resolvers map pertaining to the listings domain (module)
+    - map will encompass all the resolvers pertaining to this domain
+        - listings query, deleteListing mutation, id resolver field for the Listing object, etc.
+
