@@ -268,3 +268,10 @@ enum Episode {
 - enter lodash https://lodash.com/
     - using lodash.merge https://www.npmjs.com/package/lodash.merge
     - npm package to support the merging of multiple resolver maps into a single object
+- could do the same for typeDefs if necessary
+    - not necessary in this particular app
+    - https://www.apollographql.com/docs/graphql-tools/generate-schema/#extending-types
+    - Why?
+        - Schema file doesn't get large enough that it is difficult to manage
+        - Easier to see all typeDefs in a single file
+        - Can modularize if desired
