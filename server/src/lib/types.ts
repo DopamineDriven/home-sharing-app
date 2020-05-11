@@ -140,6 +140,4 @@ const identity = <TData = any, TVariables = any>(arg: TData): TData => {
   };
   return obj.field;
 };
-
-
 */

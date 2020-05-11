@@ -18,8 +18,8 @@ const mount = async (app: Application) => {
 	// invoke server
 	app.listen(process.env.PORT);
     console.log(`[app]: http://localhost:${process.env.PORT}/api`);
-    const listings = await db.listings.find({}).toArray();
-    console.log(listings);
+    // const listings = await db.listings.find({}).toArray();
+    // console.log(listings);
 };
 
 mount(express().use(cors()));
