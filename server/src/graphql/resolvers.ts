@@ -1,10 +1,11 @@
 import { IResolvers } from "apollo-server-express";
 import { listings } from "../listings";
+import { Database } from "../lib/types";
 
 export const resolvers: IResolvers = {
 	Query: {
-		listings: () => {
-			return listings;
+		listings: async (_root: undefined, _args: {}, { db }: { db: Database }) => {
+			return await db.listings.find({}).toArray();
 		}
 	},
 	Mutation: {
