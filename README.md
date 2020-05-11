@@ -106,10 +106,10 @@ enum Episode {
 - Type-modifiers
     - affect validation of types
 - Adding an ! in front of a string -> String! -> non-nullable
-- Wrapping a type in [] signifies a List
+- Wrapping a type in [ ] signifies a List
 - myField: [String!]
     - myField: null // valid
-    - myField: [] // valid
+    - myField: [ ] // valid
     - myField: ['a', 'b'] // valid
     - myField: ['a', null, 'b'] // error
         - the list itself can be null, but cannot contain null strings
@@ -219,7 +219,7 @@ enum Episode {
     - map obj can only contain resolver fields or resolver functions
     - for example, introducing a field with a string val would generate a warning
 - A TypeScript generic that allows for defining types of obj and context arguments in resolver functions by passing in type variables
-    - IResolvers<TSource, TContext>
+    - IResolvers< TSource, TContext >
     - This makes for reusable code templates
     - However, explicitly defined the types of parameters in each resolver function in this case
 
@@ -228,6 +228,11 @@ enum Episode {
 
 ## MongoDB
 - utilizing MongoDB Atlas for DBaaS
+- ObjectId(hexadecimal)
+    - 12-byte ObjectId value consists of:
+        - 4-byte Unix-epoch timestamp value denoting creation time
+        - 5-byte random value
+        - 3-byte incrementing counter, initialized to a random value
 
 ### NoSQL 
 - dynamic schema (or no schema at all) for unstructured data
@@ -235,3 +240,12 @@ enum Episode {
     - flexibility -> can change data structure as app evolves
         - with great power comes great responsibility
         - additional checks needed to ensure app logic can handle data of varying structures
+
+--------------------------------------------------------------------------------
+
+## TypeScript Generics 
+- Creating a generic TypeScript function
+    - const fn = < T >(arg: T): T => arg
+- Confer ability to abstract type vals allowing functions and vars to work with a range of different types
+- Create Reusable components that can work with a variety of types
+    - Abstraction of types used in functions or variables
