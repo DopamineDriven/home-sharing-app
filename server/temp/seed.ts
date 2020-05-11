@@ -1,10 +1,11 @@
 require("dotenv").config();
+// objectid class -> instantiate new objectid (12-byte)
+// generates new hexadecimal identifier
 import { ObjectId } from "mongodb";
 import { connectDatabase } from "../src/database/index";
 import { Listing } from "../src/lib/types";
 
-// try-catch syntactical sugar for promises
-// note: can use finally post catch if needed (try-catch-finally)
+// sprinkle some try-catch syntactical sugar on this async promise
 const seed = async () => {
 	try {
 		console.log(`[seed]: running...`);
@@ -49,6 +50,7 @@ const seed = async () => {
 				rating: 3
 			}
         ];
+        // loop through array insertOne document into collection at a time
         for (const listing of listings) {
             await db.listings.insertOne(listing);
         }
