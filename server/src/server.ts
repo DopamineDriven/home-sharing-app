@@ -4,9 +4,6 @@ import cors from "cors";
 import { typeDefs, resolvers } from "./graphql/index";
 import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database/index";
-const app = express();
-
-app.use(cors());
 
 // instantiate apollo server
 const mount = async (app: Application) => {
@@ -25,11 +22,17 @@ const mount = async (app: Application) => {
     console.log(listings);
 };
 
-mount(express());
+mount(express().use(cors()));
 
 /*
+Context argument is third positional arg
+    Object shared by all resolvers 
+Apollo Server is called with every request
+    db available as context in api
+
+
 Can use curl to delete a listing 
-curl -X POST http://localhost:3002/delete-listing \
+curl -X POST http://localhost:3002/api \
     -H 'Content-Type: application/json' \
     -d '{"id":"001"}'
 
