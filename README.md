@@ -275,3 +275,14 @@ enum Episode {
         - Schema file doesn't get large enough that it is difficult to manage
         - Easier to see all typeDefs in a single file
         - Can modularize if desired
+
+
+--------------------------------------------------------------------------------
+
+## CRA TypeScript
+- navigate to root of app
+- npx create-react-app client --template typescript
+- triple-slash directive (///) in src/react-app-env.d.ts
+    - unique TS capability pertaining to single line comments
+    - these comments contain a single XML tag
+    - /// -> instructs TS compiler to include additional files in compilation process
