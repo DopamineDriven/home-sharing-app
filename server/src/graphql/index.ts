@@ -1,2 +1,2 @@
-export * from './resolvers';
+export * from './resolvers/index';
 export * from './typeDefs';

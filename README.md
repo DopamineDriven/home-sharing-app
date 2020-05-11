@@ -265,4 +265,6 @@ enum Episode {
 - consider a resolvers map pertaining to the listings domain (module)
     - map will encompass all the resolvers pertaining to this domain
         - listings query, deleteListing mutation, id resolver field for the Listing object, etc.
-
+- enter lodash https://lodash.com/
+    - using lodash.merge https://www.npmjs.com/package/lodash.merge
+    - npm package to support the merging of multiple resolver maps into a single object

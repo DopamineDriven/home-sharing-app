@@ -1,6 +1,7 @@
 require("dotenv").config();
 import express, { Application } from "express";
 import cors from "cors";
+import Helmet from "helmet";
 import { typeDefs, resolvers } from "./graphql/index";
 import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database/index";
@@ -22,7 +23,10 @@ const mount = async (app: Application) => {
     // console.log(listings);
 };
 
-mount(express().use(cors()));
+mount(express().use(
+	cors(), 
+	Helmet()
+));
 
 /*
 Context argument is third positional arg
