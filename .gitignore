@@ -103,4 +103,8 @@ dist
 # TernJS port file
 .tern-port
 
+# production
 build
+
+# misc
+.DS_Store
