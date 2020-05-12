@@ -11,3 +11,11 @@ export const Listings = ({ title }: Props) => {
         </h2>
     )
 };
+
+// export const Listings2: FunctionComponent<Props> = ({ title }) => {
+//     return (
+//         <h2>
+//             {title}
+//         </h2>
+//     )
+// }
