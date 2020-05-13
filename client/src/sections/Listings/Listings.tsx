@@ -49,12 +49,15 @@ export const Listings = ({ title }: Props) => {
 	};
 	const deleteListing = async () => {
 		const { data } = await server.fetch<
+		// pass in data type -> define type of data being returned
+		// pass in variable type -> constrict shape of vars request expects
+		// not every req needs vars which is why var request in fields is optional
 			DeleteListingData,
 			DeleteListingVariables
 		>({
 			query: DELETE_LISTING,
 			variables: {
-				id: "5eb8fa41a4d2eb7918137dc4"
+				id: "5eb8fa41a4d2eb7918137dc3"
 			}
 		});
 		console.log(data)
