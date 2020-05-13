@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { server } from "../../lib/api";
+import React from "react";
+import { server, useQuery } from "../../lib/api";
 import {
 	ListingsData,
-	Listing,
 	DeleteListingData,
 	DeleteListingVariables,
 } from "./types";
@@ -43,21 +42,6 @@ interface Props {
 export const Listings = ({ title }: Props) => {
 	const { data } = useQuery<ListingsData>(LISTINGS);
 
-	const [listings, setListings] = useState<Listing[] | null>(null);
-
-	useEffect(() => {
-		fetchListings();
-
-	}, []);
-
-	const fetchListings = async () => {
-		// pass ListingsData interface as type variable for server.fetch
-		const { data } = await server.fetch<ListingsData>({
-			query: LISTINGS
-		});
-		setListings(data.listings);
-	};
-
 	const deleteListing = async (id: string) => {
 		await server.fetch<
 			// (a)
@@ -69,22 +53,22 @@ export const Listings = ({ title }: Props) => {
 				id
 			}
 		});
-		// call fetchListings to refresh on delete
-		fetchListings();
 	};
+
+	const listings = data ? data.listings : null;
 
 	const listingsList = listings ? (
 		<ul>
 			{listings?.map((listing) => {
 				return (
 					<li key={listing.id}>
+						{listing.title}{" "}
 						<button
 							onClick={() => deleteListing(listing.id)}
-							className="btn btn-dark bg-white text-dark btn-lg mr-2 mb-1"
+							className="btn btn-dark bg-white text-primary btn-sm mb-1"
 						>
 							Delete Listing
 						</button>
-						{listing.title}{" "}
 					</li>
 				);
 			})}
@@ -112,3 +96,22 @@ export const Listings = ({ title }: Props) => {
 // 		? console.log("Listings Exist")
 // 		: console.log("Listings Do Not Exist");
 // }, [listings]);
+
+/*
+able to trim out with useQuery
+
+	const [listings, setListings] = useState<Listing[] | null>(null);
+
+	useEffect(() => {
+		fetchListings();
+
+	}, []);
+
+	const fetchListings = async () => {
+		// pass ListingsData interface as type variable for server.fetch
+		const { data } = await server.fetch<ListingsData>({
+			query: LISTINGS
+		});
+		setListings(data.listings);
+	};
+*/
