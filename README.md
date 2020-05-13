@@ -306,6 +306,8 @@ enum Episode {
     - https://reactjs.org/docs/hooks-reference.html
 - Rules of Hooks
     - https://reactjs.org/docs/hooks-rules.html
+- Complete Guide to useEffect
+    - https://overreacted.io/a-complete-guide-to-useeffect/
 
 ## React Hooks 
 - Dan Abramov does not recommend using the Container vs Presentational component pattern split any longer

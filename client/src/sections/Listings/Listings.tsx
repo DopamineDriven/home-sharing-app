@@ -41,6 +41,8 @@ interface Props {
 }
 
 export const Listings = ({ title }: Props) => {
+	const { data } = useQuery<ListingsData>(LISTINGS);
+
 	const [listings, setListings] = useState<Listing[] | null>(null);
 
 	useEffect(() => {
