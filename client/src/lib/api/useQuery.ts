@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { server } from './server';
 
 // TData or null since data shape forms only after API call completes
@@ -12,17 +12,25 @@ export const useQuery = <TData = any>(query: string) => {
         data: null
     });
 
-    // (b)
-    useEffect(() => {
+    // (d)
+    const fetch = useCallback(() => {
         const fetchApi = async () => {
-            const { data } = await server.fetch<TData>({ query });
+            const { data } = await server.fetch<TData>({ 
+                query 
+            });
             setState({ data });
         };
 
         fetchApi();
     }, [query]);
 
-    return state
+    // (b)
+    useEffect(() => {
+        fetch();
+    }, [fetch]);
+    
+    // (c)
+    return { ...state, refetch: fetch };
 };
 
 
@@ -45,4 +53,25 @@ export const useQuery = <TData = any>(query: string) => {
     Goal: avoid referencing a stale value as query is passed from elsewhere
         Solution: include query in dependency array
     https://github.com/facebook/react/issues/14920#issuecomment-471070149
+*/
+
+/*
+(c)
+    to set up refetch, must have fetchApi func declared outside of useEffect hook
+    then, in return statement of useQuery, return ...state, refetch: fetchApi
+        why?
+        using JS spread syntax to expand properties of state in new object
+            moreover, refetch now has the value of the fetchApi() func
+*/
+
+/*
+(c)
+    useCallback returns a memoized version of the cb being passed in
+        memoization is a technique geared towards improving performance by storing
+        results of function calls and returning hte cached result when the same inquiry
+        for the function is made once more
+    useEffect function when server mounts for first time
+        replace query with fetch in useEffect dependency array
+    refetch defined in return is now the memoized value (fetch) calling the useCallback hook
+        query is contained within useCallback dependency array
 */
