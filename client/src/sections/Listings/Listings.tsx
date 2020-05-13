@@ -61,13 +61,14 @@ export const Listings = ({ title }: Props) => {
 			{listings?.map((listing) => {
 				return (
 					<li key={listing.id} className="list-group-item">
-						{listing.title}{" "}
 						<button
 							onClick={() => handleDeleteListing(listing.id)}
-							className="btn btn-dark bg-white text-primary btn-sm mb-1"
+							className="btn btn-dark bg-white text-primary btn-sm mb-1 mr-2"
 						>
 							Delete Listing
 						</button>
+						{listing.title}&nbsp;&nbsp;{"|"}&nbsp;&nbsp;{"rating: "}
+						{listing.rating}{"/5"}
 					</li>
 				);
 			})}
@@ -77,7 +78,7 @@ export const Listings = ({ title }: Props) => {
 	const deleteListingLoadingMessage = deleteListingLoading ? (
 		<h4>Deletion in Progress...</h4>
 	) : null;
-	
+
 	const deleteListingErrorMessage = deleteListingError ? (
 		<h4>Oops! Something went wrong during the delete process. Please try again.</h4>
 	) : null;
