@@ -40,7 +40,7 @@ interface Props {
 }
 
 export const Listings = ({ title }: Props) => {
-	const { data, loading, refetch } = useQuery<ListingsData>(LISTINGS);
+	const { data, error, loading, refetch } = useQuery<ListingsData>(LISTINGS);
 
 	const deleteListing = async (id: string) => {
 		await server.fetch<
@@ -50,8 +50,8 @@ export const Listings = ({ title }: Props) => {
 		>({
 			query: DELETE_LISTING,
 			variables: {
-				id,
-			},
+				id
+			}
 		});
 		refetch();
 	};
@@ -62,7 +62,7 @@ export const Listings = ({ title }: Props) => {
 		<ul>
 			{listings?.map((listing) => {
 				return (
-					<li key={listing.id}>
+					<li key={listing.id} className="list-group-item">
 						{listing.title}{" "}
 						<button
 							onClick={() => deleteListing(listing.id)}
@@ -76,16 +76,23 @@ export const Listings = ({ title }: Props) => {
 		</ul>
 	) : null;
 	return loading ? (
-		<div className="mt-5 ml-5">
+		<div className="m-5">
 			<h2>Loading...</h2>
 		</div>
+	) : error ? (
+		<div className="m-5">
+			<h2>Oops! Something went wrong</h2>
+		</div>
 	) : (
-		<div className="mt-5 ml-5">
+		<div className="m-5">
 			<h2>{title}</h2>
 			{listingsList}
 		</div>
 	);
 };
+
+
+
 
 /*
 (a)

@@ -20,16 +20,16 @@ export const useQuery = <TData = any>(query: string) => {
     const fetch = useCallback(() => {
         const fetchApi = async () => {
             try {
-                setState({ 
-                data: null, 
-                loading: true,
-                error: false 
+                setState({
+                    data: null, 
+                    loading: true,
+                    error: false 
                 });
                 // destructure data, errors
                 const { data, errors } = await server.fetch<TData>({ 
                     query 
                 });
-
+                
                 if (errors && errors.length) {
                     throw new Error(errors[0].message);
                 }
