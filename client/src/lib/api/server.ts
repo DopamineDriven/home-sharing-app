@@ -4,6 +4,10 @@ interface Body<TVariables> {
 }
 // variables? -> type can be defined or undefined
 
+interface Error {
+    message: string;
+}
+
 export const server = {
     fetch: async <TData = any, TVariables = any>(
         body: Body<TVariables>
@@ -15,8 +19,18 @@ export const server = {
             },
             body: JSON.stringify(body)
         });
-        // type assert the returned value
-        return res.json() as Promise<{ data: TData }>;
+        // if network status !200-299 then throw a new error
+        // res.ok used to check if server returns status !successful
+        if (!res.ok) {
+            throw new Error("failed to fetch from server");
+        }
+
+        // returned errors field within res is if the res.ok is successful
+        // but the graphql api returns an error within an errors field
+        return res.json() as Promise<{ 
+            data: TData;
+            errors: Error[]; 
+        }>;
     }
 };
 
