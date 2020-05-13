@@ -1,5 +1,6 @@
 import React from "react";
 import { server } from "../../lib/api";
+import { ListingsData } from "./types";
 
 // listings var in typescript code, below is query keyword
 // query Listings is for the sake of formality
@@ -25,8 +26,11 @@ interface Props {
 
 export const Listings = ({ title }: Props) => {
 	const fetchListings = async () => {
-		const { data } = await server.fetch({ query: LISTINGS });
-		console.log(data);
+        // pass ListingsData interface as type variable for server.fetch
+		const { data } = await server.fetch<ListingsData>({ 
+            query: LISTINGS 
+        });
+		console.log(data.listings);
 	};
 	return (
 		<div>
