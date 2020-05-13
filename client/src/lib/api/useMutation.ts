@@ -8,8 +8,16 @@ interface State<TData> {
 	error: boolean;
 }
 
+// (d)
+type MutationTuple<TData, TVariables> = [
+    (variables?: TVariables | undefined) => Promise<void>,
+    State<TData>
+];
+
 // (a)
-export const useMutation = <TData = any, TVariables = any>(query: string) => {
+export const useMutation = <TData = any, TVariables = any>(
+    query: string
+): MutationTuple<TData, TVariables> => {
 	const [state, setState] = useState<State<TData>>({
 		data: null,
 		loading: false,
@@ -81,4 +89,15 @@ export const useMutation = <TData = any, TVariables = any>(query: string) => {
             can name the request function for each use-case
         How?
             Because arrays aren't mapped on key-value pairs, but instead indices
+*/
+
+/*
+(d)
+    Tuple types - designating unique types to returned array of useMutation
+        express an array with a fixed number of elements whose types are known
+    MutationTuple type alias -> array of two values:
+        (1) the type of a function that accepts variables? (optional) arg and
+            returns a promise that when resolved is void
+        (2) the type of the State interface
+    Return type of the useMutation hook is MutationTuple with aforementioned type vars
 */

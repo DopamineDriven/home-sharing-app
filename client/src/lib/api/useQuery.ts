@@ -8,7 +8,11 @@ interface State<TData> {
     error: boolean;
 }
 
-export const useQuery = <TData = any>(query: string) => {
+interface QueryResult<TData> extends State<TData> {
+    refetch: () => void;
+}
+
+export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
     // (a)
     const [state, setState] = useState<State<TData>>({
         data: null,
@@ -94,7 +98,7 @@ export const useQuery = <TData = any>(query: string) => {
 */
 
 /*
-(c)
+(d)
     useCallback returns a memoized version of the cb being passed in
         memoization is a technique geared towards improving performance by storing
         results of function calls and returning hte cached result when the same inquiry
@@ -103,4 +107,16 @@ export const useQuery = <TData = any>(query: string) => {
         replace query with fetch in useEffect dependency array
     refetch defined in return is now the memoized value (fetch) calling the useCallback hook
         query is contained within useCallback dependency array
+*/
+
+/*
+(e)
+    QueryResult Interface type is to be the return type of useQuery hook (just like useMutation)
+    Will contain all fields in State interface while introducing a refetch function field
+        To extend the State interface -> utilize extend keyword 
+            In TS, an interface can extend another interface to copy its own members
+    QueryResult interface extends State interface and introduces a refetch property 
+        refretch property is to have a function type that returns void
+    QueryResult interface accepts a TData type variable
+        it passes TData down to State interface declaration being extended
 */
