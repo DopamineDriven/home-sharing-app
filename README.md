@@ -279,7 +279,7 @@ enum Episode {
 
 --------------------------------------------------------------------------------
 
-## CRA TypeScript
+## CRApp TypeScript
 - navigate to root of app
 - npx create-react-app client --template typescript
 - triple-slash directive (///) in src/react-app-env.d.ts
@@ -295,3 +295,18 @@ enum Episode {
 - Reference URL of GraphQL endpoint
 - utilize fetch
     - native browser method to make HTTP reqs
+
+
+--------------------------------------------------------------------------------
+
+## React Hooks References
+- React Today and Tomorrow | React Conf 2018
+    - https://www.youtube.com/watch?v=dpw9EHDh2bM
+- React Hooks API Reference
+    - https://reactjs.org/docs/hooks-reference.html
+- Rules of Hooks
+    - https://reactjs.org/docs/hooks-rules.html
+
+## React Hooks 
+- Dan Abramov does not recommend using the Container vs Presentational component pattern split any longer
+    - why? enter React Hooks 
