@@ -45,29 +45,40 @@ export const Listings = ({ title }: Props) => {
 	const fetchListings = async () => {
 		// pass ListingsData interface as type variable for server.fetch
 		const { data } = await server.fetch<ListingsData>({
-			query: LISTINGS,
+			query: LISTINGS
 		});
 		setListings(data.listings);
 	};
 
-	const deleteListing = async () => {
-		const { data } = await server.fetch<
+	const deleteListing = async (id: string) => {
+		await server.fetch<
 			// (a)
 			DeleteListingData,
 			DeleteListingVariables
 		>({
 			query: DELETE_LISTING,
 			variables: {
-				id: "5eb8fa41a4d2eb7918137dc3",
-			},
+				id
+			}
 		});
-		console.log(data);
+		// call fetchListings to refresh on delete
+		fetchListings();
 	};
 
 	const listingsList = listings ? (
 		<ul>
 			{listings?.map((listing) => {
-				return <li key={listing.id}>{listing.title}</li>;
+				return (
+					<li key={listing.id}>
+						{listing.title}{" "}
+						<button
+							onClick={() => deleteListing(listing.id)}
+							className="btn btn-dark bg-white text-dark btn-lg ml-5"
+						>
+							Delete Listing
+						</button>
+					</li>
+				);
 			})}
 		</ul>
 	) : null;
@@ -81,12 +92,6 @@ export const Listings = ({ title }: Props) => {
 				className="btn btn-dark bg-white text-dark btn-lg ml-5"
 			>
 				Query Listings
-			</button>
-			<button
-				onClick={deleteListing}
-				className="btn btn-dark bg-white text-dark btn-lg ml-5"
-			>
-				Delete a Listing
 			</button>
 		</div>
 	);
