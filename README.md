@@ -286,3 +286,12 @@ enum Episode {
     - unique TS capability pertaining to single line comments
     - these comments contain a single XML tag
     - /// -> instructs TS compiler to include additional files in compilation process
+
+## Querying Listings
+- Invoke a POST or GET HTTP method 
+    - use POST to persist or retrieve http data
+- Specify contetn of req as application/json
+    - GraphQL docs passed as JSON
+- Reference URL of GraphQL endpoint
+- utilize fetch
+    - native browser method to make HTTP reqs
