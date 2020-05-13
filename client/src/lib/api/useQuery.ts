@@ -4,21 +4,24 @@ import { server } from './server';
 // TData or null since data shape forms only after API call completes
 interface State<TData> {
     data: TData | null;
+    loading: boolean;
 }
 
 export const useQuery = <TData = any>(query: string) => {
     // (a)
     const [state, setState] = useState<State<TData>>({
-        data: null
+        data: null,
+        loading: false
     });
 
     // (d)
     const fetch = useCallback(() => {
         const fetchApi = async () => {
+            setState({ data: null, loading: true });
             const { data } = await server.fetch<TData>({ 
                 query 
             });
-            setState({ data });
+            setState({ data, loading: false });
         };
 
         fetchApi();
