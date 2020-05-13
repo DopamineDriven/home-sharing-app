@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { server } from "../../lib/api";
 import {
 	ListingsData,
@@ -42,6 +42,12 @@ interface Props {
 
 export const Listings = ({ title }: Props) => {
 	const [listings, setListings] = useState<Listing[] | null>(null);
+
+	useEffect(() => {
+		fetchListings();
+
+	}, []);
+
 	const fetchListings = async () => {
 		// pass ListingsData interface as type variable for server.fetch
 		const { data } = await server.fetch<ListingsData>({
@@ -70,13 +76,13 @@ export const Listings = ({ title }: Props) => {
 			{listings?.map((listing) => {
 				return (
 					<li key={listing.id}>
-						{listing.title}{" "}
 						<button
 							onClick={() => deleteListing(listing.id)}
-							className="btn btn-dark bg-white text-dark btn-lg ml-5"
+							className="btn btn-dark bg-white text-dark btn-lg mr-2 mb-1"
 						>
 							Delete Listing
 						</button>
+						{listing.title}{" "}
 					</li>
 				);
 			})}
@@ -87,12 +93,6 @@ export const Listings = ({ title }: Props) => {
 		<div>
 			<h2>{title}</h2>
 			{listingsList}
-			<button
-				onClick={fetchListings}
-				className="btn btn-dark bg-white text-dark btn-lg ml-5"
-			>
-				Query Listings
-			</button>
 		</div>
 	);
 };
@@ -103,3 +103,10 @@ export const Listings = ({ title }: Props) => {
 	pass in variable type -> constrict shape of vars request expects
 	not every req needs vars which is why var request in fields is optional
 */
+
+// useEffect(() => {
+// 	fetchListings();
+// 	listings && listings.length
+// 		? console.log("Listings Exist")
+// 		: console.log("Listings Do Not Exist");
+// }, [listings]);
