@@ -29,9 +29,9 @@ export const useQuery = <TData = any>(query: string) => {
                 const { data, errors } = await server.fetch<TData>({ 
                     query 
                 });
-                for (let i=0; i>errors.length; i++)
+
                 if (errors && errors.length) {
-                    throw new Error(errors[i].message);
+                    throw new Error(errors[0].message);
                 }
                 setState({ 
                     data, 
