@@ -44,7 +44,9 @@ export const useMutation = <TData = any, TVariables = any>(query: string) => {
             });
             throw console.error(err);
         }
-	};
+    };
+    // (c)
+    return [fetch, state]
 };
 
 /*
@@ -57,6 +59,9 @@ export const useMutation = <TData = any, TVariables = any>(query: string) => {
     variables? optional in fetch async call
         Why?
             may be mutations that don't require any variables
+    Why no useEffect Hook?
+        Want the component(s) importing useMutation to make that call
+            that is, when a request should be made
 */
 
 /*
@@ -65,4 +70,15 @@ export const useMutation = <TData = any, TVariables = any>(query: string) => {
     			errors && errors.length
 				? new Error(errors[0].message) && console.log(errors)
 				: null;
+*/
+
+
+/*
+(c)
+    return an array instead of an object list
+        Why?
+            When destructuring the array values fetch and state in components
+            can name the request function for each use-case
+        How?
+            Because arrays aren't mapped on key-value pairs, but instead indices
 */
