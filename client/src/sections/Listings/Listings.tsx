@@ -1,5 +1,5 @@
 import React from "react";
-import { server, useQuery, useMutation } from "../../lib/api";
+import { useQuery, useMutation } from "../../lib/api";
 import {
 	ListingsData,
 	DeleteListingData,
@@ -50,16 +50,7 @@ export const Listings = ({ title }: Props) => {
 	] = useMutation<DeleteListingData, DeleteListingVariables>(DELETE_LISTING)
 
 	const handleDeleteListing = async (id: string) => {
-		await server.fetch<
-			// (a)
-			DeleteListingData,
-			DeleteListingVariables
-		>({
-			query: DELETE_LISTING,
-			variables: {
-				id
-			}
-		});
+		await deleteListing({ id })
 		refetch();
 	};
 
@@ -82,6 +73,15 @@ export const Listings = ({ title }: Props) => {
 			})}
 		</ul>
 	) : null;
+
+	const deleteListingLoadingMessage = deleteListingLoading ? (
+		<h4>Deletion in Progress...</h4>
+	) : null;
+	
+	const deleteListingErrorMessage = deleteListingError ? (
+		<h4>Oops! Something went wrong during the delete process. Please try again.</h4>
+	) : null;
+
 	return loading ? (
 		<div className="m-5">
 			<h2>Loading...</h2>
@@ -94,6 +94,8 @@ export const Listings = ({ title }: Props) => {
 		<div className="m-5">
 			<h2>{title}</h2>
 			{listingsList}
+			{deleteListingLoadingMessage}
+			{deleteListingErrorMessage}
 		</div>
 	);
 };
