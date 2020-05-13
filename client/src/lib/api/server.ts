@@ -1,10 +1,13 @@
-interface Body {
+interface Body<TVariables> {
     query: string;
+    variables?: TVariables;
 }
+// variables? -> type can be defined or undefined
 
 export const server = {
-    // declare type variable TData
-    fetch: async <TData = any>(body: Body) => {
+    fetch: async <TData = any, TVariables = any>(
+        body: Body<TVariables>
+    ) => {
         const res = await fetch("/api", {
             method: "POST",
             headers: {

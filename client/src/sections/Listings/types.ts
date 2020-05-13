@@ -14,3 +14,12 @@ interface Listing {
 export type ListingsData = {
     listings: Listing[];
 };
+
+export interface DeleteListingData {
+    deleteListing: Listing;
+}
+
+// only var of deleteListing mutation is an id of type string
+export interface DeleteListingVariables {
+    id: string;
+}
