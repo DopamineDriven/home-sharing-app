@@ -312,3 +312,13 @@ enum Episode {
 ## React Hooks 
 - Dan Abramov does not recommend using the Container vs Presentational component pattern split any longer
     - why? enter React Hooks 
+
+## useReducer
+- behaves very similarly to Redux
+- takes a reducer() function that receives current state and an action
+    - then returns a new state
+- useReducer returnsan array of two values and can take three args
+    - first arg -> reducer() -> function
+    - second arg -> initialArg -> initial state
+    - third arg (optional) -> init -> initialization function responsible for initializing state 
+- const [state, dispatch] = useReducer(reducer, initialArg, init);
