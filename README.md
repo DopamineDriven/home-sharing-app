@@ -322,3 +322,10 @@ enum Episode {
     - second arg -> initialArg -> initial state
     - third arg (optional) -> init -> initialization function responsible for initializing state 
 - const [state, dispatch] = useReducer(reducer, initialArg, init);
+    - reducer receives current state and an action that returns the new state
+        - const reducer = (state, action) => {};
+    - switch statement often used to determine the return value of state based on the action received 
+        - const reducer = (state, action) => {
+            switch (action.type) {}
+        };
+    - see client/src/lib/api/useQuery.ts for more
