@@ -12,8 +12,47 @@ interface QueryResult<TData> extends State<TData> {
     refetch: () => void;
 }
 
+type Action<TData> = 
+   | { type: 'FETCH' } 
+   | { type: 'FETCH_SUCCESS'; payload: TData } 
+   | { type: 'FETCH_ERROR' };
+
+const reducer = <TData>(
+    state: State<TData>, 
+    action: Action<TData>
+    ): State<TData> => {
+        switch (action.type) {
+            case 'FETCH':
+                return { 
+                    ...state, 
+                    loading: true 
+                };
+            case 'FETCH_SUCCESS':
+                return {
+                    ...state,
+                    data: action.payload,
+                    loading: false,
+                    error: false
+                };
+            case 'FETCH_ERROR':
+                return {
+                    ...state,
+                    loading: false,
+                    error: true
+                };
+            default:
+                throw new Error();
+    }
+};
+
 export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
     // (a)
+    // [state, dispatch] -> Tuple
+    const [state, dispatch] = useReducer(reducer, {
+        data: null,
+        loading: false,
+        error: false
+    });
     const [state, setState] = useState<State<TData>>({
         data: null,
         loading: false,
