@@ -24,6 +24,7 @@ export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
     const fetch = useCallback(() => {
         const fetchApi = async () => {
             try {
+                // first action
                 setState({
                     data: null, 
                     loading: true,
@@ -37,6 +38,7 @@ export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
                 if (errors && errors.length) {
                     throw new Error(errors[0].message);
                 }
+                // second action
                 setState({ 
                     data, 
                     loading: false, 
@@ -44,6 +46,7 @@ export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
                 });
             } 
             catch (err) {
+                // third action
                 setState({
                     data: null,
                     loading: false,
