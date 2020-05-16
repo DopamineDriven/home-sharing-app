@@ -357,3 +357,7 @@ enum Episode {
     - specify GraphQL API endpoint in ApolloClient constructor as uri
 - then import Apollo Provider from @apollo/react-hooks in index.tsx
     - wrap root of app in ApolloProvider and pass the client constructor prop expected by the provider
+
+### Discard lib/api/content
+- useQuery, useMutation, server data fetching, and index files all discarded since apollo client hooks replaces them
+    - see tinyhouse-code locally for preserved discarded folders/files
