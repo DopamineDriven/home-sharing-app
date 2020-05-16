@@ -330,4 +330,8 @@ enum Episode {
         };
     - see client/src/lib/api/useQuery.ts for more
     - https://reactjs.org/docs/hooks-reference.html#usereducer
-
+- useReducer is more preferable for complex state objects with multiple sub-variables
+    - Why?
+        - Due to the decoupling of updates that happen to state from actions themselves
+- disadvantage of useReducer is it requires more boilerplate and understanding than useState
+- overall, if handling complex state objects with multiple sub-values, useReducer >>> useState

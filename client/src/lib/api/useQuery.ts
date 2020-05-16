@@ -17,7 +17,7 @@ type Action<TData> =
    | { type: 'FETCH_SUCCESS'; payload: TData } 
    | { type: 'FETCH_ERROR' };
 
-const reducer = <TData>(
+const reducer = <TData>() => (
     state: State<TData>, 
     action: Action<TData>
     ): State<TData> => {
@@ -46,14 +46,10 @@ const reducer = <TData>(
 };
 
 export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
-    // (a)
+    // fetchReducer -> function returning a function -> thunk?
+    const fetchReducer = reducer<TData>();
     // [state, dispatch] -> Tuple
-    const [state, dispatch] = useReducer(reducer, {
-        data: null,
-        loading: false,
-        error: false
-    });
-    const [state, setState] = useState<State<TData>>({
+    const [state, dispatch] = useReducer(fetchReducer, {
         data: null,
         loading: false,
         error: false
@@ -64,38 +60,23 @@ export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
         const fetchApi = async () => {
             try {
                 // first action
-                setState({
-                    data: null, 
-                    loading: true,
-                    error: false 
-                });
+                dispatch({ type: "FETCH" });
                 // destructure data, errors
                 const { data, errors } = await server.fetch<TData>({ 
                     query 
                 });
                 
                 if (errors && errors.length) {
-                    throw new Error(errors[0].message);
+                    throw new Error();
                 }
                 // second action
-                setState({ 
-                    data, 
-                    loading: false, 
-                    error: false 
-                });
+                dispatch({ type: "FETCH_SUCCESS", payload: data });
             } 
-            catch (err) {
+            catch {
                 // third action
-                setState({
-                    data: null,
-                    loading: false,
-                    error: true
-                });
-                // will prevent further execution of code via throw
-                throw console.error(err);
+                dispatch({ type: "FETCH_ERROR" });
             }
         };
-
         fetchApi();
     }, [query]);
 
@@ -161,4 +142,56 @@ export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
         refretch property is to have a function type that returns void
     QueryResult interface accepts a TData type variable
         it passes TData down to State interface declaration being extended
+*/
+
+/*
+Replacing useState with useReducer for complex state handling
+const [state, setState] = useState<State<TData>>({
+        data: null,
+        loading: false,
+        error: false
+    });
+
+    // (d)
+    const fetch = useCallback(() => {
+        const fetchApi = async () => {
+            try {
+                // first action
+                setState({
+                    data: null, 
+                    loading: true,
+                    error: false 
+                });
+                // destructure data, errors
+                const { data, errors } = await server.fetch<TData>({ 
+                    query 
+                });
+                
+                if (errors && errors.length) {
+                    throw new Error(errors[0].message);
+                }
+                // second action
+                setState({ 
+                    data, 
+                    loading: false, 
+                    error: false 
+                });
+            } 
+            catch (err) {
+                // third action
+                setState({
+                    data: null,
+                    loading: false,
+                    error: true
+                });
+                // will prevent further execution of code via throw
+                throw console.error(err);
+            }
+        };
+
+        fetchApi();
+    }, [query]);
+
+- Note
+    - where setState is called, it is now replaces with dispatch (dispatching an action)
 */
