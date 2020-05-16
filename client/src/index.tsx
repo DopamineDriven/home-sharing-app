@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { Listings } from './sections/index';
+import './styles/index.css';
 import * as serviceWorker from './serviceWorker';
 
 // instantiate constructor, connect to GraphQL API endpoint via proxy

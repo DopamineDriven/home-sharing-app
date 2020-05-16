@@ -393,4 +393,9 @@ enum Episode {
 
 --------------------------------------------------------------------------------
 
-
+## Ant Design
+- ~/home-sharing-app/client $ npm i antd
+- antd library built with TS
+    - https://ant.design/docs/react/introduce
+- lists
+    - https://ant.design/components/list/

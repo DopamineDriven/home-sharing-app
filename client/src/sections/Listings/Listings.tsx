@@ -6,6 +6,8 @@ import {
 	DeleteListing as DeleteListingData, 
 	DeleteListingVariables
 } from "./__generated__/DeleteListing";
+import { Avatar, Button, List } from "antd";
+import "../../styles/Listings.css";
 
 // gql tag parses strings as GraphQL Abstrat Syntax Trees
 const LISTINGS = gql`
@@ -58,23 +60,46 @@ export const Listings = ({ title }: Props) => {
 	const listings = data ? data.listings : null;
 
 	const listingsList = listings ? (
-		<ul>
-			{listings?.map((listing) => {
-				return (
-					<li key={listing.id} className="list-group-item">
-						<button
+		<List 
+			itemLayout="horizontal"
+			dataSource={listings}
+			renderItem={listing => (
+				<List.Item
+					actions={[
+						<Button
+							type="primary"
 							onClick={() => handleDeleteListing(listing.id)}
-							className="btn btn-dark bg-white text-primary btn-sm mb-1 mr-2"
 						>
-							Delete Listing
-						</button>
-						{listing.title}&nbsp;&nbsp;{"|"}&nbsp;&nbsp;{"rating: "}
-						{listing.rating}{"/5"}
-					</li>
-				);
-			})}
-		</ul>
+							Delete
+						</Button>
+					]}
+				>
+					<List.Item.Meta 
+						title={listing.title}
+						description={listing.address}
+						avatar={<Avatar src={listing.image} shape="square" size={48} />}
+					/>
+				</List.Item>
+			)}
+		/>
 	) : null;
+
+	// 	<ul>
+	// 		{listings?.map((listing) => {
+	// 			return (
+	// 				<li key={listing.id}>
+	// 					<button
+	// 						onClick={() => handleDeleteListing(listing.id)}
+	// 					>
+	// 						Delete Listing
+	// 					</button>
+	// 					{listing.title}&nbsp;&nbsp;{"|"}&nbsp;&nbsp;{"rating: "}
+	// 					{listing.rating}{"/5"}
+	// 				</li>
+	// 			);
+	// 		})}
+	// 	</ul>
+	// ) : null;
 
 	const deleteListingLoadingMessage = deleteListingLoading ? (
 		<h4>Deletion in Progress...</h4>
@@ -85,15 +110,15 @@ export const Listings = ({ title }: Props) => {
 	) : null;
 
 	return loading ? (
-		<div className="m-5">
+		<div>
 			<h2>Loading...</h2>
 		</div>
 	) : error ? (
-		<div className="m-5">
+		<div>
 			<h2>Oops! Something went wrong</h2>
 		</div>
 	) : (
-		<div className="m-5">
+		<div className="listings">
 			<h2>{title}</h2>
 			{listingsList}
 			{deleteListingLoadingMessage}
