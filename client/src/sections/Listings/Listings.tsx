@@ -1,11 +1,11 @@
 import React from "react";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
+import { Listings as ListingsData } from "./__generated__/Listings";
 import {
-	ListingsData,
-	DeleteListingData,
-	DeleteListingVariables,
-} from "./types";
+	DeleteListing as DeleteListingData, 
+	DeleteListingVariables
+} from "./__generated__/DeleteListing";
 
 // gql tag parses strings as GraphQL Abstrat Syntax Trees
 const LISTINGS = gql`

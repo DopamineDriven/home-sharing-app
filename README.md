@@ -361,3 +361,27 @@ enum Episode {
 ### Discard lib/api/content
 - useQuery, useMutation, server data fetching, and index files all discarded since apollo client hooks replaces them
     - see tinyhouse-code locally for preserved discarded folders/files
+
+## Apollo CLI
+- schema validation, server compatibility checks, ability to generate static types
+    - employ official Apollo CLI to generate static types from GraphQL API
+- can install apollo tooling globally or as an application dependency
+    - can also set up scripts in package.json and run the apollo tooling commands with the npx command
+- Two commands necessary to run to generate static types from schema
+    - (1) download GraphQL schema and save it in project
+    - (2) can then generate static types of requests from schema
+        - codegen:schema && codegen:generate
+            - https://github.com/apollographql/apollo-tooling
+
+### codegen:schema
+- "codegen:schema": "npx apollo client:download-schema --endpoint=http://localhost:9001/api"
+- then: npm run codegen:schema
+    - this returns: Loading Apollo Project, Saving schema to schema.json
+        - schema.json file generated in client dir representing entire graphql schema
+- now, generate static types for application query and mutation
+
+### codegen:generate
+- "codegen:generate": "npx apollo client:codegen --localSchemaFile=schema.json --includes=src/**/*.tsx --target=typescript"
+- then: npm run codegen:generate
+    - this returns: Loading Apollo Project, Generating query files with 'typescript' target - wrote 3 files
+        - https://gulpjs.com/docs/en/getting-started/explaining-globs/
