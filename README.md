@@ -385,3 +385,12 @@ enum Episode {
 - then: npm run codegen:generate
     - this returns: Loading Apollo Project, Generating query files with 'typescript' target - wrote 3 files
         - https://gulpjs.com/docs/en/getting-started/explaining-globs/
+- global types file created in root of project dir as well
+    - keeps reference of all enum and input object types that can exist in graphql api
+        - since none exist currently, this file is empty at the moment
+        - note: can delete if desired
+
+
+--------------------------------------------------------------------------------
+
+
