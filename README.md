@@ -317,7 +317,7 @@ enum Episode {
 - behaves very similarly to Redux
 - takes a reducer() function that receives current state and an action
     - then returns a new state
-- useReducer returnsan array of two values and can take three args
+- useReducer returns an array of two values and can take three args
     - first arg -> reducer() -> function
     - second arg -> initialArg -> initial state
     - third arg (optional) -> init -> initialization function responsible for initializing state 
