@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useReducer } from "react";
+import { useEffect, useCallback, useReducer } from "react";
 import { server } from './server';
 
 // TData or null since data shape forms only after API call completes
@@ -72,9 +72,10 @@ export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
                 // second action
                 dispatch({ type: "FETCH_SUCCESS", payload: data });
             } 
-            catch {
+            catch (err) {
                 // third action
                 dispatch({ type: "FETCH_ERROR" });
+                throw console.error(err);
             }
         };
         fetchApi();
