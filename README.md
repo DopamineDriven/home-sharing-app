@@ -335,3 +335,11 @@ enum Episode {
         - Due to the decoupling of updates that happen to state from actions themselves
 - disadvantage of useReducer is it requires more boilerplate and understanding than useState
 - overall, if handling complex state objects with multiple sub-values, useReducer >>> useState
+
+
+--------------------------------------------------------------------------------
+
+
+## Apollo Client
+- Intelligent caching, perform data-fetching, etc
+- React Apollo - React's implementation of Apollo Client
