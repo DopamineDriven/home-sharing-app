@@ -343,3 +343,17 @@ enum Episode {
 ## Apollo Client
 - Intelligent caching, perform data-fetching, etc
 - React Apollo - React's implementation of Apollo Client
+- Apollo Boost (simple) vs Apollo Custom (advanced)
+    - https://www.apollographql.com/docs/react/migrating/boost-migration/#before (simple)
+    - https://www.apollographql.com/docs/react/migrating/boost-migration/#after (advanced)
+
+### Apollo Boost
+- pre-built config for caching, state management, and error handling
+    - npm i apollo-boost @apollo/react-hooks graphql
+        - apollo boost and react apollo are TS libraries
+    - must also install TS graphql
+        - npm i @types/graphql --save
+- import apollo-boost in index.tsx as ApolloClient
+    - specify GraphQL API endpoint in ApolloClient constructor as uri
+- then import Apollo Provider from @apollo/react-hooks in index.tsx
+    - wrap root of app in ApolloProvider and pass the client constructor prop expected by the provider

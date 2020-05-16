@@ -1,11 +1,20 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
 import { Listings } from './sections/index';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(
+// instantiate constructor, connect to GraphQL API endpoint via proxy
+const client = new ApolloClient({
+  uri: "/api"
+});
+
+render(
   <React.StrictMode>
-    <Listings title="Listings" />
+    <ApolloProvider client={client}>
+      <Listings title="Listings" />
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
