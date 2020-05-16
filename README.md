@@ -399,3 +399,9 @@ enum Episode {
     - https://ant.design/docs/react/introduce
 - lists
     - https://ant.design/components/list/
+
+### Ant Design Skeleton Component
+- https://ant.design/components/skeleton/
+- Use case
+    - placeholder while waiting for content to load and/or to visualize content that is yet to exist
+

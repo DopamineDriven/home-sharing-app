@@ -6,8 +6,9 @@ import {
 	DeleteListing as DeleteListingData, 
 	DeleteListingVariables
 } from "./__generated__/DeleteListing";
-import { Avatar, Button, List } from "antd";
+import { Avatar, Button, List, Spin } from "antd";
 import "../../styles/Listings.css";
+import { ListingsSkeleton } from './components';
 
 // gql tag parses strings as GraphQL Abstrat Syntax Trees
 const LISTINGS = gql`
@@ -77,7 +78,9 @@ export const Listings = ({ title }: Props) => {
 					<List.Item.Meta 
 						title={listing.title}
 						description={listing.address}
-						avatar={<Avatar src={listing.image} shape="square" size={48} />}
+						avatar={
+							<Avatar src={listing.image} shape="square" size={48} />
+						}
 					/>
 				</List.Item>
 			)}
@@ -101,28 +104,23 @@ export const Listings = ({ title }: Props) => {
 	// 	</ul>
 	// ) : null;
 
-	const deleteListingLoadingMessage = deleteListingLoading ? (
-		<h4>Deletion in Progress...</h4>
-	) : null;
-
 	const deleteListingErrorMessage = deleteListingError ? (
 		<h4>Oops! Something went wrong during the delete process. Please try again.</h4>
 	) : null;
 
 	return loading ? (
-		<div>
-			<h2>Loading...</h2>
-		</div>
+		<ListingsSkeleton />
 	) : error ? (
 		<div>
 			<h2>Oops! Something went wrong</h2>
 		</div>
 	) : (
 		<div className="listings">
-			<h2>{title}</h2>
-			{listingsList}
-			{deleteListingLoadingMessage}
-			{deleteListingErrorMessage}
+			<Spin spinning={deleteListingLoading}>
+				<h2>{title}</h2>
+				{listingsList}
+				{deleteListingErrorMessage}
+			</Spin>
 		</div>
 	);
 };
