@@ -1,14 +1,14 @@
 import React from "react";
-import { useQuery, useMutation } from "../../lib/api";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
 import {
 	ListingsData,
 	DeleteListingData,
 	DeleteListingVariables,
 } from "./types";
 
-// listings var in typescript code, below is query keyword
-// query Listings is for the sake of formality
-const LISTINGS = `
+// gql tag parses strings as GraphQL Abstrat Syntax Trees
+const LISTINGS = gql`
 	query Listings {
 		listings {
 			id
@@ -25,7 +25,7 @@ const LISTINGS = `
 `;
 
 // construct query doc of deleteListing mutation
-const DELETE_LISTING = `
+const DELETE_LISTING = gql`
 	mutation DeleteListing($id: ID!) {
 		deleteListing(id: $id) {
 			id
@@ -40,17 +40,18 @@ interface Props {
 }
 
 export const Listings = ({ title }: Props) => {
-	const { data, error, loading, refetch } = useQuery<ListingsData>(LISTINGS);
+	const { data, error, loading, refetch } = useQuery<
+		ListingsData
+	>(LISTINGS);
 
-// destructuring vals from useMutation array->can name value as desired
-// load and error destructed from state obj
+// useMutation React Apollo hook returns a tuple -> (1) mutation func (2) result options
 	const [
 		deleteListing,
 		{ loading: deleteListingLoading, error: deleteListingError }
 	] = useMutation<DeleteListingData, DeleteListingVariables>(DELETE_LISTING)
 
 	const handleDeleteListing = async (id: string) => {
-		await deleteListing({ id })
+		await deleteListing({ variables: { id } })
 		refetch();
 	};
 
