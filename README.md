@@ -257,7 +257,7 @@ enum Episode {
 - seed.ts is located outside of the rootDir/
     - why?
     - it is only used in development
-- Therefore, TS should not copile it to valid JS
+- Therefore, TS should not compile it to valid JS
     - this requires updating the tsconfig.json file
         - use the "exclude" option
 
@@ -279,7 +279,7 @@ enum Episode {
 
 --------------------------------------------------------------------------------
 
-## CRApp TypeScript
+## CRA TypeScript
 - navigate to root of app
 - npx create-react-app client --template typescript
 - triple-slash directive (///) in src/react-app-env.d.ts
