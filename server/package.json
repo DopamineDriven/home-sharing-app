@@ -40,6 +40,7 @@
 		"apollo-server-express": "^2.13.0",
 		"cors": "^2.8.5",
 		"express": "^4.17.1",
+		"googleapis": "^51.0.0",
 		"graphql": "^15.0.0",
 		"helmet": "^3.22.0",
 		"lodash.merge": "^4.6.2",

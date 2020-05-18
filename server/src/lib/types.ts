@@ -56,10 +56,19 @@ export interface User {
     listings: ObjectId[];
 }
 
+export interface Viewer {
+    _id?: string;
+    token?: string;
+    avatar?: string;
+    walletId?: string;
+    didRequest: boolean;
+}
+
 export interface Database {
     listings: Collection<Listing>;
     users: Collection<User>;
     bookings: Collection<Booking>;
+    viewer: Collection<Viewer>;
 }
 
 // <Listing> is type parameter of collection interface
