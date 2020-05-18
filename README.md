@@ -407,3 +407,18 @@ enum Episode {
 - customize themes
     - https://ant.design/docs/react/customize-theme
 
+--------------------------------------------------------------------------------
+
+## Browser Router vs Hash Router
+- Browser Router
+    - preferred for CS routed applications 
+    - URL paths do not have a hash # symbol
+- Hash Router
+    - sets URLs in hash mode
+    - URLs always contain a hash symbol # after the hostname
+        - https://home-sharing-app.app/#/host (for example)
+    - Benefits?
+        - multiple CS routes without having to provide necessary SS fallbacks
+        - Why?
+            - everything after # is never sent to the server
+

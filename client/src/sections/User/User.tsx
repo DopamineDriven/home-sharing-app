@@ -2,8 +2,6 @@ import React from 'react';
 
 export const User = () => {
     return (
-        <div>
-            
-        </div>
+        <h2>User</h2>
     )
 };

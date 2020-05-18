@@ -1,23 +1,46 @@
-import React from 'react';
-import { render } from 'react-dom';
-import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { Listings } from './sections/index';
-import './styles/index.css';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import { render } from "react-dom";
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "@apollo/react-hooks";
+import "./styles/index.css";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+	Home,
+	Host,
+	Listing,
+	Listings,
+	NotFound,
+	User
+} from "./sections/index";
+import * as serviceWorker from "./serviceWorker";
 
 // instantiate constructor, connect to GraphQL API endpoint via proxy
 const client = new ApolloClient({
-  uri: "/api"
+	uri: "/api"
 });
 
+const App = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/host" component={Host} />
+        <Route exact path="/listing/:id" component={Listing} />
+        <Route exact path="/listings/:location?" component={Listings} />
+        <Route exact path="/user/:id" component={User} />
+        <Route component={NotFound} />
+      </Switch>
+    </Router>
+  );
+};
+
 render(
-  <React.StrictMode>
-    <ApolloProvider client={client}>
-      <Listings title="Listings" />
-    </ApolloProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+	<React.StrictMode>
+		<ApolloProvider client={client}>
+			<App />
+		</ApolloProvider>
+	</React.StrictMode>,
+	document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change
