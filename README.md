@@ -431,8 +431,28 @@ enum Episode {
     - bookings and listings remain -> _id: ObjectId 
 
 
-## OAuth roles
+## OAuth2.0 Roles
 - Resource Owner
-    - 
+    - the user that signs in -> grants app access to google account
 - App
+    - once user grants access to account
+        - can make API calls to Google servers on behalf of user
+        - add an item to their google calendar, send an email, etc
 - Authorization and Resource Server
+    - Google server that holds the data and provides the APIs
+
+## Login steps
+- click sign-in with google button
+    - redirect to google authentication page to login
+- user provides account info
+    - google handles authentication, session selection, and user consent
+- once logged in, google returns authorization code
+    - CS passes authorization code to SS
+- once server receives authorization code another request is made
+    - server sends authorization code to fetch user's access token
+- with user access token obtained
+    - can use token to interact with Google APIs on behalf of user
+    - specifically, Google's People API to get name, email, and profile image
+        - https://developers.google.com/people
+    - Sequence diagram (UML sequence diagram)
+        - https://developers.google.com/identity/protocols/oauth2
