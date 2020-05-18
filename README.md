@@ -429,3 +429,10 @@ enum Episode {
     - Why?
         - Google OAuth returns a string value to identify a user
     - bookings and listings remain -> _id: ObjectId 
+
+
+## OAuth roles
+- Resource Owner
+    - 
+- App
+- Authorization and Resource Server
