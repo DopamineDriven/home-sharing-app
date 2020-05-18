@@ -1,20 +1,15 @@
 import { Collection, ObjectId } from "mongodb";
 
-export interface Booking {
-    _id: ObjectId;
-    listing: ObjectId;
-    tenant: string;
-    checkIn: string;
-    checkOut: string;
-}
-
 // bool values indicate which days in the month have been booked
 export interface BookingsIndexMonth {
     [key: string]: boolean;
 }
+
 export interface BookingsIndexYear {
     [key: string]: BookingsIndexMonth;
 }
+
+// key-value pairs in TS -> index signatures
 export interface BookingsIndex {
     [key: string]: BookingsIndexYear;
 }
@@ -22,6 +17,14 @@ export interface BookingsIndex {
 export enum ListingType {
     Apartment = "APARTMENT",
     House = "HOUSE"
+}
+
+export interface Booking {
+    _id: ObjectId;
+    listing: ObjectId;
+    tenant: string;
+    checkIn: string;
+    checkOut: string;
 }
 
 export interface Listing {
@@ -38,6 +41,7 @@ export interface Listing {
     bookings:  ObjectId[];
     bookingsIndex: BookingsIndex;
     price: number;
+    numOfGuests: number;
 }
 
 export interface User {
@@ -51,6 +55,7 @@ export interface User {
     bookings: ObjectId[];
     listings: ObjectId[];
 }
+
 export interface Database {
     listings: Collection<Listing>;
     users: Collection<User>;
