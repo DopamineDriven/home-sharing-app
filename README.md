@@ -456,3 +456,13 @@ enum Episode {
         - https://developers.google.com/people
     - Sequence diagram (UML sequence diagram)
         - https://developers.google.com/identity/protocols/oauth2
+
+### Google APIs and Node.js Client
+- https://github.com/googleapis/google-api-nodejs-client
+
+### Google OAuth2.0 Scopes
+- https://developers.google.com/identity/protocols/oauth2/scopes
+
+### Method People API
+- https://developers.google.com/people/api/rest/v1/people/get
+
