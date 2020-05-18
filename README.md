@@ -422,3 +422,10 @@ enum Episode {
         - Why?
             - everything after # is never sent to the server
 
+--------------------------------------------------------------------------------
+
+## User interface
+- _id: string as opposed to _id: ObjectId
+    - Why?
+        - Google OAuth returns a string value to identify a user
+    - bookings and listings remain -> _id: ObjectId 
