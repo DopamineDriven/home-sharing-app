@@ -1,5 +1,5 @@
-import React from "react";
-import { render } from "react-dom";
+import React, { useState } from "react";
+import { hydrate } from "react-dom";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import "./styles/index.css";
@@ -14,7 +14,16 @@ import {
 	User
 } from "./sections/index";
 import { Layout } from "antd";
+import { Viewer } from "./lib/types";
 import * as serviceWorker from "./serviceWorker";
+
+const initalViewer: Viewer = {
+  id: null,
+  token: null,
+  avatar: null,
+  hasWallet: null,
+  didRequest: false
+};
 
 // instantiate constructor, connect to GraphQL API endpoint via proxy
 const client = new ApolloClient({
@@ -22,6 +31,10 @@ const client = new ApolloClient({
 });
 
 const App = () => {
+
+  const [viewer, setViewer] = useState<Viewer>(initalViewer);
+
+
 	return (
 		<Router>
 			<Layout id="app">
@@ -30,7 +43,7 @@ const App = () => {
 					<Route exact path="/host" component={Host} />
 					<Route exact path="/listing/:id" component={Listing} />
 					<Route exact path="/listings/:location?" component={Listings} />
-					<Route exact path="/login" component={Login} />
+					<Route exact path="/login" render={props => <Login {...props} setViewer={setViewer} />} />
 					<Route exact path="/user/:id" component={User} />
 					<Route component={NotFound} />
 				</Switch>
@@ -39,7 +52,7 @@ const App = () => {
 	);
 };
 
-render(
+hydrate(
 	<React.StrictMode>
 		<ApolloProvider client={client}>
 			<App />
