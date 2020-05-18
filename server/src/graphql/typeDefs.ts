@@ -8,7 +8,7 @@ export const typeDefs = gql`
 		didRequest: Boolean!
 	}
 
-	type LogInInput {
+	input LogInInput {
 		code: String!
 	}
 

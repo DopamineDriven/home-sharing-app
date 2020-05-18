@@ -22,6 +22,6 @@ export const Google = {
             resourceName: "people/me",
             personFields: "emailAddresses,names,photos"
         });
-        return { user: data }
+        return { user: data };
     }
 };

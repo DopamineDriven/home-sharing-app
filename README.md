@@ -472,4 +472,4 @@ enum Episode {
     - token: String -> unique token to counteract CSRF attacks
     - avatar: String -> viewer's avatar image
     - hasWallet: Boolean -> connection to stripe payment processor
-    - didRequest: Boolean! -> value indicating if a req is made from client to obtain viewer info (non-optional as denoted by !)
+    - didRequest: Boolean! -> value indicating if a req is made from client to obtain viewer info (non-optional, denoted by !)

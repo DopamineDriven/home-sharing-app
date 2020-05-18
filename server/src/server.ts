@@ -2,29 +2,30 @@ require("dotenv").config();
 import express, { Application } from "express";
 import cors from "cors";
 import Helmet from "helmet";
-import { typeDefs, resolvers } from "./graphql/index";
+import { typeDefs, resolvers } from "./graphql";
 import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database/index";
 
 // instantiate apollo server
 const mount = async (app: Application) => {
-	const db = await connectDatabase();
-	const server = new ApolloServer({
-		typeDefs,
-		resolvers,
-		context: () => ({ db })
-	});
+	try {
+		const db = await connectDatabase();
+		const server = new ApolloServer({
+			typeDefs,
+			resolvers,
+			context: () => ({ db }),
+		});
 
-	server.applyMiddleware({ app, path: "/api" });
-	// invoke server
-	app.listen(process.env.PORT);
-    console.log(`[app]: http://localhost:${process.env.PORT}/api`);
+		server.applyMiddleware({ app, path: "/api" });
+		// invoke server
+		app.listen(process.env.PORT);
+		console.log(`[app]: http://localhost:${process.env.PORT}/api`);
+	} catch (error) {
+		throw new Error(`error in server ${error}`);
+	}
 };
 
-mount(express().use(
-	cors(), 
-	Helmet()
-));
+mount(express().use(cors(), Helmet()));
 
 /*
 Context argument is third positional arg
