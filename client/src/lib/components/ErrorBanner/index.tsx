@@ -19,5 +19,5 @@ export const ErrorBanner = ({
             type="error"
             className="error-banner"
         />
-    )
+    );
 };

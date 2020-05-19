@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Redirect } from "react-router-dom";
 import { Viewer } from '../../lib/types';
 import { useApolloClient, useMutation } from "@apollo/react-hooks";
 import { AUTH_URL } from "../../lib/graphql/queries/AuthUrl";
@@ -8,6 +9,11 @@ import {
     LogIn as LogInData,
     LogInVariables
 } from "../../lib/graphql/mutations/LogIn/__generated__/LogIn";
+import { ErrorBanner } from '../../lib/components/ErrorBanner/index';
+import { 
+    displaySuccessNotification, 
+    displayErrorMessage 
+} from '../../lib/utils/index';
 import { Card, Layout, Spin, Typography } from "antd";
 import googleLogo from "./assets/google_logo.jpg";
 
@@ -29,6 +35,7 @@ export const Login = ({ setViewer }: Props) => {
         onCompleted: data => {
             if (data && data.logIn) {
                 setViewer(data.logIn);
+                displaySuccessNotification("Login Success!");
             }
         }
     });
@@ -56,16 +63,29 @@ export const Login = ({ setViewer }: Props) => {
             });
             window.location.href = data.authUrl;
         } catch {
-
+            displayErrorMessage("Login failed. Please try again.");
         }
     };
 
+    // upon successful login, redirect to user page via Redirect component
+    if (logInData && logInData.logIn) {
+        const { id: viewerId } = logInData.logIn;
+        return <Redirect to={`/user/${viewerId}`} />
+    };
+   
+    // conditional const to pass between content and card of primary render if error occurs
+    const logInErrorBannerElement = logInError ? (
+        <ErrorBanner description="Login failed. Please try again." />
+    ) : null;
+    
+    // display spinner on load
     return logInLoading ? (
         <Content className="log-in">
             <Spin size="large" tip="Logging in..." />
         </Content>    
     ) : (
         <Content className="log-in">
+            {logInErrorBannerElement}
             <Card className="log-in-card">
                 <div className="log-in-card__intro">
                     <Title level={3} className="log-in-card__intro-title">
