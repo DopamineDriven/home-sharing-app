@@ -5,6 +5,7 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import "./styles/index.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import {
+	AppHeader,
 	Home,
 	Host,
 	Listing,
@@ -13,7 +14,7 @@ import {
 	NotFound,
 	User
 } from "./sections/index";
-import { Layout } from "antd";
+import { Affix, Layout } from "antd";
 import { Viewer } from "./lib/types";
 import * as serviceWorker from "./serviceWorker";
 
@@ -38,6 +39,9 @@ const App = () => {
 	return (
 		<Router>
 			<Layout id="app">
+				<Affix offsetTop={0} className="app__affix-header">
+					<AppHeader />
+				</Affix>
 				<Switch>
 					<Route exact path="/" component={Home} />
 					<Route exact path="/host" component={Host} />

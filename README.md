@@ -532,4 +532,11 @@ enum Episode {
         - { AuthUrl as AuthUrlData } ".../AuthUrl/__generated __/AuthUrl";
     - see ./client/src/sections/Login/Login.tsx for more
 
+## AppHeader Component
+- serves as app navbar
+- Layout in ant design -> Header, Sider, Content, Footer, and Layout
+    - Header serves as navbar
+- Affix from ant design used in index.jsx (root)
+    - Affix component wraps AppHeader and keeps it at the top of page
+        - specify offsetTop={0} option to achieve this
 
