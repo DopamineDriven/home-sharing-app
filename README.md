@@ -540,3 +540,17 @@ enum Episode {
     - Affix component wraps AppHeader and keeps it at the top of page
         - specify offsetTop={0} option to achieve this
 
+--------------------------------------------------------------------------------
+
+## Cookies 🍪
+- HttpOnly Flag
+    - not accessible with JS and are therefore immune to XSS attacks
+- Secure Flag
+    - ensure cookies can only be sent securely through HTTPS
+
+### Generate a random secret
+- open the terminal, type "node", hit enter
+- next, input the following:
+    - require('crypto').randomBytes(64).toString('hex')
+        - hit enter
+    - this returns a 122-character hexadecimal string
