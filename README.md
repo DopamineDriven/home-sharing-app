@@ -473,3 +473,8 @@ enum Episode {
     - avatar: String -> viewer's avatar image
     - hasWallet: Boolean -> connection to stripe payment processor
     - didRequest: Boolean! -> value indicating if a req is made from client to obtain viewer info (non-optional, denoted by !)
+
+## React Router
+- Router hooks for React >=16.8
+    - https://reacttraining.com/react-router/web/api/Hooks
+- 

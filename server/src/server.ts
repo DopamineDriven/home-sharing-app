@@ -25,7 +25,10 @@ const mount = async (app: Application) => {
 	}
 };
 
-mount(express().use(cors(), Helmet()));
+mount(express().use(
+	cors(), 
+	Helmet())
+);
 
 /*
 Context argument is third positional arg
