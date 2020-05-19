@@ -501,3 +501,35 @@ enum Episode {
     - export const Login = ({ setViewer }: Props) => {...};
 
 
+## Manual Query of AuthURL -> Login.tsx
+- Queries
+    - https://www.apollographql.com/docs/react/data/queries/
+- useQuery hook from React Apollo runs a query upon component mount
+    - https://www.apollographql.com/docs/react/api/react-hooks/#usequery
+    - Yet, that is not desirable here
+    - Instead, have authUrl query fired onClick(e) of Sign in with Google button
+    - Two options provided by React Apollo to incorporate authUrl onClick(e)
+        - (1) use the useLazyQuery Hook
+            - https://www.apollographql.com/docs/react/api/react-hooks/#uselazyquery
+        - (2) Run query() func from the client obj obtained from useApolloClient Hook
+            - https://www.apollographql.com/docs/react/api/react-hooks/#useapolloclient
+        - That said, the useQuery and useLazyQuery hooks leverage and use the client object which can be accessed directly from the useApolloClient Hook
+            - Decision -> useApolloClientHook (from @apollo/react-hooks) to get client object
+
+## useApolloClient Hook -> Login.tsx
+- import { useApolloClient } from "@apollo/react-hooks";
+- declare before return within Login func
+    - const client = useApolloClient();
+- Why use this approach?
+    - client object gives access to a query() func
+    - this allows the authUrl query to be ran manually
+- handleAuthorize() component func -> click listener
+    - fires when user clicks the login button
+    - use client obj from useApolloClient hook to request the authUrl query
+    - first, import authUrl query doc from "../../lib/graphql/queries";
+        - { AUTH_URL }
+    - also import corresponding typeDefs for authUrl query data
+        - { AuthUrl as AuthUrlData } ".../AuthUrl/__generated __/AuthUrl";
+    - see ./client/src/sections/Login/Login.tsx for more
+
+
