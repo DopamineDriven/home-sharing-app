@@ -1,54 +1,73 @@
 import React from "react";
 import { Viewer } from "../../../../lib/types";
+import { useMutation } from "@apollo/react-hooks";
+import { LOG_OUT } from "../../../../lib/graphql/mutations/LogOut";
+import { LogOut as LogOutData } from "../../../../lib/graphql/mutations/LogOut/__generated__/LogOut";
 import { Link } from "react-router-dom";
 import { Avatar, Button, Menu } from "antd";
-import { 
-    HomeOutlined, 
-    UserOutlined, 
-    LogoutOutlined 
-} from "@ant-design/icons";
+import {
+	displaySuccessNotification,
+	displayErrorMessage,
+} from "../../../../lib/utils/index";
+import { HomeOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons";
 
 interface Props {
-    viewer: Viewer;
+	viewer: Viewer;
+	setViewer: (viewer: Viewer) => void;
 }
 
 const { Item, SubMenu } = Menu;
 
-export const MenuItems = ({ viewer }: Props) => {
-    const subMenuLogin = viewer.id && viewer.avatar ? (
-        <SubMenu title={<Avatar src={viewer.avatar} />}>
-            <Item key="/user">
-                <UserOutlined />
-                Profile
-            </Item>
-            <Item key="/logout">
-                <LogoutOutlined />
-                Log Out
-            </Item>
-        </SubMenu>
-    ) : (
-        <Item>
-            <Link to="/login">
-                <Button type="primary">
-                    Sign In
-                </Button>
-            </Link>
-        </Item>
-    );
+export const MenuItems = ({ viewer, setViewer }: Props) => {
+	const [logOut] = useMutation<LogOutData>(LOG_OUT, {
+		onCompleted: (data) => {
+			if (data && data.logOut) {
+				setViewer(data.logOut);
+				displaySuccessNotification("Successfully Logged Out");
+			}
+		},
+		onError: () => {
+			displayErrorMessage("Log out failed; please try again");
+		}
+	});
 
-    return (
-        <Menu
-            mode="horizontal"
-            selectable={false}
-            className="menu"
-        >
-            <Item key="/host">
-                <Link to="/host">
-                    <HomeOutlined title="Host" />
-                    Host
-                </Link>
-            </Item>
-            {subMenuLogin}
-        </Menu>
-    )
+	const handleLogOut = () => {
+		logOut();
+	};
+
+	const subMenuLogin =
+		viewer.id && viewer.avatar ? (
+			<SubMenu title={<Avatar src={viewer.avatar} />}>
+				<Item key="/user">
+					<Link to={`/user/${viewer.id}`}>
+						<UserOutlined />
+						Profile
+					</Link>
+				</Item>
+				<Item key="/logout">
+					<div onClick={handleLogOut}>
+						<LogoutOutlined />
+						Log Out
+					</div>
+				</Item>
+			</SubMenu>
+		) : (
+			<Item>
+				<Link to="/login">
+					<Button type="primary">Sign In</Button>
+				</Link>
+			</Item>
+		);
+
+	return (
+		<Menu mode="horizontal" selectable={false} className="menu">
+			<Item key="/host">
+				<Link to="/host">
+					<HomeOutlined />
+					Host
+				</Link>
+			</Item>
+			{subMenuLogin}
+		</Menu>
+	);
 };
