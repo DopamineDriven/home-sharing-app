@@ -474,6 +474,15 @@ enum Episode {
     - hasWallet: Boolean -> connection to stripe payment processor
     - didRequest: Boolean! -> value indicating if a req is made from client to obtain viewer info (non-optional, denoted by !)
 
+## Using Ant Design framework for the Login Page
+- Layout, Card, and Typography components
+    - Layout
+        - https://ant.design/components/layout/
+    - Card
+        - https://ant.design/components/card/
+    - Typography
+        - https://ant.design/components/typography/
+
 ## React Router
 - Router hooks for React >=16.8
     - https://reacttraining.com/react-router/web/api/Hooks
