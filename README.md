@@ -484,6 +484,20 @@ enum Episode {
         - https://ant.design/components/typography/
 
 ## React Router
-- Router hooks for React >=16.8
+- React Router Hooks (>=16.8)
     - https://reacttraining.com/react-router/web/api/Hooks
-- 
+
+## Viewer Interface
+- import Viewer interface to root file from client/src/lib/types.ts
+- useState hook to create viewer state obj that child components of App can access and use
+- Initialize viewer state obj with all null values except didRequest: false
+- useState Hook -> destructure setViewer() func used to update the viewer state object
+- Why pass the setViewer function to the Login component?
+    - so that the client viewer object can be updated after the logIn mutation runs 
+- Utilize React Router's render props pattern to pass in setViewer() func
+    - https://reactjs.org/docs/render-props.html
+- Then, a props interface is established in Login.tsx
+    - interface Props {setViewer: (viewer: Viewer) => void;}
+    - export const Login = ({ setViewer }: Props) => {...};
+
+

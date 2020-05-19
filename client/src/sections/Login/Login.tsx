@@ -35,8 +35,8 @@ export const Login = ({ setViewer }: Props) => {
                     </span>
                 </button>
                 <Text type="secondary">
-                    Note: Upon signing in you will be redirected to the Google consent
-                    form to sign in with your Google account.
+                    Upon signing in you will be redirected to the Google consent
+                    form to sign in with your Google account
                 </Text>
             </Card>
         </Content>
