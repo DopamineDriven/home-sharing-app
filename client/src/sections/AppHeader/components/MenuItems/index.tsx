@@ -1,8 +1,12 @@
 import React from "react";
 import { Viewer } from "../../../../lib/types";
 import { Link } from "react-router-dom";
-import { Button, Menu } from "antd";
-import { HomeOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Avatar, Button, Menu } from "antd";
+import { 
+    HomeOutlined, 
+    UserOutlined, 
+    LogoutOutlined 
+} from "@ant-design/icons";
 
 interface Props {
     viewer: Viewer;
@@ -11,9 +15,8 @@ interface Props {
 const { Item, SubMenu } = Menu;
 
 export const MenuItems = ({ viewer }: Props) => {
-
-    const subMenuLogin = viewer.id ? (
-        <SubMenu>
+    const subMenuLogin = viewer.id && viewer.avatar ? (
+        <SubMenu title={<Avatar src={viewer.avatar} />}>
             <Item key="/user">
                 <UserOutlined />
                 Profile
@@ -41,11 +44,11 @@ export const MenuItems = ({ viewer }: Props) => {
         >
             <Item key="/host">
                 <Link to="/host">
-                    <HomeOutlined />
+                    <HomeOutlined title="Host" />
                     Host
                 </Link>
             </Item>
             {subMenuLogin}
         </Menu>
     )
-}
+};

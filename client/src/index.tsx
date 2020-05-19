@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { hydrate } from "react-dom";
+import { render } from "react-dom";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import "./styles/index.css";
@@ -61,7 +61,7 @@ const App = () => {
 	);
 };
 
-hydrate(
+render(
 	<React.StrictMode>
 		<ApolloProvider client={client}>
 			<App />
