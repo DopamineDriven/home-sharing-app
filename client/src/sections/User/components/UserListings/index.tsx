@@ -29,7 +29,7 @@ export const UserListings = ({
                 lg: 4
             }}
             dataSource={result}
-            locale={{ emptyText: "listings are yet to exist for user" }}
+            locale={{ emptyText: "listings have yet to be input" }}
             pagination={{
                 position: "top",
                 current: listingsPage,
@@ -53,7 +53,7 @@ export const UserListings = ({
                 Listings
             </Title>
             <Paragraph className="user-listings__description">
-                This section outlines user-hosted listings which are available to book. 
+                This section outlines user-hosted listings that are available to book. 
             </Paragraph>
             {userListingsList}
         </div>
