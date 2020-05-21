@@ -13,7 +13,6 @@ export const typeDefs = gql`
 		result: [Booking!]!
 	}
 
-	# https://graphql.org/learn/schema/#enumeration-types
 	enum ListingType {
 		APARTMENT
 		HOUSE

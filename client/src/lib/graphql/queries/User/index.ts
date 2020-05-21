@@ -35,6 +35,7 @@ export const USER = gql`
                     price
                     numOfGuests
                 }
+            }
 		}
 	}
 `;

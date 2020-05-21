@@ -2,7 +2,7 @@ import React from 'react';
 import { RouteComponentProps } from "react-router-dom";
 import { UserProfile } from "./components";
 import { useQuery } from "@apollo/react-hooks";
-import { USER } from "../../lib/graphql/queries";
+import { USER } from "../../lib/graphql/queries/index";
 import {
     User as UserData,
     UserVariables
