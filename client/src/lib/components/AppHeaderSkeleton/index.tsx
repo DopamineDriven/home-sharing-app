@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout } from "antd";
-import logo from "./assets/tinyhouse-logo.png";
+import logo from "./assets/react-graphql-logo.png";
 
 const { Header } = Layout;
 

@@ -611,3 +611,57 @@ enum Episode {
     - cd .. -> move up to resolvers dir, open index.ts
         - import { userResolvers } from "./User"
         - place userResolvers map in lodash merge() func with viewerResolvers
+
+## GQL User obj type as compared to User TS interface
+- GQL obj type ->
+    - id field (instead of _id)
+    - no token field
+    - hasWallet boolean field (instead of walletId field)
+        - note: walletId will be actual ID from stripe stored in database
+            - this is sensitive info -> GQL only needs to know true or false
+    - bookings field returns array of Booking objects (instead of Booking ids)
+    - listings field returns array of Listings objects (instead of Listings ids)
+
+
+## Creating User obj type in typeDefs
+- ./server/src/graphql/typeDefs.ts
+- create User object type
+    - type User {
+        - id: ID!
+        - name: String!
+        - contact: String!
+        - hasWallet: Boolean!
+        - income: Int
+        - bookings(limit: Int!, page: Int!): Bookings
+        - listings(limit: Int!, page: Int!): Listings!
+    - }
+- arr of Listings objects must be present whereas Bookings objects -> optional
+- income and bookings only queried to resolved values when user explicitly requests this (sensitive) information
+    - would not want another person to query for a certain user and know the bookings they have made
+- Handling income & bookings fields
+    - check viewer id making the req
+    - viewer id = queried user id ? return intended values : return null
+
+## bookings & listings - paginated fields
+- Pagination -- process of fractionating bulk data into constituent pages
+    - resolver functions handle pagination in server
+    - client will pass two arguments to these fields -> limit and page
+        - limit -- dictates data limit queried for single page
+        - page -- references constituent page being queried
+- above User object type, create Bookings and Listings object types
+    - each object type will contain two fields each
+    - type Bookings {
+        - total: Int!
+        - result: [Booking!]!
+    - }
+
+    - type Listings {
+        - total: Int!
+        - result: [Listing!]!
+    - }
+
+    - type User {
+        - ...
+    - }
+- see ./server/src/graphql/typeDefs.ts for more
+

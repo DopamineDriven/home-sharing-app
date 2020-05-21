@@ -2,7 +2,7 @@ import React from "react";
 import { Viewer } from "../../lib/types";
 import { Link } from "react-router-dom";
 import { Layout } from "antd";
-import logo from "./assets/tinyhouse-logo.png";
+import logo from "./assets/react-graphql-logo.png";
 import { MenuItems } from "./components";
 
 const { Header } = Layout;
