@@ -688,5 +688,40 @@ enum Episode {
             - but how to get info about viewer making req?
                 - utilize authorize() func
                     - accepts db and req objs as params -> returns viewer obj based on cookie and token of req being made
-            - 
 
+
+## Pagination
+- Pagination -- process of fractionating bulk data into constituent components 
+    - limits imposed dictate amount of data to be displayed per page
+- Three types of pagination 
+    - numbered pagination (offset-based)
+    - sequential pagination
+    - scroll-based pagination (infinite scroll)
+- Bottom Line
+    - Used to reduce Latency since a full data dump is not necessary (bite-sized pieces)
+- Offset-Based Pagination
+    - often easiest to implement
+    - backend retrieves limit and page values 
+        - dictates limit of content displayed per page
+    - Disadvantages
+        - item insertion or removal while a user is going through the pages
+            - creates a large chance of seeing the same item twice or skipping an additional item
+            - Why? Concept of Boundaries between data within pages and limits
+        - example: an item is added to beginning of list a user is already paginating through
+            - user might see item on one page and then again on the next as it could potentially satisfy both boundaries
+    - Takeaway
+        - offset-based pagination may not be ideal for apps where users find themselves scrolling through pages fairly quickly especially if items are added or deleted often
+            - such as a social media app
+- Cursor-Based Pagination
+    - Uses a "cursor" to keep track of data within a set of items
+    - cursor could just reference the id of the last obj fetched
+        - could also have a reference to encoded sorting criteria
+    - client POV: cursor passed in and server determines set of data returned
+    - heightened accuracy avoids aforementioned disadvantages of offset-based approach
+- Relay Cursor-Based Pagination
+    - takes the cursor-model but also returns data in a more particular format
+    - Data returned with Edges and Nodes
+        - Additional data such as pageInfo may also be returned
+            - has reference to when cursor has an end 
+            - whether previous or next page info exists
+    - Advantageous if building a large app that will ahve a large number of pages with moderate user traffic
