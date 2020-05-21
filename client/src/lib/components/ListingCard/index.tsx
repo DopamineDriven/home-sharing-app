@@ -1,6 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Card, Typography } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import { iconColor, formatListingPrice } from "../../utils";
 
 interface Props {
     listing: {
@@ -16,9 +18,10 @@ interface Props {
 const { Text, Title } = Typography;
 
 export const ListingCard = ({ listing }: Props) => {
-    const { title, image, address, price, numOfGuests } = listing;
+    const { id, title, image, address, price, numOfGuests } = listing;
 
     return (
+        <Link to={`/listing/${id}`}>
         <Card
             hoverable
             cover={
@@ -31,7 +34,7 @@ export const ListingCard = ({ listing }: Props) => {
             <div className="listing-card__details">
                 <div className="listing-card__description">
                     <Title level={4} className="listing-card__price">
-                        {price}
+                        {formatListingPrice(price)}
                         <span>/day</span>
                     </Title>
                     <Text strong ellipsis className="listing-card__title">
@@ -42,10 +45,11 @@ export const ListingCard = ({ listing }: Props) => {
                     </Text>
                 </div>
                 <div className="listing-card__dimensions listing-card__dimensions--guests">
-                    <UserOutlined />
+                    <UserOutlined style={{ color: iconColor }}/>
                     <Text>{numOfGuests} guests</Text>
                 </div>
             </div>
         </Card>
+        </Link>
     );
 };

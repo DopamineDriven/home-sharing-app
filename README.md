@@ -733,3 +733,11 @@ enum Episode {
     - (P-1)L = (2-1)10 = [10]
 - P = page=3; L = limit=10; cursor starts at doc [20]
     - (P-1)L = (3-1)10 = [20]
+
+## Apollo Client Cache
+- Apollo Client (Apollo-Boost) has out of the box in-memory intelligent caching requiring zero configuration
+    - caches recently viewed data in soft cache (like LRUcache)
+    - https://www.apollographql.com/docs/react/why-apollo/#zero-config-caching
+- Bonus
+    - Apollo-boost also allows directly updating info in the cache when needed
+    - https://www.apollographql.com/docs/react/caching/cache-configuration/
