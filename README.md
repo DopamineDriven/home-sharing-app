@@ -725,3 +725,11 @@ enum Episode {
             - has reference to when cursor has an end 
             - whether previous or next page info exists
     - Advantageous if building a large app that will ahve a large number of pages with moderate user traffic
+
+### Offset-Based Pagination Example
+- P = page=1; L = limit=10; cursor starts at doc [0]
+    - (P-1)L = (1-1)10 = [0]
+- P = page=2; L = limit=10; cursor starts at doc [10]
+    - (P-1)L = (2-1)10 = [10]
+- P = page=3; L = limit=10; cursor starts at doc [20]
+    - (P-1)L = (3-1)10 = [20]
