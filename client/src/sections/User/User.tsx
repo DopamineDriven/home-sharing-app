@@ -9,6 +9,7 @@ import {
 } from "../../lib/graphql/queries/User/__generated__/User";
 import { Viewer } from "../../lib/types";
 import { Col, Layout, Row } from "antd";
+import { ErrorBanner, PageSkeleton } from "../../lib/components";
 
 interface Props {
     viewer: Viewer;
@@ -36,7 +37,16 @@ export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>
         <UserProfile user={user} viewerIsUser={viewerIsUser} />
     ) : null;
 
-    return (
+	return loading ? (
+        <Content className="user">
+            <PageSkeleton />
+        </Content>
+	) : error ? (
+        <Content className="user">
+            <ErrorBanner description="user may not exist or an error occurred; please try again" />
+            <PageSkeleton />
+        </Content>
+	) : (
         <Content className="user">
             <Row gutter={12}  justify="space-between">
                 <Col xs={24} flex="auto">{userProfileElement}</Col>
