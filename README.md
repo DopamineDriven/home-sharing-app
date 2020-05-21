@@ -557,10 +557,25 @@ enum Episode {
 
 ## X-CSRF Token
 - client passes token with every request
+    - server receives token as part of req header ("X-CSRF-TOKEN") to pass to authorize() func
 - server uses token to verify identity of the request
     - aka, verify that the req is coming from the authenticated viewer
+- authorize() func -> ./server/src/lib/utils/index.ts
 - authorize() func is to be used when accessing sensitive user data
     - for example, viewer income
-
-### Authorize function
-- accesses users collection to return a user that matches cookie and token of logged-in viewer
+    - accesses users collection to return a user that matches cookie and token of logged-in viewer
+- pass request option to ApolloClient in ./client/src/index.tsx
+    - https://www.apollographql.com/docs/react/get-started/#configuration-options
+    - (operation: Opertaion) => Promise < void >
+    - function called with each request
+        - takes a GraphQL operation and can return a promise
+    - Dynamically set fetchOptions -> add to context of operation with
+        - operation.setContext({ headers })
+        - any options sit therein take precedence over fetchOptions
+        - Very useful for authentication
+    - token is part of the viewer state obj -> set after user signed in
+        - apolloclient config is unaware of the viewer state obj
+            - why? it is created/defined server side
+        - solution: set token to client's sessionStorage
+            - retrieve token in apolloclient function from sessionStorage
+                - token ? pass as part of header : pass empty string ""

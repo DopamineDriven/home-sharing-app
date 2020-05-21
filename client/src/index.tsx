@@ -26,7 +26,14 @@ import * as serviceWorker from "./serviceWorker";
 
 // instantiate constructor, connect to GraphQL API endpoint via proxy
 const client = new ApolloClient({
-	uri: "/api"
+	uri: "/api",
+	request: async operation => {
+		operation.setContext({
+			headers: {
+				"X-CSRF-TOKEN":
+			}
+		})
+	}
 });
 
 const initalViewer: Viewer = {
