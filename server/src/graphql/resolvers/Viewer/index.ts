@@ -7,6 +7,7 @@ import { Request, Response } from "express";
 
 const isDev = process.env.NODE_ENV === "development";
 
+// options object https://www.npmjs.com/package/cookie-parser
 const cookieOptions = {
 	httpOnly: true,
 	sameSite: true,
@@ -93,7 +94,7 @@ const logInViaGoogle = async (
 
 		res.cookie("viewer", userId, {
 			...cookieOptions,
-			maxAge: 24*60*60*1000,
+			maxAge: 24*60*60*1000, // one day
 		});
 
 		return viewer;
@@ -102,6 +103,7 @@ const logInViaGoogle = async (
 	}
 };
 
+// uses viewer id retrieved from viewer cookie
 const logInViaCookie = async (
 	token: string,
 	db: Database,

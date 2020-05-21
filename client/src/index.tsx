@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { render } from "react-dom";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider, useMutation } from "@apollo/react-hooks";
@@ -14,13 +14,14 @@ import {
 	NotFound,
 	User
 } from "./sections/index";
-import { Affix, Layout } from "antd";
+import { Affix, Spin, Layout } from "antd";
 import { Viewer } from "./lib/types";
 import { LOG_IN } from './lib/graphql/mutations/LogIn/index';
 import { 
 	LogIn as LogInData, 
 	LogInVariables 
 } from './lib/graphql/mutations/LogIn/__generated__/LogIn';
+import { AppHeaderSkeleton } from './lib/components';
 import * as serviceWorker from "./serviceWorker";
 
 const initalViewer: Viewer = {
@@ -37,9 +38,20 @@ const client = new ApolloClient({
 });
 
 const App = () => {
-
 	const [viewer, setViewer] = useState<Viewer>(initalViewer);
-	console.log(viewer);
+	const [logIn, { error }] = useMutation<LogInData, LogInVariables>(LOG_IN, {
+		onCompleted: data => {
+			if (data && data.logIn) {
+				setViewer(data.logIn);
+			}
+		}
+	});
+
+	const logInRef = useRef(logIn);
+
+	useEffect(() => {
+		logInRef.current()
+	}, []);
 
 	return (
 		<Router>
