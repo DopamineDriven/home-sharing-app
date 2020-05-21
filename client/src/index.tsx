@@ -28,11 +28,12 @@ import * as serviceWorker from "./serviceWorker";
 const client = new ApolloClient({
 	uri: "/api",
 	request: async operation => {
+		const token = sessionStorage.getItem("token");
 		operation.setContext({
 			headers: {
-				"X-CSRF-TOKEN":
+				"X-CSRF-TOKEN": token || ""
 			}
-		})
+		});
 	}
 });
 

@@ -579,3 +579,10 @@ enum Episode {
         - solution: set token to client's sessionStorage
             - retrieve token in apolloclient function from sessionStorage
                 - token ? pass as part of header : pass empty string ""
+    - Why is sessionStorage an ideal storage mechanism for this use-case?
+        - data in sessionStorage is not automatically passed to server unlike cookie data
+        - Okay, so what?
+            - want token to be part of the request header as another alternative form verification step
+        - Ah, okay. Now what?
+            - set the token in sessStorage on user log-in
+            - remove the token from sessStorage when user logs-out
