@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { render } from "react-dom";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider, useMutation } from "@apollo/react-hooks";
-import "./styles/index.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import {
 	AppHeader,
@@ -21,8 +20,14 @@ import {
 	LogIn as LogInData, 
 	LogInVariables 
 } from './lib/graphql/mutations/LogIn/__generated__/LogIn';
-import { AppHeaderSkeleton } from './lib/components';
+import { AppHeaderSkeleton, ErrorBanner } from './lib/components';
+import "./styles/index.css";
 import * as serviceWorker from "./serviceWorker";
+
+// instantiate constructor, connect to GraphQL API endpoint via proxy
+const client = new ApolloClient({
+	uri: "/api"
+});
 
 const initalViewer: Viewer = {
   id: null,
@@ -31,11 +36,6 @@ const initalViewer: Viewer = {
   hasWallet: null,
   didRequest: false
 };
-
-// instantiate constructor, connect to GraphQL API endpoint via proxy
-const client = new ApolloClient({
-	uri: "/api"
-});
 
 const App = () => {
 	const [viewer, setViewer] = useState<Viewer>(initalViewer);
@@ -46,16 +46,27 @@ const App = () => {
 			}
 		}
 	});
-
 	const logInRef = useRef(logIn);
 
 	useEffect(() => {
 		logInRef.current()
 	}, []);
 
-	return (
+	const logInErrorBannerElement = error ? (
+		<ErrorBanner description="unable to verify authenticated status; please try again"/>
+	) : null;
+
+	return !viewer.didRequest && !error ? (
+		<Layout className="app-skeleton">
+			<AppHeaderSkeleton />
+			<div className="app-skeleton__spin-section">
+				<Spin size="large" tip="Launching App" />
+			</div>
+		</Layout>
+		) : (
 		<Router>
 			<Layout id="app">
+				{logInErrorBannerElement}
 				<Affix offsetTop={0} className="app__affix-header">
 					<AppHeader viewer={viewer} setViewer={setViewer} />
 				</Affix>

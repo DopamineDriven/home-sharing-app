@@ -554,3 +554,13 @@ enum Episode {
     - require('crypto').randomBytes(64).toString('hex')
         - hit enter
     - this returns a 122-character hexadecimal string
+
+## X-CSRF Token
+- client passes token with every request
+- server uses token to verify identity of the request
+    - aka, verify that the req is coming from the authenticated viewer
+- authorize() func is to be used when accessing sensitive user data
+    - for example, viewer income
+
+### Authorize function
+- accesses users collection to return a user that matches cookie and token of logged-in viewer
