@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { render } from "react-dom";
 import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "@apollo/react-hooks";
+import { ApolloProvider, useMutation } from "@apollo/react-hooks";
 import "./styles/index.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import {
@@ -16,6 +16,11 @@ import {
 } from "./sections/index";
 import { Affix, Layout } from "antd";
 import { Viewer } from "./lib/types";
+import { LOG_IN } from './lib/graphql/mutations/LogIn/index';
+import { 
+	LogIn as LogInData, 
+	LogInVariables 
+} from './lib/graphql/mutations/LogIn/__generated__/LogIn';
 import * as serviceWorker from "./serviceWorker";
 
 const initalViewer: Viewer = {
