@@ -665,3 +665,28 @@ enum Episode {
     - }
 - see ./server/src/graphql/typeDefs.ts for more
 
+### Pagination - useful links
+- https://graphql.org/learn/pagination/
+- https://www.apollographql.com/docs/react/data/pagination/
+
+
+## Building User Resolvers
+- expect id (not _id) to be passed into user() resolver function
+    - this is defined in a types.ts file adjacent to index.ts with user resolver
+    - UserArgs interface defines the shape of the args for user resolver
+        - contains an id of type string
+    - when userResolvers func complete -> resolves to a Promise of a User
+- user field -> entry point from client -> user resolver func() executed first when viewer attempts to query user field
+    - other resolver funcs that user obj depends on are run thereafter
+    - How to determine whether a user is authorized to make the query?
+        - introduce new field in User TS interface (src/lib/types.ts)
+        - add beneath listings field within User interface
+            - authorized?: boolean;
+        - this field is unique since it is not a part of the user doc stored in db collection
+        - used only in resolver functions to determine whether user has the authorization to resolve certain fields
+            - compare id of viewer making req with id of user being queried
+            - but how to get info about viewer making req?
+                - utilize authorize() func
+                    - accepts db and req objs as params -> returns viewer obj based on cookie and token of req being made
+            - 
+
