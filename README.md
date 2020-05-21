@@ -586,3 +586,9 @@ enum Episode {
         - Ah, okay. Now what?
             - set the token in sessStorage on user log-in
             - remove the token from sessStorage when user logs-out
+            - this occurs in onCompleted callback of useMutation hook
+        - Then navigate to ./client/src/sections/Login/Login.tsx
+            - set "token" to session storage in onCompleted callback of useMutation hook here as well 
+        - Now-> ./client/src/sections/AppHeader/components/MenuItems/index.tsx
+            - remove token data from sessionStorage on logout
+            - update onCompleted cb of logOut mutation in MenuItems component
