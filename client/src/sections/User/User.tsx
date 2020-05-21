@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RouteComponentProps } from "react-router-dom";
 import { UserProfile } from "./components";
 import { useQuery } from "@apollo/react-hooks";
@@ -23,10 +23,18 @@ interface MatchParams {
 // (b) 
 const { Content } = Layout;
 
+const PAGE_LIMIT = 4;
+
 export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>) => {
+    const [listingsPage, setListingsPage] = useState(1);
+    const [bookingsPage, setBookingsPage] = useState(1);
+
     const { data, loading, error } = useQuery<UserData, UserVariables>(USER, {
         variables: {
-            id: match.params.id
+            id: match.params.id,
+            bookingsPage,
+            listingsPage,
+            limit: PAGE_LIMIT
         }
     });
 
