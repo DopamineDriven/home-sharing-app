@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from "react-router-dom";
-import { UserProfile } from "./components";
+import { UserBookings, UserListings, UserProfile } from "./components";
 import { useQuery } from "@apollo/react-hooks";
 import { USER } from "../../lib/graphql/queries/index";
 import {
@@ -41,8 +41,29 @@ export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>
     const user = data ? data.user : null;
     const viewerIsUser = viewer.id === match.params.id;
 
+    const userListings = user ? user.listings : null;
+    const userBookings = user ? user.bookings : null;
+
     const userProfileElement = user ? (
         <UserProfile user={user} viewerIsUser={viewerIsUser} />
+    ) : null;
+
+    const userListingsElement = userListings ? (
+        <UserListings 
+            userListings={userListings}
+            listingsPage={listingsPage}
+            limit={PAGE_LIMIT}
+            setListingsPage={setListingsPage}
+        />
+    ) : null;
+
+    const userBookingsElement = userBookings ? (
+        <UserBookings 
+            userBookings={userBookings}
+            bookingsPage={bookingsPage}
+            limit={PAGE_LIMIT}
+            setBookingsPage={setBookingsPage}
+        />
     ) : null;
 
 	return loading ? (
@@ -58,6 +79,10 @@ export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>
         <Content className="user">
             <Row gutter={12}  justify="space-between">
                 <Col xs={24} flex="auto">{userProfileElement}</Col>
+                <Col xs={24}>
+                    {userListingsElement}
+                    {userBookingsElement}
+                </Col>
             </Row>
         </Content>
     );
