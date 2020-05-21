@@ -25,6 +25,7 @@ import "./styles/index.css";
 import * as serviceWorker from "./serviceWorker";
 
 // instantiate constructor, connect to GraphQL API endpoint via proxy
+// https://www.apollographql.com/docs/react/get-started/#configuration-options
 const client = new ApolloClient({
 	uri: "/api",
 	request: async operation => {
@@ -51,6 +52,10 @@ const App = () => {
 		onCompleted: data => {
 			if (data && data.logIn) {
 				setViewer(data.logIn);
+
+				data.logIn.token 
+					? sessionStorage.setItem("token", data.logIn.token)
+					: sessionStorage.removeItem("token");
 			}
 		}
 	});
