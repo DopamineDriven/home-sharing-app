@@ -41,7 +41,7 @@ Apollo Server is called with every request
 
 
 Can use curl to delete a listing 
-curl -X POST http://localhost:3002/api \
+curl -X POST http://localhost:PORT/api \
     -H 'Content-Type: application/json' \
     -d '{"id":"001"}'
 

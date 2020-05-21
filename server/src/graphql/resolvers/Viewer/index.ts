@@ -89,6 +89,7 @@ const logInViaGoogle = async (
 				bookings: [],
 				listings: [],
 			});
+			// ops: WithId<User>[]
 			viewer = insertResult.ops[0];
 		}
 
@@ -103,7 +104,7 @@ const logInViaGoogle = async (
 	}
 };
 
-// uses viewer id retrieved from viewer cookie
+// find doc in user collection where user _id = viewer cookie value
 const logInViaCookie = async (
 	token: string,
 	db: Database,
@@ -147,6 +148,7 @@ export const viewerResolvers: IResolvers = {
 				const token = crypto.randomBytes(16).toString("hex");
 				const viewer: User | undefined = code
 					? await logInViaGoogle(code, token, db, res)
+					// if login fired and !code -> client is logging in via a cookie
 					: await logInViaCookie(token, db, req, res);
 				if (!viewer) {
 					return { didRequest: true };

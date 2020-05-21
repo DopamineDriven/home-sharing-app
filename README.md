@@ -596,3 +596,18 @@ enum Episode {
 --------------------------------------------------------------------------------
 
 
+## User Resolvers
+- client must query & resolve user data from server
+    - utilize gql fields for a single root-level user query (one at a time)
+    - caveat -> only send sensitive info (income) upon user request
+- add user: String! to type Query -> ./server/src/graphql/typeDefs.ts
+- User isn't directly related to concept of viewer...
+    - Now what?
+        - create new resolvers map to contain resolver func w/in user module
+    - cd server/src/graphql/resolvers &&mkdir User &&cd User &&touch index.ts
+        - import { IResolvers } from "apollo-server-express";
+        - export userResolvers map and assign its type w/ IResolvers interface
+            - export const userResolvers: IResolvers = { Query: { user: () => { return "Query.user" } } };
+    - cd .. -> move up to resolvers dir, open index.ts
+        - import { userResolvers } from "./User"
+        - place userResolvers map in lodash merge() func with viewerResolvers
