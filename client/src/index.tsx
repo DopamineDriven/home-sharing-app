@@ -12,7 +12,7 @@ import {
 	Login,
 	NotFound,
 	User
-} from "./sections/index";
+} from "./sections";
 import { Affix, Spin, Layout } from "antd";
 import { Viewer } from "./lib/types";
 import { LOG_IN } from './lib/graphql/mutations/LogIn/index';
