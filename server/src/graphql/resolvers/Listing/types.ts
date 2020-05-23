@@ -15,6 +15,7 @@ export interface ListingBookingsData {
 }
 
 /*
+
 import Booking interface (descriptive of booking doc shape in database)
 
 export interface Booking {
