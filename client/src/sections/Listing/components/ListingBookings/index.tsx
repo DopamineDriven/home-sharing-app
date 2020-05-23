@@ -28,10 +28,10 @@ export const ListingBookings = ({
                 gutter: 8,
                 xs: 1,
                 sm: 2,
-                lg: 4
+                lg: 3
             }}
             dataSource={result ? result : undefined}
-            locale={{ emptyText: "no bookings made yet" }}
+            locale={{ emptyText: "no bookings have been made yet" }}
             pagination={{
                 current: bookingsPage,
                 total: total ? total : undefined,

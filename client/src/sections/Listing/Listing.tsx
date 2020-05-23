@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { Col, Layout, Row } from "antd";
-import { ListingDetails } from "./components";
+import { ListingBookings, ListingDetails } from "./components";
 import { ErrorBanner, PageSkeleton } from "../../lib/components";
 import { LISTING } from "../../lib/graphql/queries";
 import { 
@@ -29,8 +29,20 @@ export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
     });
 
     const listing = data ? data.listing : null;
+    
     const listingBookings = listing ? listing.bookings : null;
+    
     const listingDetailsElement = listing ? <ListingDetails listing={listing} /> : null;
+
+    const listingBookingsElement = listingBookings ? (
+        <ListingBookings 
+            listingBookings={listingBookings}
+            bookingsPage={bookingsPage}
+            limit={PAGE_LIMIT}
+            setBookingsPage={setBookingsPage}
+        />
+    ) : null;
+
 
     return loading ? (
         <Content className="listings">
@@ -46,6 +58,7 @@ export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
             <Row gutter={24} justify="space-between">
                 <Col xs={24} lg={14} flex="auto">
                     {listingDetailsElement}
+                    {listingBookingsElement}
                 </Col>
             </Row>
         </Content>
