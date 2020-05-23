@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { Layout } from "antd";
-import { PageSkeleton } from "../../lib/components";
+import { ErrorBanner, PageSkeleton } from "../../lib/components";
 import { LISTING } from "../../lib/graphql/queries";
 import { 
     Listing as ListingData,
@@ -13,6 +13,7 @@ interface MatchParams {
     id: string;
 }
 
+const { Content } = Layout;
 const PAGE_LIMIT = 3;
 
 export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
@@ -26,8 +27,19 @@ export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
         }
     });
 
+    const listing = data ? data.listing : null;
+    const listingBookings = listing ? listing.bookings : null;
 
-    return (
+    return loading ? (
+        <Content className="listings">
+            <PageSkeleton />
+        </Content>
+	) : error ? (
+        <Content className="listing">
+            <ErrorBanner description="listing may not exist or an error occurred; please try again" />
+            <PageSkeleton />
+        </Content>
+	) : (
         <h2>Listing</h2>
     )
 };
