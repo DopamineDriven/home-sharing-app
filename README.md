@@ -748,3 +748,8 @@ enum Episode {
 ## Listing Query and Resolvers
 - Listing Authorize ()
     - bookings field within listing obj only authorized if viewer._id === listing.host (listing.host === user._id)
+- First and foremost, update Listing TS interface in src/lib/types.ts
+- export interface Listing {
+    - ///
+    - authorized?: boolean;
+- }
