@@ -1,10 +1,25 @@
 import { IResolvers } from 'apollo-server-express';
-import { Listing } from "../../../lib/types";
+import { ObjectId } from "mongodb";
+import { Database, Listing } from "../../../lib/types";
+import { ListingArgs } from "./types";
 
 export const listingResolvers: IResolvers = {
     Query: {
-        listing: () => {
-            return "Query.listing";
+        listing: async (
+            _root: undefined,
+            { id }: ListingArgs,
+            { db, req }: { db: Database; req: Request }
+        ): Promise<Listing> => {
+            try {
+                const listing = await db.listings.findOne({ _id: new ObjectId });
+                if (!listing) {
+                    throw new Error("listing cannot be found");
+                }
+                return listing;
+                
+            }catch (error) {
+                throw new Error(`failed to query listing: ${error}`);
+            }
         }
     },
     Listing: {

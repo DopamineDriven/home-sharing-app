@@ -741,3 +741,10 @@ enum Episode {
 - Bonus
     - Apollo-boost also allows directly updating info in the cache when needed
     - https://www.apollographql.com/docs/react/caching/cache-configuration/
+
+
+--------------------------------------------------------------------------------
+
+## Listing Query and Resolvers
+- Listing Authorize ()
+    - bookings field within listing obj only authorized if viewer._id === listing.host (listing.host === user._id)
