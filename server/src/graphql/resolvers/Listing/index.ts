@@ -26,7 +26,7 @@ export const listingResolvers: IResolvers = {
                 }
 
                 return listing;
-            }catch (error) {
+            } catch (error) {
                 throw new Error(`failed to query listing: ${error}`);
             }
         }
@@ -45,13 +45,18 @@ export const listingResolvers: IResolvers = {
                 throw new Error("host cannot be found");
             }
             return host;
+        },
+        bookingsIndex: (listing: Listing): string => {
+            return JSON.stringify(listing.bookingsIndex);
         }
     }
 };
 
 /*
-There will be other resolvers we'll eventually need to create for the Listing object but 
-for the fields we're attempting to access for the /user/:id page in our client, the id() 
-resolver is the only one we'll explicitly need to create. The other fields being queried 
-for the Listing object in the /user/:id are being handled as trivial resolvers.
+ As a reminder, the _id field for the user document in the 
+ Mongo database is of type string and not of type ObjectID. 
+ MongoDB natively creates an ObjectID type for the _id fields 
+ but the user's _id field is a string since it simply captures 
+ whatever id Google OAuth returns. The host in a listing document 
+ is the same string representation of this ID.
 */
