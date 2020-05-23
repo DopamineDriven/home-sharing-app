@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
+import { Moment } from "moment";
 import { Col, Layout, Row } from "antd";
 import { ListingBookings, ListingCreateBooking, ListingDetails } from "./components";
 import { ErrorBanner, PageSkeleton } from "../../lib/components";
@@ -19,6 +20,8 @@ const PAGE_LIMIT = 3;
 
 export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
     const [bookingsPage, setBookingsPage] = useState(1);
+    const [checkInDate, setCheckInDate] = useState<Moment | null>(null);
+    const [checkOutDate, setCheckOutDate] = useState<Moment | null>(null);
 
     const { data, loading, error } = useQuery<ListingData, ListingVariables>(LISTING, {
         variables: {
@@ -44,7 +47,13 @@ export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
     ) : null;
 
     const listingCreateBookingElement = listing ? (
-        <ListingCreateBooking price={listing.price} />
+        <ListingCreateBooking 
+            price={listing.price}
+            checkInDate={checkInDate}
+            checkOutDate={checkOutDate}
+            setCheckInDate={setCheckInDate}
+            setCheckOutDate={setCheckOutDate}
+        />
     ) : null;
 
 
@@ -71,7 +80,7 @@ export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
         </Content>
     )
 };
-
+// http://localhost:3000/listing/5d378db94e84753160e08b37
 // data to test listingbookingselement on return in dev
 // const listingBookings = {
 //     total: 4,
