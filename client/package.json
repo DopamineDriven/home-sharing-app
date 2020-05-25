@@ -32,8 +32,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "codegen:schema": "npx apollo client:download-schema --endpoint=http://localhost:9000/api",
-    "codegen:generate": "npx apollo client:codegen --localSchemaFile=schema.json --includes=src/**/*.ts --globalTypesFile=./src/lib/graphql/globalTypes.ts --target=typescript"
+    "codegen:schema": "npx apollo client:download-schema --includes=src/lib/graphql/queries/Listings/index.ts --endpoint=http://localhost:9000/api",
+    "codegen:generate": "npx apollo client:codegen --localSchemaFile=schema.json --includes=src/lib/graphql/queries/Listings/index.ts --globalTypesFile=./src/lib/graphql/globalTypes.ts --target=typescript"
   },
   "eslintConfig": {
     "extends": "react-app"
