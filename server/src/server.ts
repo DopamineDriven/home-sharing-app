@@ -9,26 +9,26 @@ import { connectDatabase } from "./database/index";
 
 // instantiate apollo server
 const mount = async (app: Application) => {
-		const db = await connectDatabase();
+	const db = await connectDatabase();
 
-		app.use(
-			cookieParser(process.env.SECRET),
-			cors(),
-			Helmet()
-		);
+	app.use(
+		cookieParser(process.env.SECRET),
+		cors(),
+		Helmet()
+	);
 
-		// context func prop of Apollo is run with req res objects
-		// pass req and res props as part of context obj for all resolvers
-		const server = new ApolloServer({
-			typeDefs,
-			resolvers,
-			context: ({ req, res }) => ({ db, req, res })
-		});
+	// context func prop of Apollo is run with req res objects
+	// pass req and res props as part of context obj for all resolvers
+	const server = new ApolloServer({
+		typeDefs,
+		resolvers,
+		context: ({ req, res }) => ({ db, req, res })
+	});
 
-		server.applyMiddleware({ app, path: "/api" });
-		// invoke server
-		app.listen(process.env.PORT);
-		console.log(`[app]: http://localhost:${process.env.PORT}/api`);
+	server.applyMiddleware({ app, path: "/api" });
+	// invoke server
+	app.listen(process.env.PORT);
+	console.log(`[app]: http://localhost:${process.env.PORT}/api`);
 };
 
 mount(express());
