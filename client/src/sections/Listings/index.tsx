@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
-import { Layout, List, Typography } from "antd";
+import { Affix, Layout, List, Typography } from "antd";
 import { ListingCard } from "../../lib/components";
 import { LISTINGS } from "../../lib/graphql/queries";
 import {
@@ -9,7 +9,7 @@ import {
     ListingsVariables
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
 import { ListingsFilter } from "../../lib/graphql/globalTypes";
-import { ListingsFilters } from "./components";
+import { ListingsFilters, ListingsPagination } from "./components";
 
 interface MatchParams {
     location: string;
@@ -22,13 +22,14 @@ const { Content } = Layout;
 
 export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
     const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
+    const [page, setPage] = useState(1);
 
     const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
         variables: {
             location: match.params.location,
             filter, // obj shorthand syntax
             limit: PAGE_LIMIT,
-            page: 1
+            page
         }
     });
 
