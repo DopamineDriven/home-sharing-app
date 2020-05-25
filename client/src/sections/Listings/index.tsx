@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { Layout, List, Typography } from "antd";
@@ -20,6 +20,8 @@ const { Paragraph, Text, Title } = Typography;
 const { Content } = Layout;
 
 export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
+    const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
+    
     const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
         variables: {
             location: match.params.location,
