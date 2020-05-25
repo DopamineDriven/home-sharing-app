@@ -9,6 +9,7 @@ import {
     ListingsVariables
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
 import { ListingsFilter } from "../../lib/graphql/globalTypes";
+import { ListingsFilters } from "./components";
 
 interface MatchParams {
     location: string;
@@ -21,7 +22,7 @@ const { Content } = Layout;
 
 export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
     const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
-    
+
     const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
         variables: {
             location: match.params.location,
@@ -36,20 +37,23 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
 
     const listingsSectionElement = 
         listings && listings.result.length ? (
-            <List 
-                grid={{
-                    gutter: 8,
-                    xs: 1,
-                    sm: 2,
-                    lg: 4
-                }}
-                dataSource={listings.result}
-                renderItem={listing => (
-                    <List.Item>
-                        <ListingCard listing={listing} />
-                    </List.Item>
-                )}
-            />
+            <div>
+                <ListingsFilters filter={filter} setFilter={setFilter} />
+                <List 
+                    grid={{
+                        gutter: 8,
+                        xs: 1,
+                        sm: 2,
+                        lg: 4
+                    }}
+                    dataSource={listings.result}
+                    renderItem={listing => (
+                        <List.Item>
+                            <ListingCard listing={listing} />
+                        </List.Item>
+                    )}
+                />
+            </div>
         ) : (
             <div>
                 <Paragraph>
