@@ -8,7 +8,7 @@ import {
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
 import { Col, Layout, Row, Typography } from "antd";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { HomeHero, HomeListings } from "./components";
+import { HomeHero, HomeListings, HomeListingsSkeleton } from "./components";
 import { displayErrorMessage } from "../../lib/utils";
 import mapBackground from "./assets/map-background.jpg";
 import sanFranciscoImage from "./assets/san-fransisco.jpg";
@@ -40,7 +40,7 @@ export const Home = ({ history }: RouteComponentProps) => {
 
     const renderListingsSelection = () => {
         if (loading) {
-            return "Loading...";
+            return <HomeListingsSkeleton />;
         }
 
         if (data) {
@@ -58,15 +58,16 @@ export const Home = ({ history }: RouteComponentProps) => {
                     Your guide for all things rental
                 </Title>
                 <Paragraph>
-                    Educated rental decisions for last minute bookings.
+                    Educated decisions for last minute bookings
                 </Paragraph>
                 <Link
                     to="/listings/united%20states"
                     className="ant-btn ant-btn-primary ant-btn-lg home__cta-section-button"
                 >
-                    Popular listings in the United States
+                    Popular Listings in the United States
                 </Link>
             </div>
+            {renderListingsSelection()}
             <div className="home__listings">
                 <Title level={4} className="home__listings-title">
                     Listings of any kind
