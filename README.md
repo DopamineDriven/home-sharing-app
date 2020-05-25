@@ -728,11 +728,11 @@ enum Episode {
 
 ### Offset-Based Pagination Example
 - P = page=1; L = limit=10; cursor starts at doc [0]
-    - (P-1)L = (1-1)10 = [0]
+    - `(P-1)L = (1-1)10 = [0]`
 - P = page=2; L = limit=10; cursor starts at doc [10]
-    - (P-1)L = (2-1)10 = [10]
+    - `(P-1)L = (2-1)10 = [10]`
 - P = page=3; L = limit=10; cursor starts at doc [20]
-    - (P-1)L = (3-1)10 = [20]
+    - `(P-1)L = (3-1)10 = [20]`
 
 ## Apollo Client Cache
 - Apollo Client (Apollo-Boost) has out of the box in-memory intelligent caching requiring zero configuration
@@ -753,3 +753,49 @@ enum Episode {
     - ///
     - authorized?: boolean;
 - }
+
+
+--------------------------------------------------------------------------------
+
+## Google Geocoding API
+- GaRGaaS (Geocoding and Reverse Geocoding as a Service)
+
+### Geocoding
+- the process of converting addresses into geo coords (latitude and longitude)
+- can place markers on a map or position the map
+
+### Reverse Geocoding
+- process of converting geo coords into a human-readable address
+
+## Geocoding response overview
+```
+{
+    "results": [
+        { 
+            "address_components":[{...}],
+            "formatted_address":"", 
+            "geometry":{...}, 
+            "location_type":"", 
+            "viewport": {...}, 
+            "place_id":"", 
+            "plus_code":{...}, 
+            "types":[...] 
+        }
+    ], 
+    "status": ""
+}
+```
+
+## Geocoding in this app
+- https://docs.mongodb.com/manual/reference/method/js-cursor/
+```
+let cursor = await db.listings.find({
+    country: "Canada",
+    admin: "Ontario",
+    city: "Toronto"
+});
+```
+- https://developers.google.com/maps/documentation/geocoding/intro#Types
+- recommended to migrate to https://github.com/googlemaps/google-maps-services-js
+    - types supported
+    - as opposed to @google/maps and @types/google__maps
