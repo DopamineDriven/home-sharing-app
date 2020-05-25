@@ -12,7 +12,7 @@ const maps = createClient({
     Promise // object shorthand notation, key === value
 });
 
-const parseAddress = (addressComponents: AddressComponent<string>[]) => {
+const parseAddress = (addressComponents: AddressComponent<string | null>[]) => {
     let country = null;
     let admin = null;
     let city = null;
