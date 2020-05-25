@@ -9,7 +9,12 @@ import londonImage from "../../assets/london.jpg";
 const { Title } = Typography;
 const { Search } = Input;
 
-export const HomeHero = () => {
+interface Props {
+    onSearch: (value: string) => void;
+}
+
+
+export const HomeHero = ({ onSearch }: Props) => {
     return (
         <div className="home-hero">
             <div className="home-hero__search">
@@ -21,6 +26,7 @@ export const HomeHero = () => {
                     enterButton
                     size="large"
                     placeholder="Search by city"
+                    onSearch={onSearch}
                 />
             </div>
             <Row gutter={12} className="home-hero__cards">
