@@ -26,7 +26,7 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
     const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
         variables: {
             location: match.params.location,
-            filter: ListingsFilter.PRICE_LOW_TO_HIGH,
+            filter, // obj shorthand syntax
             limit: PAGE_LIMIT,
             page: 1
         }
