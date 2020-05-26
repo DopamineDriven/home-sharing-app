@@ -8,28 +8,29 @@ import {
     Listings as ListingsData,
     ListingsVariables
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
-import { ListingsFilter } from "../../lib/graphql/globalTypes";
+import { ListingsFilter } from '../../lib/graphql/globalTypes';
 import { ListingsFilters, ListingsPagination } from "./components";
 
 interface MatchParams {
     location: string;
 }
 
-const PAGE_LIMIT = 8;
+const PAGE_LIMIT = 4;
 
 const { Paragraph, Text, Title } = Typography;
 const { Content } = Layout;
+const { PRICE_LOW_TO_HIGH } = ListingsFilter;
 
 export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
-    const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
+    const [filter, setFilter] = useState(PRICE_LOW_TO_HIGH);
     const [page, setPage] = useState(1);
 
     const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
         variables: {
             location: match.params.location,
-            filter, // obj shorthand syntax
+            filter, // obj shorthand syntax (OSS)
             limit: PAGE_LIMIT,
-            page
+            page // OSS
         }
     });
 
@@ -39,7 +40,15 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
     const listingsSectionElement = 
         listings && listings.result.length ? (
             <div>
-                <ListingsFilters filter={filter} setFilter={setFilter} />
+                <Affix offsetTop={64}>
+                    <ListingsPagination
+                        total={listings.total}
+                        page={page}
+                        limit={PAGE_LIMIT}
+                        setPage={setPage}
+                    />
+                    <ListingsFilters filter={filter} setFilter={setFilter} />
+                </Affix>
                 <List 
                     grid={{
                         gutter: 8,
@@ -80,3 +89,5 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
         </Content>
     );
 };
+
+// Affix persists Filter and pagination on scroll at top of screen 
