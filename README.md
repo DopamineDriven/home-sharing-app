@@ -809,5 +809,73 @@ let cursor = await db.listings.find({
 
 
 ## Index Location-Based Data with MongoDB
-- https://docs.mongodb.com/manual/indexes/
+- https://docs.mongodb.com/manual/indexes/#id2
 - Goal: create a compound index for listings to support effecient execution of queries for this collection 
+- Why are Indexes important?
+    - Without them, Mongo must perform a collection scan for each query
+    - Indexes reduce the number of documents it must inspect
+- Indexes use a B-tree data structure 
+    - Self-balancing data structures
+    - Maintain sorted data and allow searches, sequential access, insertions, and deletions in logarithmic time O(logn)
+    - collection scans sans indexes run in linear time O(n)
+    - https://towardsdatascience.com/linear-time-vs-logarithmic-time-big-o-notation-6ef4227051fb
+```
+db.users.find({ score: { "$lt": 30 } }).sort({ score: -1 })
+{ score: 1 } index
+// where $lt -> less than
+```
+- the above index queries all scores less than 30 (0 < scores < 30) which mongo creates a data structure for all value of score field for all docs in collection meeting specified parameters
+    - then, it performs a logarithmic search to get all documents rapidly 
+    - mongoDB defines indexes at the collection level and supports indexes on any field or sub-field in the documents of a collection
+    - MongoDB automatically creates a unique index on the _id field during collection creation
+        - _id -> unique; rejects duplicate values for this field 
+            - prevents clients from inserting two documents with same particular _id value for this particular field
+        - alternative index types: geospatial, text, etc. 
+
+### Compound Indexes
+- https://docs.mongodb.com/manual/core/index-compound/
+- https://docs.mongodb.com/manual/core/index-compound/#compound-index-prefix
+- MongoDB supports the creation of indexes on multiple fields
+```
+db.collection.createIndex({ <field1>: <type>, <field2>: <type>, ... })
+```
+- order of fields listed in compound index has significance
+```
+{ userid: 1, score: -1 } Index
+```
+- consider the above
+    - Index first sorts by userid
+    - then, within each userid value, it sorts further by score
+```
+let cursor = await db.listings.find({
+    country: "Canada",
+    admin: "Ontario",
+    city: "Toronto"
+});
+```
+- currently, mongo will conduct a collection scan in linear time when this collection is queried 
+    - not a huge issue until app/data scales rapidly
+    - so, hypothetically would want to implement a compound index scan for country -> admin -> city
+```
+let index = await db.collection.createIndex({ 
+    country: <string>, 
+    admin: <string>,
+    city: <string>
+});
+```
+- using MongoDB Atlas interface to implement index 
+- https://docs.mongodb.com/manual/applications/indexes/
+```
+{
+    "country": 1,
+    "admin": 1,
+    "city": 1
+}
+```
+- prepares in ascending alphabetical order
+
+--------------------------------------------------------------------------------
+
+
+## Stripe
+- used to facilitate payments between tenants and hosts
