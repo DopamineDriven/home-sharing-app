@@ -2,30 +2,31 @@ import React, { useState } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { Affix, Layout, List, Typography } from "antd";
-import { ListingCard } from "../../lib/components";
+import { ErrorBanner, ListingCard } from "../../lib/components";
 import { LISTINGS } from "../../lib/graphql/queries";
 import {
     Listings as ListingsData,
     ListingsVariables
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
 import { ListingsFilter } from '../../lib/graphql/globalTypes';
-import { ListingsFilters, ListingsPagination } from "./components";
+import { ListingsFilters, ListingsPagination, ListingsSkeleton } from "./components";
+
 
 interface MatchParams {
     location: string;
 }
 
-const PAGE_LIMIT = 4;
+const PAGE_LIMIT = 8;
 
 const { Paragraph, Text, Title } = Typography;
 const { Content } = Layout;
-const { PRICE_LOW_TO_HIGH } = ListingsFilter;
+const { PRICE_LOW_TO_HIGH } = ListingsFilter; //enum
 
 export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
     const [filter, setFilter] = useState(PRICE_LOW_TO_HIGH);
     const [page, setPage] = useState(1);
 
-    const { data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
+    const { data, error, loading } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
         variables: {
             location: match.params.location,
             filter, // obj shorthand syntax (OSS)
@@ -82,7 +83,18 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
         </Title>
     ) : null;
 
-    return (
+    const errorMessage=`search parameters triggered an error; ${<br/>} please try again by city, province/territory/state, or country`;
+
+    return loading ? (
+        <Content className="listings">
+            <ListingsSkeleton />
+        </Content>
+	) : error ? (
+        <Content className="listings">
+            <ErrorBanner description={errorMessage} />
+            <ListingsSkeleton />
+        </Content>
+	) : (
         <Content className="listings">
             {listingsRegionElement}
             {listingsSectionElement}
@@ -90,4 +102,5 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
     );
 };
 
-// Affix persists Filter and pagination on scroll at top of screen 
+// Affix persists Filter and pagination options on scroll,
+// anchoring child props to top of screen (64->64px) 
