@@ -994,4 +994,46 @@ let index = await db.collection.createIndex({
 
 ### Resolver functions
 - set up in .server/src/graphql/resolvers/Viewer/index.ts
+- head to process.env.PORT/api (graphQL GUI) and enter the following
+```
+mutation {
+  connectStripe(input: {code: "333"}) {
+    didRequest
+  }
+}
+```
+- Which returns the following on success
+```
+{
+  "data": {
+    "connectStripe": {
+      "didRequest": true
+    }
+  }
+}
+```
+- likewise for disconnectStripe
+```
+mutation {
+  disconnectStripe {
+    didRequest
+  }
+}
+```
+- returns
+```
+{
+  "data": {
+    "disconnectStripe": {
+      "didRequest": true
+    }
+  }
+}
+```
 
+### Building the connect resolvers
+- on step four (outlined here)
+    - https://stripe.com/docs/connect/standard-accounts#token-request
+- first class TS support provided by Stripe API lib for Node
+    - details on minor changes that can be made
+    - https://s3.amazonaws.com/assets-protected.fullstack.io/courses/tinyhouse-react-masterclass-part-2/module_10/lesson_10.4/protected/stripe-node-typescript.pdf?AWSAccessKeyId=AKIAINKVCFPZEA7UP6MQ&Expires=1590518893&Signature=Ouj5%2BWLNpZr54jUTQ8C%2F9ctTmVw%3D

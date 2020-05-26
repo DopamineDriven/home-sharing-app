@@ -48,6 +48,7 @@
 		"graphql": "^15.0.0",
 		"helmet": "^3.22.0",
 		"lodash.merge": "^4.6.2",
-		"mongodb": "^3.5.7"
+		"mongodb": "^3.5.7",
+		"stripe": "^8.55.0"
 	}
 }
