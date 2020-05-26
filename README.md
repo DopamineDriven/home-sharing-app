@@ -799,3 +799,10 @@ let cursor = await db.listings.find({
 - recommended to migrate to https://github.com/googlemaps/google-maps-services-js
     - types supported
     - as opposed to @google/maps and @types/google__maps
+
+### What is a higher order component?
+- A function that accepts a component and returns a new modified component
+- similar to how a thunk is a function that accepts a function and returns a new modified function 
+    - https://stackoverflow.com/questions/45145221/in-simple-terms-whats-the-difference-between-a-thunk-and-a-higher-order-functi
+- Cross-comparisons aside, ./client/src/sections/AppHeader/index.tsx utilizes the withRouter higher order component
+    - this allows the component to be wrapped with the Router which enables the use of the global history object as a prop 
