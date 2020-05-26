@@ -65,6 +65,10 @@ export const typeDefs = gql`
 		didRequest: Boolean!
 	}
 
+	input ConnectStripeInput {
+		code: String!
+	}
+	
 	input LogInInput {
 		code: String!
 	}
@@ -84,10 +88,31 @@ export const typeDefs = gql`
 	type Mutation {
 		logIn(input: LogInInput): Viewer!
 		logOut: Viewer!
+		connectStripe(input: ConnectStripeInput!): Viewer!
+		disconnectStripe: Viewer!
 	}
 `;
 
 /*
+note: LogInInput isn't a required argument since user can be logged in
+	one of two ways
+		(1) where client app provides a code
+		(2) where the client provides a viewer cookie
+	That said with ConnectStripeInput! it is indeed required
+	Why?
+		expect capability to connect to only happen in presence of
+		valid authorization code 
+		this is why input for connectStripe mutation is a required arg
+
+
+type Viewer {
+	id: ID
+	token: String
+	avatar: String
+	hasWallet: Boolean
+	didRequest: Boolean!
+}
+
 Installed GraphQL extension 
 
 gql tag parses the string created into a GraphQL Abstract Syntax Tree

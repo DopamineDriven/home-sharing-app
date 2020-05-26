@@ -954,3 +954,44 @@ let index = await db.collection.createIndex({
     - consider integration effort and fraud/dispute liability implications
         - user is responsible for disputing fraud or other liabilities, not the platform
         - lowest integration effort
+
+### Setting up Stripe Account
+- Stripe allows developers to integrate stripe connect into platforms before activating business account
+- That said, before accepting real payments in a production environment, one must activate stripe account and provide required credentials
+    - business address, business bank account, business type, etc
+- added secret key to server .env and publishable key to client .env
+- Then set up redirect URI(s) and to get client ID
+    - go to settings, then connect settings
+        - add client ID to client .env
+    - click + Add URI below client ID row
+    - specify as http://localhost:3000/stripe
+
+### Using Connect with Standard Accounts
+- https://stripe.com/docs/connect/standard-accounts
+
+### Authentication Flow
+- first, on client, call to action on user profile section
+    - signed in users will be prompted to connect their stripe account
+    - user clicks action to connect
+    - redirected to stripes login page bringing up custom screen configured in Stripe dashboard for app 
+        - Login page notifies user which account they are connecting with via the client id passed in ./client from .env unique to the app 
+    - user would either ask to create or login
+        - since in test mode can skip
+    - upon success, redirected to redirect URI specified 
+        - localhost:3000/stripe
+    - server gets authorization code (sent in URL on redirect) to make another request to stripe for the connected user_id
+        - user_id used to act on behalf of user
+        - if someone books a listing, then the host with a uniqe user_id is paid out by stripe accordingly
+        - user_id = wallet_id field in database
+- Mutations
+    - connectStripe (see ./server/src/graphql/typeDefs)
+        - uses authorization code returned on redirect URI
+        - passes authorization code back to stripe to exchange for user_id -> wallet_id field
+    - disconnectStripe
+        - gives user ability to disconnect stripe credentials from application
+        - aka, to remove wallet_id stored in database
+    - two root level graphql fields necessary to handle stripe auth
+
+### Resolver functions
+- set up in .server/src/graphql/resolvers/Viewer/index.ts
+
