@@ -1037,3 +1037,14 @@ mutation {
 - first class TS support provided by Stripe API lib for Node
     - details on minor changes that can be made
     - https://s3.amazonaws.com/assets-protected.fullstack.io/courses/tinyhouse-react-masterclass-part-2/module_10/lesson_10.4/protected/stripe-node-typescript.pdf?AWSAccessKeyId=AKIAINKVCFPZEA7UP6MQ&Expires=1590518893&Signature=Ouj5%2BWLNpZr54jUTQ8C%2F9ctTmVw%3D
+- response obj returned from client.oauth.token() func contain a series of different fields such as
+    - stripe_user_id, access_token, scope, livemode, token_type, etc
+    - some use cases might want to track access_token of a user
+        - to make requests on behalf of a persons account
+        - to support recurring payments
+    - however, for this use-case the only param desired is
+        - stripe_user_id
+
+### Configuring Stripe api connection in ./src/lib/api/Stripe.ts
+- @types/stripe library no longer required
+- as of v8.0 (current version 8.55), TS has first class support

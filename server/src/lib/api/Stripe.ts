@@ -15,3 +15,14 @@ export const Stripe = {
         return response;
     }
 };
+
+/*
+response obj returned from client.oauth.token() func contain a series
+of different fields such as
+    stripe_user_id, access_token, scope, livemode, token_type, etc
+    some use cases might want to track access_token of a user
+        to make requests on behalf of a persons account
+        to support recurring payments
+    however, for this use-case the only param desired is
+        stripe_user_id
+*/
