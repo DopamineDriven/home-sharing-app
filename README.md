@@ -879,3 +879,78 @@ let index = await db.collection.createIndex({
 
 ## Stripe
 - used to facilitate payments between tenants and hosts
+- https://stripe.com/docs/connect/standard-accounts
+- Tenant -> Transaction -> Host
+    - App takes approx 5% of Transaction amount as revenue
+    - Known as the "Platform Fee"
+- Millions of companies in >135 countries utilize Stripe
+    - amazon, Google, salesforce, Microsoft, lyft, Uber, Spotify, Nasdaq, Zillow, slack...
+- HQ -> San Francisco
+
+### Building a Payment Infrastructure
+- Payments by debit card
+- Payments by credit card
+- International payments 
+- Payments by cryptocurrency (TBD)
+
+### The potential of the online economy
+- https://stripe.com/about
+    - Despite internet businesses growing faster than the rest of the economy, only ~3% of global commerce happens online today
+    - Regulatory complexity, a byzantine global financial system, and a shortage of engineers are constraining the impact of the internet economy
+    - Removing the barriers to online commerce helps more businesses get started, expedites growth for existing companies, and increases economic output and trade globally
+
+## Stripe Plans
+- https://stripe.com/pricing
+- Integrated vs Customized
+    - Integrated
+        - Pay-as-you-go pricing
+        - 2.9% + $0.30
+    - Customized
+        - Organizations/large payment volume
+        - custom package
+    - extra for customizations (local payment options, international payment options)
+
+## Enter Stripe Connect
+- Payments for platforms and marketplaces 
+    - Accept payments and get sellers and contractors paid in 30+ countries with a single platform
+    - Use Standard Connect to add payments to platform for free
+- Standard vs Custom/Express via Connect
+- Standard
+    - Hosted onboarding and verification
+    - International support in 30+ countries
+    - Full Stripe Dashboard for sellers
+    - Dynamic risk-based KYC/AML checks
+        - Know Your Clients/Anti-Money Laundering
+    - No platform-specific fees
+        - https://stripe.com/pricing#connect-pricing
+- Custom/Express
+    - Build branded onboarding flows
+    - Platform management dashboard
+    - Control payout timing and funds flow
+    - Automate 1099 generation and delivery
+    - Starting at 0.25% of account vol, per-account fee may apply
+- Note: Stripe Radar provides Fraud protection via machine learning
+    - not covered in this app but something to keep in mind 
+
+## Routing Payments
+- https://stripe.com/connect
+- One-to-one
+    - one customer charged and one recipient paid out
+    - 1:1 relationship between charge and transfer
+        - example: ride-sharing service
+- One-to-many
+    - one customer charged with funds split between multiple recipients
+    - 1:many relationship between charge and transfer
+        - example: retail marketplace hosting multiple online stores
+- Many-to-many
+    - multiple customers charged with funds being split out across multiple recipients
+    - many:many relationship between charge and transfer
+        - example: SaaS platform charging customers a monthly fee for access to fitness classes at various studios
+
+### In this app
+- one-to-one routing payment utilized
+- https://stripe.com/docs/connect/accounts
+- using the Standard approach 
+    - consider integration effort and fraud/dispute liability implications
+        - user is responsible for disputing fraud or other liabilities, not the platform
+        - lowest integration effort
