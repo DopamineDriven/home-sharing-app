@@ -806,3 +806,8 @@ let cursor = await db.listings.find({
     - https://stackoverflow.com/questions/45145221/in-simple-terms-whats-the-difference-between-a-thunk-and-a-higher-order-functi
 - Cross-comparisons aside, ./client/src/sections/AppHeader/index.tsx utilizes the withRouter higher order component
     - this allows the component to be wrapped with the Router which enables the use of the global history object as a prop 
+
+
+## Index Location-Based Data with MongoDB
+- https://docs.mongodb.com/manual/indexes/
+- Goal: create a compound index for listings to support effecient execution of queries for this collection 
