@@ -3,7 +3,7 @@ import { Card, List, Skeleton } from "antd";
 import listingLoadingCardCover from "../../assets/listing-loading-card-cover.jpg";
 
 export const ListingsSkeleton = () => {
-    const emptyData= [{}, {}, {}, {}, {}, {}, {}, {}];
+    const emptyData= [{}, {}, {}, {}, {}, {}];
 
     return (
         <div>

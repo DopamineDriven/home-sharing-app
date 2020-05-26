@@ -16,7 +16,7 @@ interface MatchParams {
     location: string;
 }
 
-const PAGE_LIMIT = 8;
+const PAGE_LIMIT = 6;
 
 const { Paragraph, Text, Title } = Typography;
 const { Content } = Layout;
@@ -83,7 +83,7 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
         </Title>
     ) : null;
 
-    const errorMessage=`search parameters triggered an error; ${<br/>} please try again by city, province/territory/state, or country`;
+    const errorMessage=`parameter(s) input triggered an error; please try searching by city, province/territory/state, or country`;
 
     return loading ? (
         <Content className="listings">
