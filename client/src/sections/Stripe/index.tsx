@@ -8,21 +8,32 @@ import {
     ConnectStripeVariables
 } from "../../lib/graphql/mutations/ConnectStripe/__generated__/ConnectStripe";
 import { Viewer } from "../../lib/types";
+import { displaySuccessNotification } from "../../lib/utils";
 
 
 const { Content } = Layout;
 
 interface Props {
     viewer: Viewer;
+    setViewer: (viewer: Viewer) => void;
 }
 
-export const Stripe = ({ viewer }: Props) => {
+export const Stripe = ({ viewer, setViewer }: Props) => {
     const [connectStripe, { data, loading, error }] = useMutation<
         ConnectStripeData,
         ConnectStripeVariables
-    >(CONNECT_STRIPE);
-
-    // useRef.current is mutable and does not trigger rerender on change
+    >(CONNECT_STRIPE, {
+        onCompleted: data => {
+            if (data && data.connectStripe) {
+                setViewer({ ...viewer, hasWallet: data.connectStripe.hasWallet });
+                displaySuccessNotification(
+                    "Successfully connected to Stripe!",
+                    "Navigate to the Host page to create new listings."
+                );
+            }
+        }
+    });
+    // useRef.current -> mutable
     const connectStripeRef = useRef(connectStripe);
 
     // (a)
@@ -37,19 +48,25 @@ export const Stripe = ({ viewer }: Props) => {
             });
         }
     }, []);
+
+    if (data && data.connectStripe) {
+        return <Redirect to={`/user/${viewer.id}`} />;
+    }
     
     // (b)
     if (error) {
         return <Redirect to={`/user/${viewer.id}?stripe_error=true`} />;
     }
 
-    return loading ? (
+    if (loading) {
+        return (
         <Content className="stripe">
             <Spin size="large" tip="Connecting with Stripe account..." />
         </Content>
-	) : (
-        <h2>Stripe</h2>
-    );
+        );
+    }
+
+    return null;
 };
 
 /*
