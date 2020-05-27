@@ -1047,4 +1047,76 @@ mutation {
 
 ### Configuring Stripe api connection in ./src/lib/api/Stripe.ts
 - @types/stripe library no longer required
-- as of v8.0 (current version 8.55), TS has first class support
+- as of v8.0 (current version 8.55), Node apps now have first class TypeScript support
+- https://github.com/stripe/stripe-node#usage-with-typescript
+```
+import stripe from "stripe";
+
+const client = new stripe(`${process.env.S_SECRET_KEY}`, {
+    apiVersion: "2020-03-02"
+});
+
+export const Stripe = {
+    connect: async (code: string) => {
+        /* eslint-disable @typescript-eslint/camelcase */
+        const response = await client.oauth.token({
+            grant_type: "authorization_code",
+            code
+        /* eslint-enable @typescript-eslint/camelcase */
+        });
+        return response;
+    }
+};
+```
+- code -> authorization code received from client used to make authorization request to Stripe server (see function above)
+    - url passes the code as well as the scope granted back on redirect as follows
+```
+http://localhost:3000/stripe?scope=read_write&code={AUTHORIZATION_CODE}
+```
+- on `return response;` above the following is included
+```
+{
+  "token_type": "bearer",
+  "stripe_publishable_key": "{PUBLISHABLE_KEY}",
+  "scope": "read_write",
+  "livemode": false,
+  "stripe_user_id": "{ACCOUNT_ID}",
+  "refresh_token": "{REFRESH_TOKEN}",
+  "access_token": "{ACCESS_TOKEN}"
+}
+```
+- the stripe_user_id is of interest herein
+    - stripe_user_id === wallet_id for the database 
+- stripeConnect -> uses authorization code to get wallet_id
+    - wallet_id value stored in database
+```
+    const updateRes = await db.users.findOneAndUpdate(
+        { _id: viewer._id },
+        { $set: { walletId: wallet.stripe_user_id } },
+        { returnOriginal: false }
+    );
+```
+- stripeDisconnect -> disconnects user (viewer) from stripe
+    - wallet_id set to undefined in database
+```
+    const updateRes = await db.users.findOneAndUpdate(
+        { _id: viewer._id },
+        { $set: { walletId: undefined } },
+        { returnOriginal: false }
+    );
+```
+
+## Connecting with Stripe on the Client
+- Step (1)
+    - Create OAuth link
+        - need stripe_client_id and redirect uri
+```
+`https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_S_CLIENT_ID}&scope=read_write`
+```
+- Step (2)
+    - User creates or connects their account
+- Step (3)
+    - User is redirected back to app with authorization code in URL
+
+- Reference
+    - https://stripe.com/docs/connect/standard-accounts#integrating-oauth

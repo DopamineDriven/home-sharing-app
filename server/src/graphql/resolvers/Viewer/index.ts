@@ -176,7 +176,7 @@ export const viewerResolvers: IResolvers = {
 			} catch (error) {
 				throw new Error(`Failed to log out ${error}`);
 			}
-		},
+		}, 
 		connectStripe: async (
 			_root: undefined,
 			{ input }: ConnectStripeArgs,
@@ -189,15 +189,18 @@ export const viewerResolvers: IResolvers = {
 				if (!viewer) {
 					throw new Error("viewer not found");
 				}
-
+				
+				// (a)
 				const wallet = await Stripe.connect(code);
 				if (!wallet) {
-					throw new Error("stripe grant error");
+					throw new Error("stripe grant error (originating in ./api/Stripe.ts)");
 				}
+
 
 				const updateRes = await db.users.findOneAndUpdate(
 					{ _id: viewer._id },
 					{ $set: { walletId: wallet.stripe_user_id } },
+					// returnOriginal -> false -> return updated response
 					{ returnOriginal: false }
 				);
 
@@ -214,12 +217,45 @@ export const viewerResolvers: IResolvers = {
 					walletId: viewer?.walletId,
 					didRequest: true
 				};
+
 			} catch (error) {
 				throw new Error(`Failed to connect with Stripe - ${error}`);
 			}
 		},
-		disconnectStripe: (): Viewer => {
-			return { didRequest: true }
+		disconnectStripe: async (
+			_root: undefined,
+			_args: {},
+			{ db, req }: { db: Database; req: Request }
+		): Promise<Viewer> => {
+			try {
+				let viewer = await authorize(db, req);
+				if (!viewer) {
+					throw new Error("viewer not found");
+				}
+
+				const updateRes = await db.users.findOneAndUpdate(
+					{ _id: viewer._id },
+					{ $set: { walletId: undefined } },
+					{ returnOriginal: false }
+				);
+
+				if (!updateRes.value) {
+					throw new Error("viewer could not be updated");
+				}
+
+				viewer = updateRes.value;
+
+				return {
+					_id: viewer._id,
+					token: viewer.token,
+					avatar: viewer.avatar,
+					walletId: viewer.walletId,
+					didRequest: true
+				};
+
+			} catch (error) {
+				throw new Error(`Failed to disconnect with Stripe - ${error}`);
+			}
 		}
 	},
 	Viewer: {
@@ -228,9 +264,17 @@ export const viewerResolvers: IResolvers = {
 		},
 		hasWallet: (viewer: Viewer): boolean | undefined => {
 			return viewer.walletId ? true : undefined;
-		},
-	},
+		}
+	}
 };
+
+
+/*
+(a)
+	if the preceding code (snippet below) -> success
+		let viewer = await authorize(db, req)
+	then the viewer is authorized so proceed with connecting to Stripe
+*/
 
 /*
 - LogIn mutation fired in one of two cases
