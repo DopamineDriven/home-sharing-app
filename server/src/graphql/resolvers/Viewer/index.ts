@@ -181,7 +181,7 @@ export const viewerResolvers: IResolvers = {
 			_root: undefined,
 			{ input }: ConnectStripeArgs,
 			{ db, req }: { db: Database; req: Request }
-		): Promise<Viewer> => {
+		): Promise<Viewer | undefined> => {
 			try {
 				const { code } = input;
 				
@@ -226,7 +226,7 @@ export const viewerResolvers: IResolvers = {
 			_root: undefined,
 			_args: {},
 			{ db, req }: { db: Database; req: Request }
-		): Promise<Viewer> => {
+		): Promise<Viewer | undefined> => {
 			try {
 				let viewer = await authorize(db, req);
 				if (!viewer) {

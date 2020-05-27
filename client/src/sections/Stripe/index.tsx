@@ -28,7 +28,7 @@ export const Stripe = ({ viewer, setViewer, history }: Props & RouteComponentPro
                 setViewer({ ...viewer, hasWallet: data.connectStripe.hasWallet });
                 displaySuccessNotification(
                     "Successfully connected to Stripe!",
-                    "Navigate to the Host page to create new listings."
+                    "Head to the Host page to create new listings."
                 );
             }
         }

@@ -3,7 +3,7 @@ import { Viewer } from "../../../../lib/types";
 import { useMutation } from "@apollo/react-hooks";
 import { LOG_OUT } from "../../../../lib/graphql/mutations/LogOut";
 import { LogOut as LogOutData } from "../../../../lib/graphql/mutations/LogOut/__generated__/LogOut";
-import { Link } from "react-router-dom";
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Avatar, Button, Menu } from "antd";
 import {
 	displaySuccessNotification,
@@ -18,12 +18,13 @@ interface Props {
 
 const { Item, SubMenu } = Menu;
 
-export const MenuItems = ({ viewer, setViewer }: Props) => {
+export const MenuItems = withRouter(({ viewer, setViewer, history }: Props & RouteComponentProps) => {
 	const [logOut] = useMutation<LogOutData>(LOG_OUT, {
 		onCompleted: data => {
 			if (data && data.logOut) {
 				setViewer(data.logOut);
 				sessionStorage.removeItem("token");
+				history.replace("/");
 				displaySuccessNotification("Successfully Logged Out");
 			}
 		},
@@ -70,4 +71,4 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
 			{subMenuLogin}
 		</Menu>
 	);
-};
+});
