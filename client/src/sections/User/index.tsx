@@ -38,6 +38,12 @@ export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>
         }
     });
 
+    // URL constructor (for redirect to user on error from Stripe component)
+    const stripeError = new URL(window.location.href).searchParams.get("stripe_error");
+    const stripeErrorBanner = stripeError ? (
+        <ErrorBanner description="Error connecting with Stripe; please try again" />
+    ) : null;
+
     const user = data ? data.user : null;
     const viewerIsUser = viewer.id === match.params.id;
 
@@ -77,6 +83,7 @@ export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>
         </Content>
 	) : (
         <Content className="user">
+            {stripeErrorBanner}
             <Row gutter={12}  justify="space-between">
                 <Col xs={24} flex="auto">{userProfileElement}</Col>
                 <Col xs={24}>
