@@ -11,6 +11,7 @@ import {
 	Listings,
 	Login,
 	NotFound,
+	Stripe,
 	User
 } from "./sections";
 import { Affix, Spin, Layout } from "antd";
@@ -93,6 +94,12 @@ const App = () => {
 						render={
 							props => <Login {...props} setViewer={setViewer} />
 						} 
+					/>
+					<Route 
+						exact path="/stripe"
+						render={
+							props => <Stripe {...props} viewer={viewer} setViewer={setViewer} />
+						}
 					/>
 					<Route 
 						exact path="/user/:id" 

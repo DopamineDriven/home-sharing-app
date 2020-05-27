@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, RouteComponentProps } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
 import { Layout, Spin } from "antd";
 import { CONNECT_STRIPE } from "../../lib/graphql/mutations";
@@ -18,7 +18,7 @@ interface Props {
     setViewer: (viewer: Viewer) => void;
 }
 
-export const Stripe = ({ viewer, setViewer }: Props) => {
+export const Stripe = ({ viewer, setViewer, history }: Props & RouteComponentProps) => {
     const [connectStripe, { data, loading, error }] = useMutation<
         ConnectStripeData,
         ConnectStripeVariables
@@ -46,8 +46,10 @@ export const Stripe = ({ viewer, setViewer }: Props) => {
                     input: { code }
                 }
             });
+        } else {
+            history.replace("/login")
         }
-    }, []);
+    }, [history]);
 
     if (data && data.connectStripe) {
         return <Redirect to={`/user/${viewer.id}`} />;
@@ -68,6 +70,18 @@ export const Stripe = ({ viewer, setViewer }: Props) => {
 
     return null;
 };
+
+/*
+    return error ? (
+        <Redirect to={`/user/${viewer.id}?stripe_error=true`} />
+    ) : data && data.connectStripe ? (
+        <Redirect to={`/user/${viewer.id}`} />
+    ) : loading ? (
+        <Content className="stripe">
+            <Spin size="large" tip="Connecting with Stripe account..." />
+        </Content>
+	) : null;
+*/
 
 /*
 (a)
