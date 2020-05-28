@@ -1633,3 +1633,77 @@ Mutation: {
     - https://stackoverflow.com/questions/48829694/in-ant-design-how-can-we-center-icon-vertically-in-row
 - preview image upload (avatar example)
     - https://ant.design/components/upload/#header
+    - clicking the + icon opens machine's file system prompting user to select an image to upload
+    - upon selection, displays a base64 encoded image preview
+        - but how does it become base64 encoded?
+        - source: Base64 Encoding: A visual Explanation
+        - https://www.lucidchart.com/techblog/2017/10/23/base64-encoding-a-visual-explanation/
+```ts
+/**
+ * @param {Uint8Array} bytes
+ * @return {string} Base64 encoded string
+ */
+function base64Encode(bytes) {
+   let encoding = '';
+   for (let group of groups24Bits(bytes)) {
+      for (let value of values6Bits(group)) {
+         if (value !== undefined) {
+            encoding += ALPHABET[value];
+         } else {
+            encoding += PAD;
+         }
+      }
+   }
+   return encoding;
+}
+
+const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+const PAD = '=';
+
+/**
+ * @param {Uint8Array} bytes
+ * @return {Uint8Array} The next input group (yielded on each execution)
+ */
+function* groups24Bits(bytes) {
+   for (let i = 0; i < bytes.length; i += 3) {
+      yield bytes.slice(i, i + 3); // 3 bytes/3 octets/24 bits
+   }
+}
+
+/**
+ * @param {Uint8Array} group Expected to be array of 1 to 3 bytes
+ * @return {number|undefined} The next 6-bit value from the 
+ * input group (yielded on each execution)
+ */
+function* values6Bits(group) {
+   const paddedGroup = Uint8Array.from([0, 0, 0]);
+   paddedGroup.set(group);
+
+   let numValues = Math.ceil((group.length * 8) / 6);
+   for (let i = 0; i < numValues; i++) { let base64Value; if (i == 0) { base64Value = (paddedGroup[0] & 0b11111100) >> 2;
+      } else if (i == 1) {
+         base64Value = (paddedGroup[0] & 0b00000011) << 4; base64Value = base64Value | ((paddedGroup[1] & 0b11110000) >> 4);
+      } else if (i == 2) {
+         base64Value = (paddedGroup[1] & 0b00001111) << 2; base64Value = base64Value | ((paddedGroup[2] & 0b11000000) >> 6);
+      } else if (i == 3) {
+         base64Value = paddedGroup[2] & 0b00111111;
+      }
+      yield base64Value;
+   }
+
+   let numPaddingValues = 4 - numValues;
+   for (let j = 0; j < numPaddingValues; j++) {
+      yield undefined;
+   }
+}
+// src: https://www.lucidchart.com/techblog/2017/10/23/base64-encoding-a-visual-explanation/
+```
+- Base64 encoded data representation
+```jsx
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAALCAYAAABCm8wlAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QoPAxIb88htFgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAACxSURBVBjTdY6xasJgGEXP/RvoonvAd8hDyD84+BZBEMSxL9GtQ8Fis7i6BkGI4DP4CA4dnQON3g6WNjb2wLd8nAsHWsR3D7JXt18kALFwz2dGmPVhJt0IcenUDVsgu91eCRZ9IOMfAnBvSCz8I3QYL0yV6zfyL+VUxKWfMJuOEFd+dE3pC1Finwj0HfGBeKGmblcFTIN4U2C4m+hZAaTrASSGox6YV7k+ARAp4gIIOH0BmuY1E5TjCIUAAAAASUVORK5CYII=">
+```
+- Why use Base64?
+    - when data needs to be stored and transferred over a medium expecting textually based data (String me along https://www.youtube.com/watch?v=vfp2HIT5SP8)
+    - Image for a new listing in /host page is a perfect example of this (String!)
+    - Disallowed: transfer listing image as an image file from client to server through GraphQL API
+    - Allowed: convert to base64 encoded format (string representation) of the image

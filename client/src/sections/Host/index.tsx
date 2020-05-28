@@ -9,8 +9,10 @@ import {
     Input, 
     InputNumber, 
     Layout,
+    message,
     Radio, 
-    Typography 
+    Typography,
+    Upload
 } from "antd";
 
 interface Props {
