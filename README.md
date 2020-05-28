@@ -1629,3 +1629,7 @@ Mutation: {
 ### Building the Host UI
 - see ./client/src/sections/Host/index.tsx
 - https://ant.design/components/form/?locale=en-US#header
+- align antd icons and span elements
+    - https://stackoverflow.com/questions/48829694/in-ant-design-how-can-we-center-icon-vertically-in-row
+- preview image upload (avatar example)
+    - https://ant.design/components/upload/#header

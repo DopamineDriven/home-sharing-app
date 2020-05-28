@@ -1,11 +1,23 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import { Form, Input, InputNumber, Layout, Typography } from "antd";
 import { Viewer } from "../../lib/types";
+import { ListingType } from "../../lib/graphql/globalTypes";
+import { iconColor } from "../../lib/utils";
+import { BankOutlined, HomeOutlined } from "@ant-design/icons";
+import { 
+    Form, 
+    Input, 
+    InputNumber, 
+    Layout,
+    Radio, 
+    Typography 
+} from "antd";
 
 interface Props {
     viewer: Viewer;
 }
+
+const { APARTMENT, HOUSE } = ListingType;
 
 const { Item } = Form;
 const { TextArea } = Input;
@@ -39,6 +51,39 @@ export const Host = ({ viewer }: Props) => {
                     </Text>
                 </div>
 
+                <Item label="Listing Type">
+                    <Radio.Group>
+                        <Radio.Button value={APARTMENT}>
+                            <BankOutlined style={{ 
+                                color: iconColor, 
+                                display: "inline-block", 
+                                verticalAlign: "middle" 
+                            }} />
+                            &nbsp;
+                            <span style={{ 
+                                display: "inline-block", 
+                                verticalAlign: "middle" 
+                            }}>
+                                Apartment
+                            </span>
+                        </Radio.Button>
+                        <Radio.Button value={HOUSE}>
+                            <HomeOutlined style={{ 
+                                color: iconColor,
+                                display: "inline-block",
+                                verticalAlign: "middle" 
+                            }} />
+                            &nbsp;
+                            <span style={{
+                                display: "inline-block",
+                                verticalAlign: "middle"
+                            }}>
+                                House
+                            </span>
+                        </Radio.Button>
+                    </Radio.Group>
+                </Item>
+
                 <Item label="Title" extra="max character count: 45">
                     <Input maxLength={45} placeholder="The iconic and luxurious Bel-Air mansion" />
                 </Item>
@@ -47,10 +92,7 @@ export const Host = ({ viewer }: Props) => {
                     <TextArea 
                         rows={3}
                         maxLength={400}
-                        placeholder={`
-                            Modern, clean, and iconic home of the Fresh Prince.
-                            Situated in the heart of Bel-Air, Los Angeles.
-                        `}
+                        placeholder={`Modern, clean, and iconic home of the Fresh Prince. Situated in the heart of Bel-Air, Los Angeles.`}
                     />
                 </Item>
 
