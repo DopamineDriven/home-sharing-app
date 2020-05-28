@@ -2,14 +2,13 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { Viewer } from "../../lib/types";
 import { ListingType } from "../../lib/graphql/globalTypes";
-import { iconColor } from "../../lib/utils";
+import { iconColor, displayErrorMessage } from "../../lib/utils";
 import { BankOutlined, HomeOutlined } from "@ant-design/icons";
 import { 
     Form, 
     Input, 
     InputNumber, 
     Layout,
-    message,
     Radio, 
     Typography,
     Upload
@@ -114,10 +113,40 @@ export const Host = ({ viewer }: Props) => {
                     <Input placeholder="90077" />
                 </Item>
 
+                <Item label="Image" extra="Image file type must be JPEG or PNG; max size: 1MB">
+                    <div className="host__form-image-upload">
+                        <Upload 
+                            name="image"
+                            listType="picture-card"
+                            showUploadList={false}
+                            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                            beforeUpload={beforeImageUpload}
+                        />
+                    </div>
+                </Item>
+
                 <Item label="Price" extra="All prices in $USD/day">
                     <InputNumber min={1} placeholder="180" />
                 </Item>
             </Form>
         </Content>
     );
+};
+
+const beforeImageUpload = (file: File) => {
+    const fileIsValidImage = file.type === "image/jpeg" || file.type === "image/png";
+    // convert to MB in binary form
+    const fileIsValidSize = file.size/(1024**2) < 1;
+
+    if (!fileIsValidImage) {
+        displayErrorMessage("Uploaded image must be of file type JPG or PNG");
+        return false;
+    }
+
+    if (!fileIsValidSize) {
+        displayErrorMessage("Uploaded image must be under 1MB in size");
+        return false;
+    }
+
+    return fileIsValidImage && fileIsValidSize;
 };
