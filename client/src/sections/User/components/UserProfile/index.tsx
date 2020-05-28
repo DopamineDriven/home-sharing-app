@@ -20,13 +20,20 @@ interface Props {
     viewer: Viewer;
     viewerIsUser: boolean;
     setViewer: (viewer: Viewer) => void;
+    handleUserRefetch: () => void;
 }
 
 const stripeAuthUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_S_CLIENT_ID}&scope=read_write`;
 
 const { Paragraph, Text, Title } = Typography;
 
-export const UserProfile = ({ user, viewer, viewerIsUser, setViewer }: Props) => {
+export const UserProfile = ({ 
+    user, 
+    viewer, 
+    viewerIsUser, 
+    setViewer,
+    handleUserRefetch 
+}: Props) => {
     const [disconnectStripe, { loading }] = useMutation<DisconnectStripeData>(
         DISCONNECT_STRIPE, {
             onCompleted: data => {
@@ -34,8 +41,9 @@ export const UserProfile = ({ user, viewer, viewerIsUser, setViewer }: Props) =>
                     setViewer({ ...viewer, hasWallet: data.disconnectStripe.hasWallet });
                     displaySuccessNotification(
                         "Successfully disconnected from Stripe!",
-                        "Reconnect with Stripe to continue to create or host listings."
+                        "Reconnect with Stripe to create or host listings."
                     );
+                    handleUserRefetch();
                 }
             },
             onError: () => {
@@ -48,7 +56,8 @@ export const UserProfile = ({ user, viewer, viewerIsUser, setViewer }: Props) =>
 
     const redirectToStripe = () => {
         window.location.href = stripeAuthUrl;
-    }
+    };
+
     const additionalDetials = user.hasWallet ? (
         <Fragment>
             <Paragraph>
@@ -63,6 +72,8 @@ export const UserProfile = ({ user, viewer, viewerIsUser, setViewer }: Props) =>
             <Button
                 type="primary"
                 className="user-profile__details-cta"
+                loading={loading}
+                onClick={() => disconnectStripe()}
             >
                 Disconnect Stripe
             </Button>

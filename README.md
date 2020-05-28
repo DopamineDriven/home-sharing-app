@@ -1170,6 +1170,8 @@ export const Stripe = () => {
         - Mutating the .current property won't cause a rerender
     - Takeway: mutating .current prop does not cause a re-render
 ```ts
+// ..
+
 export const Stripe = () => {
     const [connectStripe, { data, loading, error }] = useMutation<
         ConnectStripeData,
@@ -1188,6 +1190,8 @@ export const Stripe = () => {
             });
         }
     }, []);
+    
+    // ...
 ```
 - Note: Ref.current prop should not be mutated outside of useEffect or useReducer 
 - Navigate to ./client/src/sections/Stripe/index.tsx for more
@@ -1214,6 +1218,8 @@ export const Stripe = () => {
     - then pass viewer and setViewer props down to the UserProfile child component
 ```ts
 // .client/src/sections/User/index.tsx
+// ...
+
 interface Props {
     viewer: Viewer;
     setViewer: (viewer: Viewer) => void;
@@ -1239,7 +1245,9 @@ export const User = ({
 ```
 - which enables UserProfile child component to pass in the viewer and setViewer props as follows
 ```ts
+// .client/src/sections/User/components/UserProfile/index.tsx 
 // ...
+
 import { Viewer } from "../../../../lib/types";
 
 interface Props {
@@ -1251,7 +1259,12 @@ interface Props {
 
 // ...
 
-export const UserProfile = ({ user, viewer, viewerIsUser, setViewer }: Props) => {
+export const UserProfile = ({ 
+    user, 
+    viewer, 
+    viewerIsUser, 
+    setViewer 
+}: Props) => {
     const [disconnectStripe, { loading }] = useMutation<DisconnectStripeData>(
         DISCONNECT_STRIPE, {
             onCompleted: data => {
@@ -1273,3 +1286,91 @@ export const UserProfile = ({ user, viewer, viewerIsUser, setViewer }: Props) =>
 
     // ...
 ```
+- on disconnect success, the hasWallet bool value will return false
+
+### Refetch user data after stripe disconnect
+- on success of disconnectStripe mutation
+    - UI of user profile should reflect the conditionally rendered elements for a hasWallet value of false
+- How to achieve this? Refetch the user query in the parent User component
+    - destructure refetch prop from useQuery hook
+    - create async handleUserRefetch func
+    - pass handleUserRefetch() down as a prop to UserProfile component
+```ts
+// .client/src/sections/User/index.tsx
+// ...
+
+    const { data, loading, error, refetch } = useQuery<UserData, UserVariables>(
+        USER, {
+            variables: {
+                id: match.params.id,
+                bookingsPage,
+                listingsPage,
+                limit: PAGE_LIMIT
+            }
+        }
+    );
+
+    const handleUserRefetch = async () => {
+        await refetch();
+    }
+
+    // ...
+
+    const userProfileElement = user ? (
+        <UserProfile 
+            user={user}
+            viewer={viewer} 
+            viewerIsUser={viewerIsUser}
+            setViewer={setViewer}
+            handleUserRefetch={handleUserRefetch}
+        />
+    ) : null;
+
+// ...
+```
+- then declare handleUserRefetch as a prop in child UserProfile component
+- in the onCompleted callback of the mutation, trigger handleUserRefetch() function
+```ts
+// .client/src/sections/User/components/UserProfile/index.tsx
+// ...
+
+interface Props {
+    user: UserData["user"];
+    viewer: Viewer;
+    viewerIsUser: boolean;
+    setViewer: (viewer: Viewer) => void;
+    handleUserRefetch: () => void;
+}
+
+// ...
+
+export const UserProfile = ({ 
+    user, 
+    viewer, 
+    viewerIsUser, 
+    setViewer,
+    handleUserRefetch 
+}: Props) => {
+    const [disconnectStripe, { loading }] = useMutation<DisconnectStripeData>(
+        DISCONNECT_STRIPE, {
+            onCompleted: data => {
+                if (data && data.disconnectStripe) {
+                    setViewer({ ...viewer, hasWallet: data.disconnectStripe.hasWallet });
+                    displaySuccessNotification(
+                        "Successfully disconnected from Stripe!",
+                        "Reconnect with Stripe to create or host listings."
+                    );
+                    handleUserRefetch();
+                }
+            },
+            onError: () => {
+                displayErrorMessage(
+                    "Failed to disconnect from Stripe, please try again."
+                );
+            }
+        }
+    );
+
+    // ...
+```
+
