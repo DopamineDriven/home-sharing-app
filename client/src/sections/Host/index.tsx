@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { Viewer } from "../../lib/types";
 import { ListingType } from "../../lib/graphql/globalTypes";
 import { iconColor, displayErrorMessage } from "../../lib/utils";
-import { BankOutlined, HomeOutlined } from "@ant-design/icons";
+import { BankOutlined, HomeOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { UploadChangeParam } from "antd/lib/upload";
 import { 
     Form, 
     Input, 
@@ -26,6 +27,26 @@ const { Content } = Layout;
 const { Text, Title } = Typography;
 
 export const Host = ({ viewer }: Props) => {
+    const [imageLoading, setImageLoading] = useState(false);
+    const [imageBase64Value, setImageBase64Value] = useState<string | null>(null);
+    console.log(imageBase64Value);
+
+    const handleImageUpload = (info: UploadChangeParam) => {
+        const { file } = info;
+
+        if (file.status === "uploading") {
+            setImageLoading(true);
+            return;
+        }
+
+        if (file.status === "done" && file.originFileObj) {
+            getBase64Value(file.originFileObj, imageBase64Value => {
+                setImageBase64Value(imageBase64Value);
+                setImageLoading(false);
+            });
+        }
+    };
+
     return !viewer.id || !viewer.hasWallet ? (
         <Content className="host-content">
             <div className="host__form-header">
@@ -121,7 +142,17 @@ export const Host = ({ viewer }: Props) => {
                             showUploadList={false}
                             action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                             beforeUpload={beforeImageUpload}
-                        />
+                            onChange={handleImageUpload}
+                        >
+                            {imageBase64Value ? (
+                                <img src={imageBase64Value} alt="Listing" />
+                            ) : (
+                                <div>
+                                    {imageLoading ? <LoadingOutlined /> : <PlusOutlined />}
+                                    <div className="ant-upload-text">Upload</div>
+                                </div>
+                            )}
+                        </Upload>
                     </div>
                 </Item>
 
@@ -149,4 +180,22 @@ const beforeImageUpload = (file: File) => {
     }
 
     return fileIsValidImage && fileIsValidSize;
+};
+
+// Blob is a file-like obj with minor differences
+// FileReader constructor class -> obj allows reading of content of file or blob
+    // readAsDataURL -> read contents of file or blob
+    // onload -> event handler that is executed when load event fired
+    // load event fired when file has been read (readAsDataURL)
+    // when onload triggered, call callback func with results of filereader (base64 val) as string
+    // type assertion -> as string (a bit of a hack but ehhh)
+const getBase64Value = (
+    img: File | Blob,
+    callback: (imageBase64Value: string) => void
+) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(img);
+    reader.onload = () => {
+        callback(reader.result as string);
+    };
 };
