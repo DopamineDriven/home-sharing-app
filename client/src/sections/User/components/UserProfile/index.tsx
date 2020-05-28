@@ -1,6 +1,8 @@
 import React, { Fragment } from "react";
 import { User as UserData } from "../../../../lib/graphql/queries/User/__generated__/User";
-import { Avatar, Button, Card, Divider, Typography } from "antd";
+import { Avatar, Button, Card, Divider, Tag, Typography } from "antd";
+import { formatListingPrice } from "../../../../lib/utils";
+
 
 // (a)
 interface Props {
@@ -17,7 +19,21 @@ export const UserProfile = ({ user, viewerIsUser }: Props) => {
     const redirectToStripe = () => {
         window.location.href = stripeAuthUrl;
     }
-
+    const additionalDetials = user.hasWallet ? (
+    <Fragment></Fragment>
+    ) : (
+        <Fragment>
+            <Paragraph>
+                <Tag color="green">Stripe Registered</Tag>
+            </Paragraph>
+            <Paragraph>
+                Income Earned:{" "}
+                <Text strong>
+                    {user.income ? formatListingPrice(user.income) : `$0`}
+                </Text>
+            </Paragraph>
+        </Fragment>
+    )
     const additionalDetailsSection = viewerIsUser ? (
         <Fragment>
             <Divider />
