@@ -20,8 +20,6 @@ export const UserProfile = ({ user, viewerIsUser }: Props) => {
         window.location.href = stripeAuthUrl;
     }
     const additionalDetials = user.hasWallet ? (
-    <Fragment></Fragment>
-    ) : (
         <Fragment>
             <Paragraph>
                 <Tag color="green">Stripe Registered</Tag>
@@ -32,34 +30,50 @@ export const UserProfile = ({ user, viewerIsUser }: Props) => {
                     {user.income ? formatListingPrice(user.income) : `$0`}
                 </Text>
             </Paragraph>
+            <Button
+                type="primary"
+                className="user-profile__details-cta"
+            >
+                Disconnect Stripe
+            </Button>
+            <Paragraph type="secondary">
+                By disconnecting, you will not be able to receive{" "}
+                <Text strong>any further payments</Text>. This will
+                prevent users from booking any of your listings.
+            </Paragraph>
         </Fragment>
-    )
+    ) : (
+        <Fragment>
+            <Paragraph>
+                Interested in becoming a host? Register with your Stripe account!
+            </Paragraph>
+            <Button 
+                type="primary" 
+                className="user-profile__details-cta"
+                onClick={redirectToStripe}
+            >
+                Connect with Stripe
+            </Button>
+            <Paragraph type="secondary">
+                This app uses{" "}
+                <a
+                    href="https://stripe.com/en-US/connect"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Stripe
+                </a>{" "}
+                to transfer earnings in a secure and trusted manner.
+            </Paragraph>
+        </Fragment>
+    );
+
     const additionalDetailsSection = viewerIsUser ? (
         <Fragment>
             <Divider />
             <div className="user-profile__details">
                 <Title level={4}>Additional Details</Title>
-                <Paragraph>
-                    Interested in becoming a host? Register with your Stripe account!
-                </Paragraph>
-                <Button 
-                    type="primary" 
-                    className="user-profile__details-cta"
-                    onClick={redirectToStripe}
-                >
-                    Connect with Stripe
-                </Button>
-                <Paragraph type="secondary">
-                    This app uses{" "}
-                    <a
-                        href="https://stripe.com/en-US/connect"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Stripe
-                    </a>{" "}
-                    to transfer earnings in a secure and trusted manner.
-                </Paragraph>
+                {additionalDetials}
             </div>
         </Fragment>
     ) : null;
