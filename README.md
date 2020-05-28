@@ -1631,6 +1631,43 @@ Mutation: {
 - https://ant.design/components/form/?locale=en-US#header
 - align antd icons and span elements
     - https://stackoverflow.com/questions/48829694/in-ant-design-how-can-we-center-icon-vertically-in-row
+- Form.Item, Radio, and Icons
+```tsx
+    <Item label="Listing Type">
+        <Radio.Group>
+            <Radio.Button value={APARTMENT}>
+                <BankOutlined style={{ 
+                    color: iconColor, 
+                    display: "inline-block", 
+                    verticalAlign: "middle" 
+                }} />
+                &nbsp;
+                <span style={{ 
+                    display: "inline-block", 
+                    verticalAlign: "middle" 
+                }}>
+                    Apartment
+                </span>
+            </Radio.Button>
+            <Radio.Button value={HOUSE}>
+                <HomeOutlined style={{ 
+                    color: iconColor,
+                    display: "inline-block",
+                    verticalAlign: "middle" 
+                }} />
+                &nbsp;
+                <span style={{
+                    display: "inline-block",
+                    verticalAlign: "middle"
+                }}>
+                    House
+                </span>
+            </Radio.Button>
+        </Radio.Group>
+    </Item>
+```
+
+## Image Handling on the Host page
 - preview image upload (avatar example)
     - https://ant.design/components/upload/#header
     - clicking the + icon opens machine's file system prompting user to select an image to upload
@@ -1642,11 +1679,11 @@ Mutation: {
 ```jsx
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAALCAYAAABCm8wlAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QoPAxIb88htFgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAACxSURBVBjTdY6xasJgGEXP/RvoonvAd8hDyD84+BZBEMSxL9GtQ8Fis7i6BkGI4DP4CA4dnQON3g6WNjb2wLd8nAsHWsR3D7JXt18kALFwz2dGmPVhJt0IcenUDVsgu91eCRZ9IOMfAnBvSCz8I3QYL0yV6zfyL+VUxKWfMJuOEFd+dE3pC1Finwj0HfGBeKGmblcFTIN4U2C4m+hZAaTrASSGox6YV7k+ARAp4gIIOH0BmuY1E5TjCIUAAAAASUVORK5CYII=">
 ```
-- Why use Base64?
-    - when data needs to be stored and transferred over a medium expecting textually based data (String me along https://www.youtube.com/watch?v=vfp2HIT5SP8)
-    - Image for a new listing in /host page is a perfect example of this (String!)
-    - Disallowed: transfer listing image as an image file from client to server through GraphQL API
-    - Allowed: convert to base64 encoded format (string representation) of the image
+### Enter Base64 encoded images
+- when data needs to be stored and transferred over a medium expecting textually based data (String me along https://www.youtube.com/watch?v=vfp2HIT5SP8)
+- Image for a new listing in /host page is a perfect example of this (String!)
+- Disallowed: transfer listing image as an image file from client to server through GraphQL API
+- Allowed: convert to base64 encoded format (string representation) of the image
 ```tsx
 // ...
     <Item label="Image" extra="Image file type must be JPG or PNG; max size: 1MB">
@@ -1701,7 +1738,8 @@ beforeUpload?: (file: RcFile, FileList: RcFile[]) => boolean | PromiseLike<void>
 // ...
 
 export const Host = () => {
-    return (
+   {/* ... */}
+   ) : (
         <Content className="host-content">
             <Form layout="vertical">
             {/* ... */}
@@ -1746,3 +1784,108 @@ const beforeImageUpload = (file: File) => {
 - 1 byte = 8 bits. 
 - 1 kilobyte (K / Kb) = 2^10 bytes = 1,024 bytes. 
 - 1 megabyte (M / MB) = 2^20 bytes = 1,048,576 bytes
+
+### onChange() event handler prop = {handleImageUpload}
+- triggered anytime a change is made
+    - when image first uploaded and when upload is complete
+    - (1) onChange is triggered -> handleImageUpload() func 
+        - file.status===uploading
+        - setImageLoading set to true
+    - (2) once it is done (no longer loading)
+        - pass image file to getBase64Value (a string less than 1MB in size)
+        - once that value is returned, it is passed to the imageBase64Value to update state
+- getBase64Value() func; created beneath (outside of) component function
+    - serves as callback to update imageBase64Value state in handleImageUpload func
+    - upon success state is updated
+- FileReader constructor class -> obj allows the reading of content from file or blob
+    - What is a "Blob"? 
+        - "A file-like object of immutable, raw data. Blobs represent data that isn't necessarily in a JavaScript-native format. The File interface is based on Blob, inheriting blob functionality and expanding it to support files on the user's system." 
+    - eadAsDataURL -> read contents of file or blob
+    - onload -> event handler that is executed when load event fired
+    - load event fired when file has been read (readAsDataURL)
+    - when onload triggered, call callback func with results of filereader (base64 val) as string
+    - type assertion -> as string (a bit of a hack but ehhh it's almost certain it will always be a valid string value due to the layers of validation built in)
+```tsx
+//...
+
+import { UploadChangeParam } from "antd/lib/upload";
+{/* ... */}
+
+export const Host = ({ viewer }: Props) => {
+    const [imageLoading, setImageLoading] = useState(false);
+    const [imageBase64Value, setImageBase64Value] = useState<string | null>(null);
+    console.log(imageBase64Value);
+
+    const handleImageUpload = (info: UploadChangeParam) => {
+        const { file } = info;
+
+        if (file.status === "uploading") {
+            setImageLoading(true);
+            return;
+        }
+
+        if (file.status === "done" && file.originFileObj) {
+            getBase64Value(file.originFileObj, imageBase64Value => {
+                setImageBase64Value(imageBase64Value);
+                setImageLoading(false);
+            });
+        }
+    };
+
+    {/* ... */}
+
+
+    ) : (
+        <Content className="host-content">
+            <Form layout="vertical">
+            {/* ... */}
+            
+                <Item label="Image" extra="Image file type must be JPEG or PNG; max size: 1MB">
+                    <div className="host__form-image-upload">
+                        <Upload 
+                            name="image"
+                            listType="picture-card"
+                            showUploadList={false}
+                            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                            beforeUpload={beforeImageUpload}
+                            onChange={handleImageUpload}
+                        >
+                            {imageBase64Value ? (
+                                <img src={imageBase64Value} alt="Listing" />
+                            ) : (
+                                <div>
+                                    {imageLoading ? <LoadingOutlined /> : <PlusOutlined />}
+                                    <div className="ant-upload-text">Upload</div>
+                                </div>
+                            )}
+                        </Upload>
+                    </div>
+                </Item>
+
+                <Item label="Price" extra="All prices in $USD/day">
+                    <InputNumber min={1} placeholder="180" />
+                </Item>
+            </Form>
+        </Content>
+    );
+};
+
+{/* ... */}
+
+
+const getBase64Value = (
+    img: File | Blob,
+    callback: (imageBase64Value: string) => void
+) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(img);
+    reader.onload = () => {
+        callback(reader.result as string);
+    };
+};
+```
+- to continue following the exciting development of this function, see 
+```tsx
+./client/src/sections/Host/index.tsx
+```
+

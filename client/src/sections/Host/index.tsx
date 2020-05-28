@@ -6,6 +6,7 @@ import { iconColor, displayErrorMessage } from "../../lib/utils";
 import { BankOutlined, HomeOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { UploadChangeParam } from "antd/lib/upload";
 import { 
+    Button,
     Form, 
     Input, 
     InputNumber, 
@@ -159,6 +160,12 @@ export const Host = ({ viewer }: Props) => {
                 <Item label="Price" extra="All prices in $USD/day">
                     <InputNumber min={1} placeholder="180" />
                 </Item>
+
+                <Item>
+                    <Button type="primary">
+                        Submit
+                    </Button>
+                </Item>
             </Form>
         </Content>
     );
@@ -166,7 +173,7 @@ export const Host = ({ viewer }: Props) => {
 
 const beforeImageUpload = (file: File) => {
     const fileIsValidImage = file.type === "image/jpeg" || file.type === "image/png";
-    // convert to MB in binary form
+    // convert to MB in binary form; 2^10 bytes = 1024 bytes = 1 GB; 2^20 bytes = 1024^2 = 1MB
     const fileIsValidSize = file.size/(1024**2) < 1;
 
     if (!fileIsValidImage) {
