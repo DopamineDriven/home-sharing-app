@@ -768,7 +768,7 @@ enum Episode {
 - process of converting geo coords into a human-readable address
 
 ## Geocoding response overview
-```
+```json
 {
     "results": [
         { 
@@ -788,7 +788,7 @@ enum Episode {
 
 ## Geocoding in this app
 - https://docs.mongodb.com/manual/reference/method/js-cursor/
-```
+```ts
 let cursor = await db.listings.find({
     country: "Canada",
     admin: "Ontario",
@@ -819,7 +819,7 @@ let cursor = await db.listings.find({
     - Maintain sorted data and allow searches, sequential access, insertions, and deletions in logarithmic time O(logn)
     - collection scans sans indexes run in linear time O(n)
     - https://towardsdatascience.com/linear-time-vs-logarithmic-time-big-o-notation-6ef4227051fb
-```
+```ts
 db.users.find({ score: { "$lt": 30 } }).sort({ score: -1 })
 { score: 1 } index
 // where $lt -> less than
@@ -836,17 +836,17 @@ db.users.find({ score: { "$lt": 30 } }).sort({ score: -1 })
 - https://docs.mongodb.com/manual/core/index-compound/
 - https://docs.mongodb.com/manual/core/index-compound/#compound-index-prefix
 - MongoDB supports the creation of indexes on multiple fields
-```
+```ts
 db.collection.createIndex({ <field1>: <type>, <field2>: <type>, ... })
 ```
 - order of fields listed in compound index has significance
-```
+```ts
 { userid: 1, score: -1 } Index
 ```
 - consider the above
     - Index first sorts by userid
     - then, within each userid value, it sorts further by score
-```
+```ts
 let cursor = await db.listings.find({
     country: "Canada",
     admin: "Ontario",
@@ -856,7 +856,7 @@ let cursor = await db.listings.find({
 - currently, mongo will conduct a collection scan in linear time when this collection is queried 
     - not a huge issue until app/data scales rapidly
     - so, hypothetically would want to implement a compound index scan for country -> admin -> city
-```
+```ts
 let index = await db.collection.createIndex({ 
     country: <string>, 
     admin: <string>,
@@ -865,7 +865,7 @@ let index = await db.collection.createIndex({
 ```
 - using MongoDB Atlas interface to implement index 
 - https://docs.mongodb.com/manual/applications/indexes/
-```
+```json
 {
     "country": 1,
     "admin": 1,
@@ -1373,4 +1373,10 @@ export const UserProfile = ({
 
     // ...
 ```
+
+--------------------------------------------------------------------------------
+
+## HostListing
+- Mutations
+    - HostListing
 
