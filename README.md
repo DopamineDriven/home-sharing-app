@@ -995,7 +995,7 @@ let index = await db.collection.createIndex({
 ### Resolver functions
 - set up in .server/src/graphql/resolvers/Viewer/index.ts
 - head to process.env.PORT/api (graphQL GUI) and enter the following
-```graphql
+```ts
 mutation {
   connectStripe(input: {code: "333"}) {
     didRequest
@@ -1003,7 +1003,7 @@ mutation {
 }
 ```
 - Which returns the following on success
-```graphql
+```json
 {
   "data": {
     "connectStripe": {
@@ -1013,7 +1013,7 @@ mutation {
 }
 ```
 - likewise for disconnectStripe
-```graphql
+```ts
 mutation {
   disconnectStripe {
     didRequest
@@ -1021,7 +1021,7 @@ mutation {
 }
 ```
 - returns
-```graphql
+```json
 {
   "data": {
     "disconnectStripe": {
@@ -1379,4 +1379,249 @@ export const UserProfile = ({
 ## HostListing
 - Mutations
     - HostListing
+    - update typeDefs
+    - why does it return a Listing object type?
+        - to return a newly created listing doc to the client
+```ts
+// ./server/src/graphql/typeDefs.ts
 
+	type Mutation {
+		logIn(input: LogInInput): Viewer!
+		logOut: Viewer!
+		connectStripe(input: ConnectStripeInput!): Viewer!
+		disconnectStripe: Viewer!
+		hostListing(input: HostListingInput!): Listing!
+    }
+```
+- then, define HostListingInput!
+```ts
+// ./server/src/graphql/typeDefs.ts
+
+	input HostListingInput {
+		title: String!
+		description: String!
+		image: String!
+		type: ListingType!
+		address: String!
+		price: Int!
+		numOfGuests: Int!
+    }
+```
+- Next, the TS interface type for HostListingInput argument is to be established 
+- export HostListingArgs with an input of type HostListingInput
+    - Shape of HostListingInput interface mirrors its typeDef GraphQL API definition
+```ts
+// ./server/src/graphql/resolvers/Listing/types.ts
+
+import { Booking, Listing, ListingType } from "../../../lib/types";
+
+// ...
+
+export interface HostListingInput {
+  title: string;
+  description: string;
+  image: string;
+  type: ListingType;
+  address: string;
+  price: number;
+  numOfGuests: number;
+}
+
+export interface HostListingArgs {
+  input: HostListingInput;
+}
+```
+- On to the resolver, import the newly defined types
+```ts
+// ./server/src/graphql/resolvers/Listing/index.ts
+// ...
+import { 
+    ListingArgs, 
+    ListingBookingsArgs, 
+    ListingBookingsData,
+    ListingsArgs,
+    ListingsData,
+    ListingsFilter,
+    ListingsQuery,
+    HostListingArgs,
+    HostListingInput
+} from "./types";
+// ...
+```
+- server-side validation via HostListingInput in the same file
+```ts
+// ...
+const verifyHostListingInput = ({
+    title,
+    description,
+    type,
+    price
+}: HostListingInput) => {
+    const { Apartment, House } = ListingType;
+    if (title.length > 100) {
+        throw new Error("listing title must be under 100 characters");
+    }
+    if (description.length > 5000) {
+        throw new Error("listing description must be under 5000 characters")
+    }
+    if (type !== Apartment && type !== House) {
+        throw new Error("listing type must be either an apartment or house");
+    }
+    if (price <= 0) {
+        throw new Error("price must be greater than 0");
+    }
+};
+
+export const listingResolvers: IResolvers = {
+    // ...
+```
+- hostListing async, define root, input, and context with validation as first arg
+```ts
+    // ...
+    },
+    Mutation: {
+        hostListing: async (
+            _root: undefined,
+            { input }: HostListingArgs,
+            { db, req }: { db: Database; req: Request }
+        ): Promise<Listing> => {
+            verifyHostListingInput(input);
+
+            //...
+```
+- then, authorize that viewer is logged in by passing in db and req objects from context which reference the CSRF-token in the header
+- if viewer does not exist, throw an error
+```ts
+// ...
+    Mutation: {
+        hostListing: async (
+            _root: undefined,
+            { input }: HostListingArgs,
+            { db, req }: { db: Database; req: Request }
+        ): Promise<Listing> => {
+            verifyHostListingInput(input);
+
+            let viewer = await authorize(db, req);
+            if (!viewer) {
+                throw new Error("viewer cannot be found");
+            }
+        }
+    },
+    // ...
+```
+- if viewer obj does exist, get country, admin, and city info from Google geocoder as a function of the address in the input object
+- execute error handling if country, admin, or city aren't found
+```ts
+    // ...
+    Mutation: {
+        hostListing: async (
+            _root: undefined,
+            { input }: HostListingArgs,
+            { db, req }: { db: Database; req: Request }
+        ): Promise<Listing> => {
+            verifyHostListingInput(input);
+
+            let viewer = await authorize(db, req);
+            if (!viewer) {
+                throw new Error("viewer cannot be found");
+            }
+
+            const { country, admin, city } = await Google.geocode(input.address);
+            if (!country || !admin || !city) {
+                throw new Error("invalid address input");
+            }
+
+        }
+    },
+    // ...
+```
+- then, use insertOne method of Node-Mongo-Driver to inset a new listing document into the collection
+    - use spread operator to add fields from input obj directly
+```ts
+// ...
+Mutation: {
+        hostListing: async (
+            _root: undefined,
+            { input }: HostListingArgs,
+            { db, req }: { db: Database; req: Request }
+        ): Promise<Listing> => {
+            verifyHostListingInput(input);
+
+            let viewer = await authorize(db, req);
+            if (!viewer) {
+                throw new Error("viewer cannot be found");
+            }
+
+            const { country, admin, city } = await Google.geocode(input.address);
+            if (!country || !admin || !city) {
+                throw new Error("invalid address input");
+            }
+
+            const insertResult = await db.listings.insertOne({
+                _id: new ObjectId(),
+                ...input,
+                bookings: [],
+                bookingsIndex: {},
+                country,
+                admin,
+                city,
+                host: viewer._id
+            });
+
+        }
+    },
+```
+- Since each document in the users collection has a listings field containing an array of listing ids representative of listings that the user has, the user doc of the viewer making the request must be updated with the newly added listing id
+- What now? Access the newly inserted listing document of course
+    - there are a few ways to approach this... https://stackoverflow.com/questions/40766654/node-js-mongodb-insert-one-and-return-the-newly-inserted-document/40767118
+    - http://mongodb.github.io/node-mongodb-native/3.1/api/Collection.html#insertOne
+    - callback vs result approach
+- Access first item in .ops array in the insert result
+    - assign insert result to insertListing const
+    - describe its shape as Listing interface
+    - then run the updateOne() method from the Node-MongoDB-Driver to update targeted user collection doc
+        - how? by finding the doc where the _id field matches that of the viewer_id then push the insertedListing _id into the listings field of the matching user doc
+```ts
+// ...
+    Mutation: {
+        hostListing: async (
+            _root: undefined,
+            { input }: HostListingArgs,
+            { db, req }: { db: Database; req: Request }
+        ): Promise<Listing> => {
+            verifyHostListingInput(input);
+
+            let viewer = await authorize(db, req);
+            if (!viewer) {
+                throw new Error("viewer cannot be found");
+            }
+
+            const { country, admin, city } = await Google.geocode(input.address);
+            if (!country || !admin || !city) {
+                throw new Error("invalid address input");
+            }
+
+            const insertResult = await db.listings.insertOne({
+                _id: new ObjectId(),
+                ...input,
+                bookings: [],
+                bookingsIndex: {},
+                country,
+                admin,
+                city,
+                host: viewer._id
+            });
+
+            const insertedListing: Listing = insertResult.ops[0];
+
+            await db.users.updateOne(
+                { _id: viewer._id },
+                { $push: { listings: insertedListing._id } }
+            );
+
+            return insertedListing;
+        }
+    },
+    // ...
+```
+- and voila, the hostListing mutation can now receive an input obj containing info about a new listing
