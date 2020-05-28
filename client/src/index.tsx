@@ -104,7 +104,7 @@ const App = () => {
 					<Route 
 						exact path="/user/:id" 
 						render={
-							props => <User {...props} viewer={viewer} />
+							props => <User {...props} viewer={viewer} setViewer={setViewer} />
 						}	 
 					/>
 					<Route component={NotFound} />

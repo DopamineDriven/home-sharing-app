@@ -1,20 +1,50 @@
 import React, { Fragment } from "react";
+import { useMutation } from "@apollo/react-hooks";
 import { User as UserData } from "../../../../lib/graphql/queries/User/__generated__/User";
+import { DISCONNECT_STRIPE } from "../../../../lib/graphql/mutations";
+import {
+    DisconnectStripe as DisconnectStripeData
+} from "../../../../lib/graphql/mutations/DisconnectStripe/__generated__/DisconnectStripe";
 import { Avatar, Button, Card, Divider, Tag, Typography } from "antd";
-import { formatListingPrice } from "../../../../lib/utils";
+import {
+    displayErrorMessage,
+    displaySuccessNotification,
+    formatListingPrice 
+} from "../../../../lib/utils";
+import { Viewer } from "../../../../lib/types";
 
 
 // (a)
 interface Props {
     user: UserData["user"];
+    viewer: Viewer;
     viewerIsUser: boolean;
+    setViewer: (viewer: Viewer) => void;
 }
 
 const stripeAuthUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_S_CLIENT_ID}&scope=read_write`;
 
 const { Paragraph, Text, Title } = Typography;
 
-export const UserProfile = ({ user, viewerIsUser }: Props) => {
+export const UserProfile = ({ user, viewer, viewerIsUser, setViewer }: Props) => {
+    const [disconnectStripe, { loading }] = useMutation<DisconnectStripeData>(
+        DISCONNECT_STRIPE, {
+            onCompleted: data => {
+                if (data && data.disconnectStripe) {
+                    setViewer({ ...viewer, hasWallet: data.disconnectStripe.hasWallet });
+                    displaySuccessNotification(
+                        "Successfully disconnected from Stripe!",
+                        "Reconnect with Stripe to continue to create or host listings."
+                    );
+                }
+            },
+            onError: () => {
+                displayErrorMessage(
+                    "Failed to disconnect from Stripe, please try again."
+                );
+            }
+        }
+    );
 
     const redirectToStripe = () => {
         window.location.href = stripeAuthUrl;

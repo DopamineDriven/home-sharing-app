@@ -1169,7 +1169,7 @@ export const Stripe = () => {
     - In a Ref -> equivalent to instance vars in class components
         - Mutating the .current property won't cause a rerender
     - Takeway: mutating .current prop does not cause a re-render
-```javascript
+```ts
 export const Stripe = () => {
     const [connectStripe, { data, loading, error }] = useMutation<
         ConnectStripeData,
@@ -1191,3 +1191,85 @@ export const Stripe = () => {
 ```
 - Note: Ref.current prop should not be mutated outside of useEffect or useReducer 
 - Navigate to ./client/src/sections/Stripe/index.tsx for more
+
+
+### Stripe Disconnect -- Enter UserProfile.tsx
+- useMutation hook to handle disconnectStripe
+- onSuccess banner displayed if data && data.disconnectStripe
+- onError banner displayed if unable to disconnect
+- onSuccess, ensure that viewer state obj is updated to reflect (hasWallet boolean toggled from true to false)
+- To pass setViewer to child component, need parent User to have it passed to it from its parent App.tsx
+```ts
+// .client/src/index.tsx <App/> component
+// ...
+<Route 
+    exact path="/user/:id" 
+    render={
+        props => <User {...props} viewer={viewer} setViewer={setViewer} />
+    }	 
+/>
+// ...
+```
+- declare setViewer prop in User section parent component
+    - then pass viewer and setViewer props down to the UserProfile child component
+```ts
+// .client/src/sections/User/index.tsx
+interface Props {
+    viewer: Viewer;
+    setViewer: (viewer: Viewer) => void;
+}
+
+export const User = ({ 
+    viewer,
+    setViewer, 
+    match 
+}: Props & RouteComponentProps<MatchParams>) => {
+    // ...
+
+    const userProfileElement = user ? (
+        <UserProfile 
+            user={user}
+            viewer={viewer} 
+            viewerIsUser={viewerIsUser}
+            setViewer={setViewer}
+        />
+    ) : null;
+
+    // ...
+```
+- which enables UserProfile child component to pass in the viewer and setViewer props as follows
+```ts
+// ...
+import { Viewer } from "../../../../lib/types";
+
+interface Props {
+    user: UserData["user"];
+    viewer: Viewer;
+    viewerIsUser: boolean;
+    setViewer: (viewer: Viewer) => void;
+}
+
+// ...
+
+export const UserProfile = ({ user, viewer, viewerIsUser, setViewer }: Props) => {
+    const [disconnectStripe, { loading }] = useMutation<DisconnectStripeData>(
+        DISCONNECT_STRIPE, {
+            onCompleted: data => {
+                if (data && data.disconnectStripe) {
+                    setViewer({ ...viewer, hasWallet: data.disconnectStripe.hasWallet });
+                    displaySuccessNotification(
+                        "Successfully disconnected from Stripe!",
+                        "Reconnect with Stripe to continue to create or host listings."
+                    );
+                }
+            },
+            onError: () => {
+                displayErrorMessage(
+                    "Failed to disconnect from Stripe, please try again."
+                );
+            }
+        }
+    );
+
+    // ...
+```

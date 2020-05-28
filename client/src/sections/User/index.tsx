@@ -13,6 +13,7 @@ import { ErrorBanner, PageSkeleton } from "../../lib/components";
 
 interface Props {
     viewer: Viewer;
+    setViewer: (viewer: Viewer) => void;
 }
 
 // (a)
@@ -25,7 +26,11 @@ const { Content } = Layout;
 
 const PAGE_LIMIT = 4;
 
-export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>) => {
+export const User = ({ 
+    viewer,
+    setViewer, 
+    match 
+}: Props & RouteComponentProps<MatchParams>) => {
     const [listingsPage, setListingsPage] = useState(1);
     const [bookingsPage, setBookingsPage] = useState(1);
 
@@ -51,7 +56,12 @@ export const User = ({ viewer, match }: Props & RouteComponentProps<MatchParams>
     const userBookings = user ? user.bookings : null;
 
     const userProfileElement = user ? (
-        <UserProfile user={user} viewerIsUser={viewerIsUser} />
+        <UserProfile 
+            user={user}
+            viewer={viewer} 
+            viewerIsUser={viewerIsUser}
+            setViewer={setViewer}
+        />
     ) : null;
 
     const userListingsElement = userListings ? (
