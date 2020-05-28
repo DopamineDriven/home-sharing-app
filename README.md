@@ -1625,3 +1625,6 @@ Mutation: {
     // ...
 ```
 - and voila, the hostListing mutation can now receive an input obj containing info about a new listing
+
+### Building the Host UI
+- see ./client/src/sections/Host/index.tsx
