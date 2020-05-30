@@ -1961,3 +1961,11 @@ const getBase64Value = (
     - around 25mb image/video storage available
 - Upload API reference documentation
     - https://cloudinary.com/documentation/image_upload_api_reference#upload_method
+
+--------------------------------------------------------------------------------
+
+## CreateBooking
+- Create charges directly and take fees in the process with Stripe
+    - https://stripe.com/docs/connect/direct-charges
+- Create charges with Stripe
+    - https://stripe.com/docs/api/charges/create
