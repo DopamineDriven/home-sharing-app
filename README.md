@@ -1989,3 +1989,64 @@ const paymentIntent = await stripe.paymentIntents.create({
 ```
 - from https://stripe.com/docs/connect/direct-charges
 - home-sharing-app receives application_fee_amount
+
+### BookingsIndex
+```ts
+// 2019-01-01   year: 2019 | month: 01 | day: 01
+// 2019-01-02   year: 2019 | month: 01 | day: 02
+// 2019-05-31   year: 2019 | month: 05 | day: 31
+// 2019-06-01   year: 2019 | month: 06 | day: 01
+// 2019-07-20   year: 2019 | month: 07 | day: 20
+
+const bookingsIndex = {
+  "2019": {
+    "00": {
+      "01": true,
+      "02": true
+    },
+    "04": {
+      "31": true
+    },
+    "05": {
+      "01": true
+    },
+    "06": {
+      "20": true
+    }
+  }
+};
+
+// NOTE: the JavaScript function for getting the month returns 0 for Jan ... and 11 for Dec
+```
+- Case 1:
+    - user wants to book from 2019-Jan-01 to 2019-Jan-03 (reference above)
+    - booking should fail because these dates overlap with dates that have already been booked
+    - therefore, the booking index will remain unchanged
+- Case 2:
+    - user wants to book from 2019-Dec-01 to 2019-Dec-03
+    - booking should be successful because no overlapping dates exist
+    - updated bookings index will appear as follows
+```ts
+const bookingsIndex = {
+  "2019": {
+    "00": {
+      "01": true,
+      "02": true
+    },
+    "04": {
+      "31": true
+    },
+    "05": {
+      "01": true
+    },
+    "06": {
+      "20": true
+    },
+    "11": {
+      "01": true,
+      "02": true,
+      "03": true
+    }
+  }
+};
+```

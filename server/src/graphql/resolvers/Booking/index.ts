@@ -1,10 +1,44 @@
 import { IResolvers } from "apollo-server-express";
 import { Request } from "express";
 import { ObjectId } from "mongodb";
-import { Booking, Database, Listing } from "../../../lib/types";
+import { Booking, BookingsIndex, Database, Listing } from "../../../lib/types";
 import { authorize } from "../../../lib/utils";
 import { CreateBookingArgs } from './types';
 import { Stripe } from "../../../lib/api";
+
+export const resolveBookingsIndex = (
+    bookingsIndex: BookingsIndex,
+    checkInDate: string,
+    checkOutDate: string
+): BookingsIndex => {
+    let dateCursor = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+    const newBookingsIndex: BookingsIndex = { ...bookingsIndex };
+
+    while (dateCursor <= checkOut) {
+        const y = dateCursor.getUTCFullYear(); // 2020 (UTC-5)
+        const m = dateCursor.getUTCMonth(); // 04 -> May
+        const d = dateCursor.getUTCDate(); // 30
+
+        if (!newBookingsIndex[y]) {
+            newBookingsIndex[y] = {};
+        }
+
+        if (!newBookingsIndex[y][m]) {
+            newBookingsIndex[y][m] = {};
+        }
+
+        if (!newBookingsIndex[y][m][d]) {
+            newBookingsIndex[y][m][d] = true;
+        } else {
+            throw new Error("selected dates cannot overlap dates already booked");
+        }
+
+        dateCursor = new Date(dateCursor.getTime() + 86400000);
+    }
+
+    return newBookingsIndex;
+};
 
 export const bookingResolvers: IResolvers = {
     Mutation: {
@@ -41,6 +75,7 @@ export const bookingResolvers: IResolvers = {
                     throw new Error("check out date cannot be before check in date");
                 }
 
+                // create new bookingsIndex as a func of checkIn and checkOut dates
                 const bookingsIndex = resolveBookingsIndex(
                     listing.bookingsIndex,
                     checkIn,
@@ -112,7 +147,16 @@ export const bookingResolvers: IResolvers = {
             _args: {},
             { db }: { db: Database }
         ): Promise<Listing | null> => {
-            return db.listings.findOne({ _id: booking.listing })
+            return db.listings.findOne({ _id: booking.listing });
+        },
+        tenant: (
+            booking: Booking,
+            _args: {},
+            { db }: { db: Database }
+        ) => {
+            return db.users.findOne({
+                _id: booking.tenant
+            });
         }
     }
 };
