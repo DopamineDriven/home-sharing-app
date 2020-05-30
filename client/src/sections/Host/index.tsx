@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useState, FormEvent } from 'react';
+import { useMutation } from "@apollo/react-hooks";
+import { Link, Redirect } from "react-router-dom";
 import { Viewer } from "../../lib/types";
 import { ListingType } from "../../lib/graphql/globalTypes";
-import { iconColor, displayErrorMessage } from "../../lib/utils";
+import { 
+    iconColor, 
+    displayErrorMessage, 
+    displaySuccessNotification 
+} from "../../lib/utils";
+import { HOST_LISTING } from "../../lib/graphql/mutations";
+import {
+    HostListing as HostListingData,
+    HostListingVariables
+} from "../../lib/graphql/mutations/HostListing/__generated__/HostListing";
 import { BankOutlined, HomeOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { UploadChangeParam } from "antd/lib/upload";
+// import  FormComponentProps  from "antd/lib/form";
 import { 
     Button,
     Form, 
@@ -15,8 +26,6 @@ import {
     Typography,
     Upload
 } from "antd";
-
-
 
 interface Props {
     viewer: Viewer;
@@ -32,7 +41,18 @@ const { Text, Title } = Typography;
 export const Host = ({ viewer }: Props) => {
     const [imageLoading, setImageLoading] = useState(false);
     const [imageBase64Value, setImageBase64Value] = useState<string | null>(null);
-    console.log(imageBase64Value);
+    
+    const [hostListing, { loading, data }] = useMutation<
+        HostListingData,
+        HostListingVariables
+    >(HOST_LISTING, {
+        onCompleted: () => {
+            displaySuccessNotification("Listing created successfully!");
+        },
+        onError: () => {
+            displayErrorMessage("Unable to create listing. Please try again");
+        }
+    });
 
     const handleImageUpload = (info: UploadChangeParam) => {
         const { file } = info;
@@ -50,6 +70,32 @@ export const Host = ({ viewer }: Props) => {
         }
     };
 
+    const handleHostListing = (e: FormEvent) => {
+        e.preventDefault();
+    };
+
+    const onFinish = (values: any) => {
+        console.log(`received values of form ${values}`);
+
+        const fullAddress = `${values.address}, ${values.city}, ${values.state}, ${values.postalCode} `
+        
+        const input = {
+            ...values,
+            address: fullAddress,
+            image: imageBase64Value,
+            price: values.price*100
+        };
+        delete input.city;
+        delete input.state;
+        delete input.postalCode;
+
+        hostListing({
+            variables: {
+                input
+            }
+        });
+    };
+
     return !viewer.id || !viewer.hasWallet ? (
         <Content className="host-content">
             <div className="host__form-header">
@@ -63,9 +109,22 @@ export const Host = ({ viewer }: Props) => {
                 </Text>
             </div>
         </Content>
+    ) : loading ? (
+        <Content className="host-content">
+            <div className="host__form-header">
+                <Title level={3} className="host__form-title">
+                    Please wait!
+                </Title>
+                <Text type="secondary">
+                    Your listing is being created
+                </Text>
+            </div>
+        </Content>
+    ) : data && data.hostListing ? (
+        <Redirect to={`/listing/${data.hostListing.id}`} />
     ) : (
         <Content className="host-content">
-            <Form layout="vertical">
+            <Form layout="vertical" onSubmitCapture={handleHostListing} onFinish={onFinish}>
                 <div className="host__form-header">
                     <Title level={3} className="host__form-title">
                         Let's get started creating your new listing!

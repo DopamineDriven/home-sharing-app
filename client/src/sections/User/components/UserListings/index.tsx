@@ -29,7 +29,6 @@ export const UserListings = ({
                 lg: 4
             }}
             dataSource={result}
-            locale={{ emptyText: "listings have yet to be input" }}
             pagination={{
                 position: "top",
                 current: listingsPage,

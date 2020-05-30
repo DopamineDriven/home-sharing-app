@@ -12,6 +12,7 @@ const mount = async (app: Application) => {
 	const db = await connectDatabase();
 
 	app.use(
+		express.json({ limit: "2mb" }),
 		cookieParser(process.env.SECRET),
 		cors(),
 		Helmet()

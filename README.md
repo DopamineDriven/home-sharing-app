@@ -1891,29 +1891,57 @@ const getBase64Value = (
 
 
 
-## Form.Create() - Ant Design Pro
+## Form.Create() - Ant Design Pro - deprecated to void in v4
 - From https://pro.ant.design/docs/uset-typescript documentation
 - Form contains a func acting as a HOF (higher order func)
     - enables the production of another component
     - form data obj is avaialable in the resultant component
+- reference this for v4 (used in this app)
+    - https://ant.design/components/form/v3
 ```tsx
-import { FormComponentProps } from "antd/lib/form/Form";
-
-interface IFormComponentProps extends FormComponentProps {
-  test: string;
-}
-
-class FormComponent extends React.Component<IFormComponentProps> {
-  constructor(props: IFormComponentProps) {
-    super(props);
-    ....
-  }
-  render() {
-    const { getFieldDecorator } = this.props.form;
-    return ....;
-  }
-}
+<Item 
+    label="Listing Type"
+    name="type"
+    rules={[
+        { 
+            required: true,
+            message: "Please select a listing type"
+        }
+    ]}
+>
+    <Radio.Group>
+        <Radio.Button value={APARTMENT}>
+            <BankOutlined style={{ 
+                color: iconColor, 
+                display: "inline-block", 
+                verticalAlign: "middle" 
+            }} />
+            &nbsp;
+            <span style={{ 
+                display: "inline-block", 
+                verticalAlign: "middle" 
+            }}>
+                Apartment
+            </span>
+        </Radio.Button>
+        <Radio.Button value={HOUSE}>
+            <HomeOutlined style={{ 
+                color: iconColor,
+                display: "inline-block",
+                verticalAlign: "middle" 
+            }} />
+            &nbsp;
+            <span style={{
+                display: "inline-block",
+                verticalAlign: "middle"
+            }}>
+                House
+            </span>
+        </Radio.Button>
+    </Radio.Group>
+</Item>
 ```
-- Accessing file vals with Form.Create();
-- Form 
-
+- additional v4 migration sources
+    - https://medium.com/ant-design/ant-design-4-0-is-out-dd13be64c265
+    - https://ant.design/components/form/v3
+    - https://pro.ant.design/docs/uset-typescript
