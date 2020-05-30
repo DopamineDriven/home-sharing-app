@@ -1889,3 +1889,31 @@ const getBase64Value = (
 ./client/src/sections/Host/index.tsx
 ```
 
+
+
+## Form.Create() - Ant Design Pro
+- From https://pro.ant.design/docs/uset-typescript documentation
+- Form contains a func acting as a HOF (higher order func)
+    - enables the production of another component
+    - form data obj is avaialable in the resultant component
+```tsx
+import { FormComponentProps } from "antd/lib/form/Form";
+
+interface IFormComponentProps extends FormComponentProps {
+  test: string;
+}
+
+class FormComponent extends React.Component<IFormComponentProps> {
+  constructor(props: IFormComponentProps) {
+    super(props);
+    ....
+  }
+  render() {
+    const { getFieldDecorator } = this.props.form;
+    return ....;
+  }
+}
+```
+- Accessing file vals with Form.Create();
+- Form 
+

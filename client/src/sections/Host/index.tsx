@@ -16,6 +16,8 @@ import {
     Upload
 } from "antd";
 
+
+
 interface Props {
     viewer: Viewer;
 }
@@ -74,7 +76,16 @@ export const Host = ({ viewer }: Props) => {
                     </Text>
                 </div>
 
-                <Item label="Listing Type">
+                <Item 
+                    label="Listing Type"
+                    name="type"
+                    rules={[
+                        { 
+                            required: true,
+                            message: "Please select a listing type"
+                        }
+                    ]}
+                >
                     <Radio.Group>
                         <Radio.Button value={APARTMENT}>
                             <BankOutlined style={{ 
@@ -107,11 +118,44 @@ export const Host = ({ viewer }: Props) => {
                     </Radio.Group>
                 </Item>
 
-                <Item label="Title" extra="max character count: 45">
+                <Item 
+                    label="Max # of Guests"
+                    name="numOfGuests"
+                    rules={[
+                        { 
+                            required: true,
+                            message: "Please indicate max # of guests for the listing"
+                        }
+                    ]}
+                >
+                    <InputNumber min={1} placeholder="4" />
+                </Item>
+
+                <Item 
+                    label="Title" 
+                    extra="max character count: 45"
+                    name="title"
+                    rules={[
+                        {
+                            required: true,
+                            message: "please enter a title for the listing"
+                        }
+                    ]}
+                >
                     <Input maxLength={45} placeholder="The iconic and luxurious Bel-Air mansion" />
                 </Item>
 
-                <Item label="Listing Description" extra="max character count: 400">
+                <Item 
+                    label="Listing Description" 
+                    extra="max character count: 400"
+                    name="description"
+                    rules={[
+                        {
+                            required: true,
+                            message: "please enter a description for the listing"
+                        }
+                    ]}
+                >
                     <TextArea 
                         rows={3}
                         maxLength={400}
@@ -119,23 +163,69 @@ export const Host = ({ viewer }: Props) => {
                     />
                 </Item>
 
-                <Item label="Address">
+                <Item 
+                    label="Address"
+                    name="address"
+                    rules={[
+                        {
+                            required: true,
+                            message: "please enter an address for the listing"
+                        }
+                    ]}
+                >
                     <Input placeholder="251 North Bristol Avenue" />
                 </Item>
                 
-                <Item label="City/Town">
+                <Item 
+                    label="City/Town"
+                    name="city"
+                    rules={[
+                        {
+                            required: true,
+                            message: "please enter a city or region for the listing"
+                        }
+                    ]}
+                >
                     <Input placeholder="Los Angeles" />
                 </Item>
 
-                <Item label="State/Province">
+                <Item 
+                    label="State/Province"
+                    name="state"
+                    rules={[
+                        {
+                            required: true,
+                            message: "please enter a state or province for the listing"
+                        }
+                    ]}
+                >
                     <Input placeholder="California" />
                 </Item>
 
-                <Item label="ZIP/Postal Code">
+                <Item 
+                    label="ZIP/Postal Code"
+                    name="postalCode"
+                    rules={[
+                        {
+                            required: true,
+                            message: "please enter a postal code for the listing"
+                        }
+                    ]}
+                >
                     <Input placeholder="90077" />
                 </Item>
 
-                <Item label="Image" extra="Image file type must be JPEG or PNG; max size: 1MB">
+                <Item 
+                    label="Image" 
+                    extra="Image file type must be JPEG or PNG; max size: 1MB"
+                    name="image"
+                    rules={[
+                        {
+                            required: true,
+                            message: "please provide an image for the listing"
+                        }
+                    ]}
+                >
                     <div className="host__form-image-upload">
                         <Upload 
                             name="image"
@@ -157,12 +247,22 @@ export const Host = ({ viewer }: Props) => {
                     </div>
                 </Item>
 
-                <Item label="Price" extra="All prices in $USD/day">
+                <Item 
+                    label="Price" 
+                    extra="All prices in $USD/day"
+                    name="price"
+                    rules={[
+                        {
+                            required: true,
+                            message: "please select a price for the listing"
+                        }
+                    ]}
+                >
                     <InputNumber min={1} placeholder="180" />
                 </Item>
 
                 <Item>
-                    <Button type="primary">
+                    <Button type="primary" htmlType="submit">
                         Submit
                     </Button>
                 </Item>
@@ -170,6 +270,13 @@ export const Host = ({ viewer }: Props) => {
         </Content>
     );
 };
+
+// // (a) V3 --- deprecated to VOID in v4 
+//https://ant.design/components/form/v3
+// export const WrappedHost = Form.create({
+//     name: "host_form"
+// })(Host);
+
 
 const beforeImageUpload = (file: File) => {
     const fileIsValidImage = file.type === "image/jpeg" || file.type === "image/png";
@@ -189,13 +296,7 @@ const beforeImageUpload = (file: File) => {
     return fileIsValidImage && fileIsValidSize;
 };
 
-// Blob is a file-like obj with minor differences
-// FileReader constructor class -> obj allows reading of content of file or blob
-    // readAsDataURL -> read contents of file or blob
-    // onload -> event handler that is executed when load event fired
-    // load event fired when file has been read (readAsDataURL)
-    // when onload triggered, call callback func with results of filereader (base64 val) as string
-    // type assertion -> as string (a bit of a hack but ehhh)
+/* (b) */
 const getBase64Value = (
     img: File | Blob,
     callback: (imageBase64Value: string) => void
@@ -206,3 +307,28 @@ const getBase64Value = (
         callback(reader.result as string);
     };
 };
+
+
+/*
+(a)
+Create form with Form.create
+This returns a function
+    For the returned func, pass in the concatenated Host component (HOC)
+        This creates wrapped Host HOC
+    Form.create({}) is a generic intended to recieve props of the form
+    as well as that of the component being wrapped
+Note: Form.create func has generic of an intersection type passed in
+    Props & FormComponentProps
+*/
+
+
+/*
+(b)
+Blob is a file-like obj with minor differences
+FileReader constructor class -> obj allows reading of content of file or blob
+    readAsDataURL -> read contents of file or blob
+    onload -> event handler that is executed when load event fired
+    load event fired when file has been read (readAsDataURL)
+    when onload triggered, call callback func with results of filereader (base64 val) as string
+    type assertion -> as string (a bit of a hack but ehhh)
+*/
