@@ -1969,3 +1969,23 @@ const getBase64Value = (
     - https://stripe.com/docs/connect/direct-charges
 - Create charges with Stripe
     - https://stripe.com/docs/api/charges/create
+
+### Creating a Stripe charge
+```ts
+// Set your secret key. Remember to switch to your live secret key in production!
+// See your keys here: https://dashboard.stripe.com/account/apikeys
+const stripe = require('stripe')('sk_test_i2301vDugvuujPKs75MJSvat00vMuFiNCl');
+
+const paymentIntent = await stripe.paymentIntents.create({
+  payment_method_types: ['card'],
+  amount: 1000,
+  currency: 'usd',
+  application_fee_amount: 123
+}, {
+  stripeAccount: '{{CONNECTED_STRIPE_ACCOUNT_ID}}',
+}).then((charge) => {
+    // asynchronously called
+});
+```
+- from https://stripe.com/docs/connect/direct-charges
+- home-sharing-app receives application_fee_amount
