@@ -1945,3 +1945,19 @@ const getBase64Value = (
     - https://medium.com/ant-design/ant-design-4-0-is-out-dd13be64c265
     - https://ant.design/components/form/v3
     - https://pro.ant.design/docs/uset-typescript
+
+
+--------------------------------------------------------------------------------
+
+## Cloud-based image management service
+- Base64 encoded images no longer required to be stored in database
+- Makes app more responsive as querying large amounts of image data no longer necessary
+- decreases database size
+- saves money
+- URL-based api
+
+## Cloudinary
+- free plan
+    - around 25mb image/video storage available
+- Upload API reference documentation
+    - https://cloudinary.com/documentation/image_upload_api_reference#upload_method
