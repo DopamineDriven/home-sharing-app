@@ -14,7 +14,7 @@ import {
 } from "./types";
 import { Request } from "express";
 import { authorize } from "../../../lib/utils";
-import { Google } from "../../../lib/api";
+import { Cloudinary, Google } from "../../../lib/api";
 
 const verifyHostListingInput = ({
     title,
@@ -120,7 +120,7 @@ export const listingResolvers: IResolvers = {
         ): Promise<Listing> => {
             verifyHostListingInput(input);
 
-            let viewer = await authorize(db, req);
+            const viewer = await authorize(db, req);
             if (!viewer) {
                 throw new Error("viewer cannot be found");
             }
@@ -130,9 +130,12 @@ export const listingResolvers: IResolvers = {
                 throw new Error("invalid address input");
             }
 
+            const imageURL = await Cloudinary.upload(input.image);
+
             const insertResult = await db.listings.insertOne({
                 _id: new ObjectId(),
                 ...input,
+                image: imageURL,
                 bookings: [],
                 bookingsIndex: {},
                 country,
@@ -148,7 +151,7 @@ export const listingResolvers: IResolvers = {
                 { $push: { listings: insertedListing._id } }
             );
 
-            return insertedListing;
+            return insertedListing
         }
     },
     Listing: {
