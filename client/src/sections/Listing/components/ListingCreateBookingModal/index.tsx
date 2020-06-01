@@ -1,9 +1,24 @@
 import React from "react";
+import { useMutation } from "@apollo/react-hooks";
 import { Button, Divider, Modal, Typography } from "antd";
 import { KeyOutlined } from "@ant-design/icons";
 import moment, { Moment } from "moment";
-import { formatListingPrice, iconColor } from "../../../../lib/utils";
-import { CardElement, injectStripe, ReactStripeElements } from "react-stripe-elements";
+import { CREATE_BOOKING } from "../../../../lib/graphql/mutations";
+import {
+    CreateBooking as CreateBookingData,
+    CreateBookingVariables
+} from "../../../../lib/graphql/mutations/CreateBooking/__generated__/CreateBooking";
+import {
+    displayErrorMessage,
+    displaySuccessNotification, 
+    formatListingPrice, 
+    iconColor 
+} from "../../../../lib/utils";
+import { 
+    CardElement, 
+    injectStripe, 
+    ReactStripeElements 
+} from "react-stripe-elements";
 
 interface Props {
     price: number;

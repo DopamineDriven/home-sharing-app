@@ -2331,3 +2331,141 @@ id: "tok_1GpE8fJ0juJb1OEhV4D6dhQL"
 ```
 - this is to be the source of payment being made
 - this will be passed over as part of the input to the createBooking mutation
+
+### Executing the CreateBooking Mutation
+- Create GraphQL document for createBooking mutation
+- head to ./client/src/lib/graphql/mutations
+- create a CreateBooking/ folder containing an index.ts file
+```tsx
+import { gql } from "apollo-boost";
+
+export const CREATE_BOOKING = gql`
+    mutation CreateBooking($input: CreateBookingInput!) {
+        createBooking(input: $input) {
+            id
+        }
+    }
+`;
+```
+- then, export this folder from the root mutation index.ts file
+```tsx
+export * from "./ConnectStripe";
+export * from "./CreateBooking";
+export * from "./DisconnectStripe";
+export * from "./HostListing";
+export * from "./LogIn";
+export * from "./LogOut";
+```
+- run the following in client
+```ts
+npm run codegen:schema
+```
+- to update the global schema.json in ./client
+- then run
+```ts
+npm run codegen:generate
+```
+- which autogenerates 11 files
+- ./client/src/lib/graphql/mutation/CreateBooking/__generated __/CreateBooking.ts
+```ts
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+import { CreateBookingInput } from "./../../../globalTypes";
+
+// ====================================================
+// GraphQL mutation operation: CreateBooking
+// ====================================================
+
+export interface CreateBooking_createBooking {
+  __typename: "Booking";
+  id: string;
+}
+
+export interface CreateBooking {
+  createBooking: CreateBooking_createBooking;
+}
+
+export interface CreateBookingVariables {
+  input: CreateBookingInput;
+}
+```
+- updates globalTypes (./client/src/lib/graphql/globalTypes.ts)
+```ts
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+//==============================================================
+// START Enums and Input Objects
+//==============================================================
+
+export enum ListingType {
+  APARTMENT = "APARTMENT",
+  HOUSE = "HOUSE",
+}
+
+export enum ListingsFilter {
+  PRICE_HIGH_TO_LOW = "PRICE_HIGH_TO_LOW",
+  PRICE_LOW_TO_HIGH = "PRICE_LOW_TO_HIGH",
+}
+
+export interface ConnectStripeInput {
+  code: string;
+}
+
+export interface CreateBookingInput {
+  id: string;
+  source: string;
+  checkIn: string;
+  checkOut: string;
+}
+
+export interface HostListingInput {
+  title: string;
+  description: string;
+  image: string;
+  type: ListingType;
+  address: string;
+  price: number;
+  numOfGuests: number;
+}
+
+export interface LogInInput {
+  code: string;
+}
+
+//==============================================================
+// END Enums and Input Objects
+//==============================================================
+```
+
+### Using the CreateBooking mutation in ListingCreateBookingModal
+- navigate to ./client/src/sections/Listing/components/ListingCreateBookingModal/index.tsx
+- the following imports should be declared
+```tsx
+import React from "react";
+import { useMutation } from "@apollo/react-hooks";
+import { Button, Divider, Modal, Typography } from "antd";
+import { KeyOutlined } from "@ant-design/icons";
+import moment, { Moment } from "moment";
+import { CREATE_BOOKING } from "../../../../lib/graphql/mutations";
+import {
+    CreateBooking as CreateBookingData,
+    CreateBookingVariables
+} from "../../../../lib/graphql/mutations/CreateBooking/__generated__/CreateBooking";
+import {
+    displayErrorMessage,
+    displaySuccessNotification, 
+    formatListingPrice, 
+    iconColor 
+} from "../../../../lib/utils";
+import { 
+    CardElement, 
+    injectStripe, 
+    ReactStripeElements 
+} from "react-stripe-elements";
+```
