@@ -2078,7 +2078,7 @@ npm i react-stripe-elements @types/react-stripe-elemnts
 - load the stripe lib directly from Stripe's servers
 - ./client/src/public/index.html
 ```html
- <script src="https://js.stripe.com/v3/"></script>
+<script src="https://js.stripe.com/v3/"></script>
 ```
 - navigate to root of app
 - ./client/src/index.tsx
@@ -2243,3 +2243,24 @@ export const ListingCreateBookingModal = ({
 
 export const WrappedListingCreateBookingModal = injectStripe(ListingCreateBookingModal);
 ```
+- Note: genuine card info cannot be used in test mode
+    - instead, use provided test card numbers, any valid future date, and any random CVC number to create a successful payment
+    - https://stripe.com/docs/testing
+    - for example
+        - Number
+            - 4242 4242 4242 4242
+        - Brand
+            - Visa
+        - CVC
+            - any 3 digits
+        - Date
+            - any future date
+    - likewise
+        - Number
+            - 3782 822463 10005
+        - Brand
+            - American Express
+        - CVC
+            - any 4 digits
+        - Date
+            - any future date
