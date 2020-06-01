@@ -2503,3 +2503,62 @@ import {
     "node": "14.3.0"
 },
 ```
+- open bash terminal and enter
+```ts
+heroku login
+```
+- this logs in to your heroku account
+- then
+```ts
+heroku create app-name
+```
+- this creates the heroku app on the linked heroku account
+- this also connects the project with the heroku app through the IDE
+- create a new folder in root for deployment
+- within this folder, create a package.json and a .gitignore file (copy contents of sever .gitignore to ./deploy..gitignore)
+- create a package.json in the deploy folder as follows
+```json
+{
+    "name": "homesharing-deploy",
+    "version": "0.1.0",
+    "private": true,
+    "engines": {
+        "node": "14.3.0",
+        "npm": "6.14.5"
+    },
+    "scripts": {
+        "start": "node src/index.js"
+    }
+}
+```
+- be sure to specify "engines" in server just like client and deploy
+- use a compression library for server
+```ts
+npm i compression
+```
+```ts
+npm i --save-dev @types/compression
+```
+- within ./server/src/server.ts, the following should be declared
+```ts
+	app.use(
+		compression(),
+		express.json({ limit: "2mb" }),
+		express.static(`${__dirname}/client`),
+		cookieParser(process.env.SECRET),
+		cors(),
+		Helmet()
+	);
+
+	app.get("/*", (_req, res) => {
+		res.sendFile(`${__dirname}/client/index.html`)
+	});
+```
+- cd server, "npm run build"
+- then, cd ../client "npm run build"
+- next, move the build folder generated in client into the server build folder
+- rename the recently moved build folder from client "client"
+- next, move the server build folder into the root-level deploy folder
+- then, rename recently moved build folder "src"
+- copy all dependencies from server into the package.json of the deploy folder
+- note: do not need any of the dev dependencies; only dependencies

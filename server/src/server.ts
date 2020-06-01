@@ -1,5 +1,6 @@
 require("dotenv").config();
 import express, { Application } from "express";
+import compression from "compression";
 import cors from "cors";
 import Helmet from "helmet";
 import cookieParser from "cookie-parser";
@@ -12,11 +13,17 @@ const mount = async (app: Application) => {
 	const db = await connectDatabase();
 
 	app.use(
+		compression(),
 		express.json({ limit: "2mb" }),
+		express.static(`${__dirname}/client`),
 		cookieParser(process.env.SECRET),
 		cors(),
 		Helmet()
 	);
+
+	app.get("/*", (_req, res) => {
+		res.sendFile(`${__dirname}/client/index.html`)
+	});
 
 	// context func prop of Apollo is run with req res objects
 	// pass req and res props as part of context obj for all resolvers
