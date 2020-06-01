@@ -21,37 +21,80 @@ import {
 } from "react-stripe-elements";
 
 interface Props {
+    id: string;
     price: number;
     modalVisible: boolean;
     checkInDate: Moment;
     checkOutDate: Moment;
     setModalVisible: (modalVisible: boolean) => void;
+    clearBookingData: () => void;
+    handleListingRefetch: () => Promise<void>;
 }
 
 const { Paragraph, Text, Title } = Typography;
 
-export const ListingCreateBookingModal = ({ 
+export const ListingCreateBookingModal = ({
+    id,
     price,
     modalVisible,
     checkInDate,
     checkOutDate,
     setModalVisible,
+    clearBookingData,
+    handleListingRefetch,
     stripe 
 }: Props & ReactStripeElements.InjectedStripeProps) => {
+    const [createBooking, { loading }] = useMutation<
+        CreateBookingData,
+        CreateBookingVariables
+    >(CREATE_BOOKING, {
+        onCompleted: () => {
+            clearBookingData();
+            displaySuccessNotification(
+                "Listing successfully booked!",
+                "Booking history accessible in User page."
+            );
+            handleListingRefetch();
+        },
+        onError: () => {
+            displayErrorMessage(
+                "Unable to successfully book listing. Please try again."
+            );
+        }
+    });
 
     const daysBooked = checkOutDate.diff(checkInDate, "days") + 1;
     const listingPrice = price * daysBooked;
     // const homeSharingFee = 0.05 * listingPrice;
-    const totalPrice = listingPrice;
+    const totalPriceSansFees = listingPrice;
 
     // (a)
     const handleCreateBooking = async () => {
         if (!stripe) {
-            return;
+            return displayErrorMessage(
+                "Unable to connect with Stripe"
+            );
         }
 
-        const { token: stripeToken } = await stripe.createToken();
-        console.log(stripeToken);
+        const { token: stripeToken, error } = await stripe.createToken();
+        if (stripeToken) {
+            createBooking({
+                variables: {
+                    input: {
+                        id,
+                        source: stripeToken.id,
+                        checkIn: moment(checkInDate).format("YYYY-MM-DD"),
+                        checkOut: moment(checkOutDate).format("YYYY-MM-DD")
+                    }
+                }
+            });
+        } else {
+            displayErrorMessage(
+                error && error.message
+                    ? error.message
+                    : "Unable to book the listing. Please try again."
+            )
+        }
     };
 
 
@@ -75,7 +118,7 @@ export const ListingCreateBookingModal = ({
                         Book your trip
                     </Title>
                     <Paragraph>
-                        Enter payment information to book this listing from{" "}
+                        Book from{" "}
                         <Text mark strong>
                             {moment(checkInDate).format("MMMM Do YYYY")}
                         </Text>{" "}
@@ -104,7 +147,7 @@ export const ListingCreateBookingModal = ({
                     <Paragraph className="listing-booking-modal__charge-summary-total">
                         Total = 
                         <Text mark>
-                            {formatListingPrice(totalPrice, false)}
+                            {formatListingPrice(totalPriceSansFees, false)}
                         </Text>
                     </Paragraph>
                 </div>
@@ -117,6 +160,7 @@ export const ListingCreateBookingModal = ({
                         size="large"
                         type="primary"
                         className="listing-booking-modal__cta"
+                        loading={loading}
                         onClick={handleCreateBooking}
                     >
                         Book

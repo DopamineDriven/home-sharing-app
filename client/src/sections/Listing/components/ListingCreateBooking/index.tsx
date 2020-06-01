@@ -120,9 +120,9 @@ export const ListingCreateBooking = ({
                         <DatePicker 
                             value={checkInDate ? checkInDate : undefined}
                             format={"YYYY/MM/DD"}
-                            disabledDate={disabledDate}
-                            disabled={checkInInputDisabled}
                             showToday={false}
+                            disabled={checkInInputDisabled}
+                            disabledDate={disabledDate}
                             onOpenChange={() => setCheckOutDate(null)}
                             onChange={dateValue => setCheckInDate(dateValue)} 
                         />
@@ -132,9 +132,9 @@ export const ListingCreateBooking = ({
                         <DatePicker 
                             value={checkOutDate ? checkOutDate : undefined}
                             format={"YYYY/MM/DD"}
-                            disabledDate={disabledDate}
-                            disabled={checkOutInputDisabled}
                             showToday={false}
+                            disabled={checkOutInputDisabled}
+                            disabledDate={disabledDate}
                             onChange={dateValue => verifyAndSelectCheckOutDate(dateValue)}
                         />
                     </div>
@@ -149,7 +149,9 @@ export const ListingCreateBooking = ({
                 >
                     Request to book
                 </Button>
-                <Text type="secondary" mark>{buttonMessage}</Text>
+                <Text type="secondary" mark>
+                    {buttonMessage}
+                </Text>
             </Card>
         </div>
     );

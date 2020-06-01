@@ -2469,3 +2469,4 @@ import {
     ReactStripeElements 
 } from "react-stripe-elements";
 ```
+- https://stripe.com/docs/stripe-js

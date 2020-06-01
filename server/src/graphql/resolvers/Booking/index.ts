@@ -72,7 +72,9 @@ export const bookingResolvers: IResolvers = {
                 const checkOutDate = new Date(checkOut);
 
                 if (checkOutDate < checkInDate) {
-                    throw new Error("check out date cannot be before check in date");
+                    throw new Error(
+                        "check out date cannot be before check in date"
+                    );
                 }
 
                 // create new bookingsIndex as a func of checkIn and checkOut dates
@@ -84,7 +86,7 @@ export const bookingResolvers: IResolvers = {
 
                 const totalPrice = 
                     listing.price*(
-                        (checkOutDate.getTime() - checkInDate.getTime() / 86400000 + 1)
+                        ((checkOutDate.getTime() - checkInDate.getTime()) / 86400000 + 1)
                     );
 
                 const host = await db.users.findOne({
@@ -92,7 +94,9 @@ export const bookingResolvers: IResolvers = {
                 });
 
                 if (!host || !host.walletId) {
-                    throw new Error("the host either cannot be found or is not connected with Stripe");
+                    throw new Error(
+                        "the host either cannot be found or is not connected with Stripe"
+                    );
                 }
 
                 await Stripe.charge(totalPrice, source, host.walletId);

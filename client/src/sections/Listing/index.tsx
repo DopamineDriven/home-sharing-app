@@ -34,13 +34,25 @@ export const Listing = ({ viewer, match }: Props & RouteComponentProps<MatchPara
     const [checkOutDate, setCheckOutDate] = useState<Moment | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const { data, loading, error } = useQuery<ListingData, ListingVariables>(LISTING, {
+    const { data, loading, error, refetch } = useQuery<
+        ListingData, ListingVariables
+    >(LISTING, {
         variables: {
             id: match.params.id,
             bookingsPage,
             limit: PAGE_LIMIT
         }
     });
+
+    const clearBookingData = () => {
+        setModalVisible(false);
+        setCheckInDate(null);
+        setCheckOutDate(null);
+    };
+
+    const handleListingRefetch = async () => {
+        await refetch();
+    };
 
     const listing = data ? data.listing : null;
     
@@ -73,12 +85,15 @@ export const Listing = ({ viewer, match }: Props & RouteComponentProps<MatchPara
 
     const listingCreateBookingModalElement = 
         listing && checkInDate && checkOutDate ? (
-            <ListingCreateBookingModal 
+            <ListingCreateBookingModal
+                id={listing.id}
                 price={listing.price}
                 modalVisible={modalVisible}
                 checkInDate={checkInDate}
                 checkOutDate={checkOutDate}
                 setModalVisible={setModalVisible}
+                clearBookingData={clearBookingData}
+                handleListingRefetch={handleListingRefetch}
             />
         ) : null;
 
