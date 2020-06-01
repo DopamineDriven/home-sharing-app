@@ -3,7 +3,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { Moment } from "moment";
 import { Col, Layout, Row } from "antd";
-import { ListingBookings, ListingCreateBooking, ListingDetails } from "./components";
+import { ListingBookings, ListingCreateBooking, ListingCreateBookingModal, ListingDetails } from "./components";
 import { ErrorBanner, PageSkeleton } from "../../lib/components";
 import { LISTING } from "../../lib/graphql/queries";
 import { 
@@ -27,6 +27,7 @@ export const Listing = ({ viewer, match }: Props & RouteComponentProps<MatchPara
     const [bookingsPage, setBookingsPage] = useState(1);
     const [checkInDate, setCheckInDate] = useState<Moment | null>(null);
     const [checkOutDate, setCheckOutDate] = useState<Moment | null>(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     const { data, loading, error } = useQuery<ListingData, ListingVariables>(LISTING, {
         variables: {
@@ -61,8 +62,16 @@ export const Listing = ({ viewer, match }: Props & RouteComponentProps<MatchPara
             checkOutDate={checkOutDate}
             setCheckInDate={setCheckInDate}
             setCheckOutDate={setCheckOutDate}
+            setModalVisible={setModalVisible}
         />
     ) : null;
+
+    const listingCreateBookingModalElement = (
+        <ListingCreateBookingModal 
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+        />
+    );
 
 
     return loading ? (
@@ -85,6 +94,7 @@ export const Listing = ({ viewer, match }: Props & RouteComponentProps<MatchPara
                     {listingCreateBookingElement}
                 </Col>
             </Row>
+            {listingCreateBookingModalElement}
         </Content>
     )
 };

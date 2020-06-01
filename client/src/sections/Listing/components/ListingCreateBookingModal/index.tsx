@@ -1,14 +1,18 @@
 import React from "react";
-import { Modal } from "antd";
+import { Button, Divider, Modal, Typography } from "antd";
+import { Moment } from "moment";
 
 interface Props {
     modalVisible: boolean;
     setModalVisible: (modalVisible: boolean) => void;
 }
 
-export const ListingCreateBookingModal = (
-    { modalVisible, setModalVisible }: Props
-) => {
+const { Paragraph, Text, Title } = Typography;
+
+export const ListingCreateBookingModal = ({ 
+    modalVisible,
+    setModalVisible 
+}: Props) => {
     return (
         <Modal
             visible={modalVisible}
