@@ -52,7 +52,7 @@ export const ListingCreateBooking = ({
         if (currentDate) {
             const dateIsBeforeEndOfDay = currentDate.isBefore(moment().endOf("day"));
 
-            return dateIsBeforeEndOfDay || dateIsBooked(currentDate);
+            return dateIsBooked(currentDate) || dateIsBeforeEndOfDay;
         } else {
             return false;
         }

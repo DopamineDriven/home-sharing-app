@@ -2470,3 +2470,36 @@ import {
 } from "react-stripe-elements";
 ```
 - https://stripe.com/docs/stripe-js
+- see ./client/src/sections/Listing/components/ListingCreateBookingModal/index.tsx for more
+
+--------------------------------------------------------------------------------
+
+## Cloud Computing
+- the delivery of computing servies -- including servers, storage, databases, networking, software, analytics, and intelligence -- over the internet ("the cloud") to offer faster innovation, flexible resoures, and economies of scale 
+- https://azure.microsoft.com/en-ca/overview/what-is-cloud-computing/
+
+### IaaS (Infrastructure as a Service)
+- "renting" servers or computation power from some services like AWS or Google Cloud Platform
+    - responsible for installing all the software to run an application
+
+### PaaS (Platform as a Service)
+- everything from an IaaS solution + all software required to run the application
+- end user -> developers
+
+### SaaS (Software as a Service)
+- Software provided to the end user as a service and resides on the cloud
+- end user -> app users
+
+### Bottom-line
+- using PaaS (heroku) to deploy SaaS application -- HomeSharing App
+
+## Deploying to Heroku
+- Dynos
+    - Dynos (or containers) are isolated environments that provide memory, an OS, a FS, etc. and are teh areas that package the application's code and dependencies 
+- add engines to client package.json as follows
+```json
+"engines": {
+    "npm": "6.14.5",
+    "node": "14.3.0"
+},
+```
