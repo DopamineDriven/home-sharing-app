@@ -2264,3 +2264,31 @@ export const WrappedListingCreateBookingModal = injectStripe(ListingCreateBookin
             - any 4 digits
         - Date
             - any future date
+- Then, add an onClick function to that button, handleCreateBooking
+```tsx
+        // ...
+            <Button
+                size="large"
+                type="primary"
+                className="listing-booking-modal__cta"
+                onClick={handleCreateBooking}
+            >
+                Book
+            </Button>
+        // ...
+```
+- Initially, this function will look as follows for testing purposes
+```tsx
+    const handleCreateBooking = async () => {
+        if (!stripe) {
+            return;
+        }
+
+        const { token: stripeToken } = await stripe.createToken();
+        console.log(stripeToken);
+    };
+```
+- first, strip props obj is checked to determine whether it exists or not
+    - error handling will be incorporated shortly
+- then, alias token obj as stripeToken and create a stripe token
+- console.log the result of this token for the time being

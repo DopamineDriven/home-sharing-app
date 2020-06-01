@@ -29,6 +29,16 @@ export const ListingCreateBookingModal = ({
     // const homeSharingFee = 0.05 * listingPrice;
     const totalPrice = listingPrice;
 
+    // (a)
+    const handleCreateBooking = async () => {
+        if (!stripe) {
+            return;
+        }
+
+        const { token: stripeToken } = await stripe.createToken();
+        console.log(stripeToken);
+    };
+
 
     return (
         <Modal
@@ -92,6 +102,7 @@ export const ListingCreateBookingModal = ({
                         size="large"
                         type="primary"
                         className="listing-booking-modal__cta"
+                        onClick={handleCreateBooking}
                     >
                         Book
                     </Button>
@@ -102,3 +113,13 @@ export const ListingCreateBookingModal = ({
 };
 
 export const WrappedListingCreateBookingModal = injectStripe(ListingCreateBookingModal);
+
+/*
+(a)
+    (1) check that the injected stripe obj is defined
+    (2) if stripe obj prop does exist, the moment this payment is made and the user
+    wants to create the booking
+        run the stripe.createToken() func
+        this gives the token of the payment that has been made
+        destruct the token and alias it to a stripeToken var
+*/
