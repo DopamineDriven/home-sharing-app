@@ -3,6 +3,7 @@ import { Button, Divider, Modal, Typography } from "antd";
 import { KeyOutlined } from "@ant-design/icons";
 import moment, { Moment } from "moment";
 import { formatListingPrice, iconColor } from "../../../../lib/utils";
+import { CardElement, injectStripe, ReactStripeElements } from "react-stripe-elements";
 
 interface Props {
     price: number;
@@ -19,8 +20,9 @@ export const ListingCreateBookingModal = ({
     modalVisible,
     checkInDate,
     checkOutDate,
-    setModalVisible 
-}: Props) => {
+    setModalVisible,
+    stripe 
+}: Props & ReactStripeElements.InjectedStripeProps) => {
 
     const daysBooked = checkOutDate.diff(checkInDate, "days") + 1;
     const listingPrice = price * daysBooked;
@@ -85,6 +87,7 @@ export const ListingCreateBookingModal = ({
                 <Divider />
 
                 <div className="listing-booking-modal__stripe-card-section">
+                    <CardElement hidePostalCode className="listing-booking-modal__stripe-card" />
                     <Button
                         size="large"
                         type="primary"
@@ -97,3 +100,5 @@ export const ListingCreateBookingModal = ({
         </Modal>
     );
 };
+
+export const WrappedListingCreateBookingModal = injectStripe(ListingCreateBookingModal);

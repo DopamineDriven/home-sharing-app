@@ -2085,3 +2085,161 @@ npm i react-stripe-elements @types/react-stripe-elemnts
 ```tsx
 import { StripeProvider, Elements } from "react-stripe-elements";
 ```
+- Wrap the App component in StripeProvider
+- Route the elements as props to Listing section
+- App should appear as follows
+```tsx
+const App = () => {
+	const [viewer, setViewer] = useState<Viewer>(initalViewer);
+	const [logIn, { error }] = useMutation<LogInData, LogInVariables>(LOG_IN, {
+		onCompleted: data => {
+			if (data && data.logIn) {
+				setViewer(data.logIn);
+
+				data.logIn.token 
+					? sessionStorage.setItem("token", data.logIn.token)
+					: sessionStorage.removeItem("token");
+			}
+		}
+	});
+	const logInRef = useRef(logIn);
+
+	useEffect(() => {
+		logInRef.current()
+	}, []);
+
+	const logInErrorBannerElement = error ? (
+		<ErrorBanner description="unable to verify authenticated status; please try again"/>
+	) : null;
+
+	return !viewer.didRequest && !error ? (
+		<Layout className="app-skeleton">
+			<AppHeaderSkeleton />
+			<div className="app-skeleton__spin-section">
+				<Spin size="large" tip="Launching App" />
+			</div>
+		</Layout>
+		) : (
+		<StripeProvider apiKey={process.env.REACT_APP_S_PUBLISHABLE_KEY as string}>
+			<Router>
+				<Layout id="app">
+					{logInErrorBannerElement}
+					<Affix offsetTop={0} className="app__affix-header">
+						<AppHeader viewer={viewer} setViewer={setViewer} />
+					</Affix>
+					<Switch>
+						<Route exact path="/" component={Home} />
+						<Route 
+							exact path="/host" 
+							render={
+								props => <Host {...props} viewer={viewer} />
+							} 
+						/>
+						<Route 
+							exact path="/listing/:id" 
+							render={
+								props => (
+									<Elements>
+										<Listing {...props} viewer={viewer} />
+									</Elements>
+								) 
+							} 
+						/>
+						<Route exact path="/listings/:location?" component={Listings} />
+						<Route 
+							exact path="/login" 
+							render={
+								props => <Login {...props} setViewer={setViewer} />
+							} 
+						/>
+						<Route 
+							exact path="/stripe"
+							render={
+								props => <Stripe {...props} viewer={viewer} setViewer={setViewer} />
+							}
+						/>
+						<Route 
+							exact path="/user/:id" 
+							render={
+								props => <User {...props} viewer={viewer} setViewer={setViewer} />
+							}	 
+						/>
+						<Route component={NotFound} />
+					</Switch>
+				</Layout>
+			</Router>
+		</StripeProvider>
+	);
+};
+```
+- Then, head over to ./client/src/sections/Listing/components/ListingCreateBookingModal/index.tsx
+- import the following
+```tsx
+import { CardElement, injectStripe, ReactStripeElements } from "react-stripe-elements";
+```
+- below the ListingCreateBookingModal component, export a new const called WrappedListingCreateBookingModal to use the injectStripe() HOF
+- this will wrap the entirety of the ListingCreateBookingModal as a HOC
+```tsx
+export const WrappedListingCreateBookingModal = injectStripe(ListingCreateBookingModal);
+```
+- The ListingCreateBookingModal component function is the result of a HOC that is to recieve a stripe obj prop
+- To define the shape of the obj prop, use the ReactStripeElements namespace
+    - enter namespaces https://www.typescriptlang.org/docs/handbook/namespaces.html
+    - namespaces act as internal modules helping to organize the types and interfaces within a module
+        - within the ReactStripeElements namespace is an interface called InjectedStripeProps
+            - this object interface indicates the type of the stripe obj avaialbe in the component
+    - this will appear as follows
+```tsx
+// ...
+export const ListingCreateBookingModal = ({
+  price,
+  modalVisible,
+  checkInDate,
+  checkOutDate,
+  setModalVisible,
+  stripe
+}: Props & ReactStripeElements.InjectedStripeProps) => {
+  // ...
+};
+```
+- directly before the Antd Button element in the returned template of ListingCreateBookingModal, insert the CardElement component
+    - indicate that postal code is to be hidden via the hidePostalCode prop
+```tsx
+export const ListingCreateBookingModal = ({
+  price,
+  modalVisible,
+  checkInDate,
+  checkOutDate,
+  setModalVisible,
+  stripe
+}: Props & ReactStripeElements.InjectedStripeProps) => {
+  // ...
+  // ...
+  return (
+    <Modal
+      visible={modalVisible}
+      centered
+      footer={null}
+      onCancel={() => setModalVisible(false)}
+    >
+        <div className="listing-booking-modal">
+
+        {/* ... */}
+
+                <div className="listing-booking-modal__stripe-card-section">
+                    <CardElement hidePostalCode className="listing-booking-modal__stripe-card" />
+                    <Button
+                        size="large"
+                        type="primary"
+                        className="listing-booking-modal__cta"
+                    >
+                        Book
+                    </Button>
+                </div>
+            </div>
+        </Modal>
+    );
+};
+
+export const WrappedListingCreateBookingModal = injectStripe(ListingCreateBookingModal);
+```

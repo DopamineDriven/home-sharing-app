@@ -3,7 +3,12 @@ import { RouteComponentProps } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { Moment } from "moment";
 import { Col, Layout, Row } from "antd";
-import { ListingBookings, ListingCreateBooking, ListingCreateBookingModal, ListingDetails } from "./components";
+import { 
+    ListingBookings, 
+    ListingCreateBooking, 
+    WrappedListingCreateBookingModal as ListingCreateBookingModal, 
+    ListingDetails 
+} from "./components";
 import { ErrorBanner, PageSkeleton } from "../../lib/components";
 import { LISTING } from "../../lib/graphql/queries";
 import { 
