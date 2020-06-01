@@ -2292,3 +2292,42 @@ export const WrappedListingCreateBookingModal = injectStripe(ListingCreateBookin
     - error handling will be incorporated shortly
 - then, alias token obj as stripeToken and create a stripe token
 - console.log the result of this token for the time being
+- this logs the following object
+```json
+card:
+    address_city: null
+    address_country: null
+    address_line1: null
+    address_line1_check: null
+    address_line2: null
+    address_state: null
+    address_zip: null
+    address_zip_check: null
+    brand: "American Express"
+    country: "US"
+    cvc_check: "unchecked"
+    dynamic_last4: null
+    exp_month: 7
+    exp_year: 2023
+    funding: "credit"
+    id: "card_1GpE8fJ0juJb1OEhs3QOjSDe"
+    last4: "0005"
+metadata: {}
+name: null
+object: "card"
+tokenization_method: null
+__proto__: Object
+client_ip: "67.xxx.xxx.xxx"
+created: 1591019837
+id: "tok_1GpE8fJ0juJb1OEhV4D6dhQL"
+livemode: false
+object: "token"
+type: "card"
+used: false
+```
+- Interested in capturing the id of the token
+```json
+id: "tok_1GpE8fJ0juJb1OEhV4D6dhQL"
+```
+- this is to be the source of payment being made
+- this will be passed over as part of the input to the createBooking mutation
