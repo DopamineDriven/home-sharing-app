@@ -63,13 +63,13 @@ export const ListingCreateBookingModal = ({
                 
                 <div className="listing-booking-modal__charge-summary">
                     <Paragraph>
-                        {formatListingPrice(price, false)} x {daysBooked} days ={" "}
+                        {formatListingPrice(price, false)}/day x {daysBooked} days ={" "}
                         <Text strong>
                             {formatListingPrice(listingPrice, false)}
                         </Text>
                     </Paragraph>
                     <Paragraph>
-                        HomeSharing Fee <sub>~5%</sub> ={" "}
+                        HomeSharing Fee <Text>~5%</Text> ={" "}
                         <Text strong>
                             {formatListingPrice(homeSharingFee)}
                         </Text>
@@ -77,7 +77,7 @@ export const ListingCreateBookingModal = ({
                     <Paragraph className="listing-booking-modal__charge-summary-total">
                         Total = 
                         <Text mark>
-                            {formatListingPrice(listingPrice, false)}
+                            {formatListingPrice(totalPrice, false)}
                         </Text>
                     </Paragraph>
                 </div>
