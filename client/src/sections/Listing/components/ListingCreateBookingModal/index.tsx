@@ -24,8 +24,8 @@ export const ListingCreateBookingModal = ({
 
     const daysBooked = checkOutDate.diff(checkInDate, "days") + 1;
     const listingPrice = price * daysBooked;
-    const homeSharingFee = 0.05 * listingPrice;
-    const totalPrice = listingPrice + homeSharingFee;
+    // const homeSharingFee = 0.05 * listingPrice;
+    const totalPrice = listingPrice;
 
 
     return (
@@ -68,16 +68,16 @@ export const ListingCreateBookingModal = ({
                             {formatListingPrice(listingPrice, false)}
                         </Text>
                     </Paragraph>
-                    <Paragraph>
+                    {/* <Paragraph>
                         HomeSharing Fee <Text>~5%</Text> ={" "}
                         <Text strong>
                             {formatListingPrice(homeSharingFee)}
                         </Text>
-                    </Paragraph>
+                    </Paragraph> */}
                     <Paragraph className="listing-booking-modal__charge-summary-total">
                         Total = 
                         <Text mark>
-                            {formatListingPrice(totalPrice)}
+                            {formatListingPrice(totalPrice, false)}
                         </Text>
                     </Paragraph>
                 </div>

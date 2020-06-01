@@ -2050,3 +2050,38 @@ const bookingsIndex = {
   }
 };
 ```
+
+### Payment Form with Stripe Elements
+- Accept debit or credit card info
+- Stripe Elements in React 
+    - https://stripe.com/docs/payments/accept-a-payment#web
+    - used to introduce a stripe component element to capture debit/credit card information
+    - (1) install react-stripe-elements library
+    - (2) add a script tag in index.html of public folder to load the Stripe library
+        - PCI (Payment Card Industry) compliance 
+        - told that stripe.js library must be loaded directly from Stripe's servers at runtime and not installed from npm or as an app dependency
+    - (3) Create the payment platform
+        - Utilize a CardElement component and an injectStripe() HOF
+        - CardElement component -> UI element
+        - inectStripe() HOF allows for the creation of a HOC providing an injected stripe prop obj to determine details of the payment
+    - (4) Wrap index.tsx in a StripeProvider component from react-stripe-elemnts
+        - this initializes Stripe and accepts an API key
+        - pass the publishable key of Stripe account with API key
+    - (5) Elements component from react-stripe-elements to wrap the payment form
+        - Wraps the parent that is to contain different Stripe components
+    - (6) When a payment is made from the client
+        - retrieve the token info from the injected stripe prop with which the id -> source info that is passed to the server from the client to dictate the payment source that was made
+    - (7) Server side handling of the charge (previously completed)
+```tsx
+npm i react-stripe-elements @types/react-stripe-elemnts
+```
+- load the stripe lib directly from Stripe's servers
+- ./client/src/public/index.html
+```html
+ <script src="https://js.stripe.com/v3/"></script>
+```
+- navigate to root of app
+- ./client/src/index.tsx
+```tsx
+import { StripeProvider, Elements } from "react-stripe-elements";
+```
