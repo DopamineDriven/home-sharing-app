@@ -66,12 +66,16 @@ export const Listing = ({ viewer, match }: Props & RouteComponentProps<MatchPara
         />
     ) : null;
 
-    const listingCreateBookingModalElement = (
-        <ListingCreateBookingModal 
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
-        />
-    );
+    const listingCreateBookingModalElement = 
+        listing && checkInDate && checkOutDate ? (
+            <ListingCreateBookingModal 
+                price={listing.price}
+                modalVisible={modalVisible}
+                checkInDate={checkInDate}
+                checkOutDate={checkOutDate}
+                setModalVisible={setModalVisible}
+            />
+        ) : null;
 
 
     return loading ? (
