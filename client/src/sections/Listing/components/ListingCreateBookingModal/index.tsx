@@ -77,7 +77,7 @@ export const ListingCreateBookingModal = ({
                     <Paragraph className="listing-booking-modal__charge-summary-total">
                         Total = 
                         <Text mark>
-                            {formatListingPrice(totalPrice, false)}
+                            {formatListingPrice(totalPrice)}
                         </Text>
                     </Paragraph>
                 </div>
