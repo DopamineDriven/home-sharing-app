@@ -41,7 +41,8 @@ export const User = ({
                 bookingsPage,
                 listingsPage,
                 limit: PAGE_LIMIT
-            }
+            },
+            fetchPolicy: "cache-and-network"
         }
     );
 

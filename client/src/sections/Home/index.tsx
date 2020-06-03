@@ -26,7 +26,8 @@ export const Home = ({ history }: RouteComponentProps) => {
             filter: ListingsFilter.PRICE_HIGH_TO_LOW,
             limit: PAGE_LIMIT,
             page: PAGE_NUMBER
-        }
+        },
+        fetchPolicy: "cache-and-network"
     });
 
 

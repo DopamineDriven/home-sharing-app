@@ -2562,3 +2562,52 @@ npm i --save-dev @types/compression
 - then, rename recently moved build folder "src"
 - copy all dependencies from server into the package.json of the deploy folder
 - note: do not need any of the dev dependencies; only dependencies
+
+
+--------------------------------------------------------------------------------
+
+### Apollo Client and Fetch Policy
+- Once fetched, apollo caches data even if navigating to other pages
+    - eliminates unnecessary network requests
+- https://www.apollographql.com/docs/react/api/react-apollo/#optionsfetchpolicy
+- https://www.apollographql.com/docs/react/caching/cache-interaction/
+- after query, add fetchPolicy to Home and User components
+```tsx
+// ...
+export const Home = ({ history }: RouteComponentProps) => {
+    const { loading, data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
+        variables: {
+            filter: ListingsFilter.PRICE_HIGH_TO_LOW,
+            limit: PAGE_LIMIT,
+            page: PAGE_NUMBER
+        },
+        fetchPolicy: "cache-and-network"
+    });
+// ...
+```
+- why?
+    - Cache and network option has Apollo fetch data from cache while simultaneously making a network query to retrieve the latest information (such as a newly created listing, or a user that is newly connected with stripe)
+- again in the User component 
+```tsx
+// ...
+export const User = ({ 
+    viewer,
+    setViewer, 
+    match 
+}: Props & RouteComponentProps<MatchParams>) => {
+    const [listingsPage, setListingsPage] = useState(1);
+    const [bookingsPage, setBookingsPage] = useState(1);
+
+    const { data, loading, error, refetch } = useQuery<UserData, UserVariables>(
+        USER, {
+            variables: {
+                id: match.params.id,
+                bookingsPage,
+                listingsPage,
+                limit: PAGE_LIMIT
+            },
+            fetchPolicy: "cache-and-network"
+        }
+    );
+// ...
+```
