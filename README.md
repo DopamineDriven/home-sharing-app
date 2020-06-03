@@ -2613,6 +2613,7 @@ export const User = ({
 ```
 - and again in the Host component
 ```tsx
+// ...
 export const Host = ({ viewer }: Props) => {
     const [imageLoading, setImageLoading] = useState(false);
     const [imageBase64Value, setImageBase64Value] = useState<string | null>(null);
@@ -2629,9 +2630,13 @@ export const Host = ({ viewer }: Props) => {
         }, 
         fetchPolicy: "cache-and-network"
     });
+// ...
 ```
 - SSR with Apollo-Client
     - https://www.apollographql.com/docs/react/performance/server-side-rendering/
     - use with next.js framework, for example
 - Interacting with cached data directly
     - https://www.apollographql.com/docs/react/caching/cache-interaction/
+- Note:
+    - often avoid updating cache directly
+    - refetching from the query is, however, a good option
