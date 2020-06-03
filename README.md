@@ -2640,3 +2640,38 @@ export const Host = ({ viewer }: Props) => {
 - Note:
     - often avoid updating cache directly
     - refetching from the query is, however, a good option
+
+### useLayoutEffect and Window Scroll
+- if the user is scrolled halfway down the home page, for example, and then they navigate to the host page
+    - they land on the host page in that same scrolled position
+    - why?
+        - This is a SPA, so navigating between components doesn't automatically reset ones scrolled position
+- Solution
+    - manually reset page position to the very top
+    - useLayoutEffect Hook 
+- Enter useLayoutEffect
+    - https://reactjs.org/docs/hooks-reference.html#uselayouteffect
+    - signature is identical to useEffect, but it fires synchronously after all DOM mutations
+    - reads layout from the DOM and synchronously re-renders
+    - Updates scheduled within are flushed synchronously, before the browser has a chance to "paint"
+- Execution
+    - create a new folder in ./client/src/lib titled hooks
+    - then, create an index.ts file within hooks to re-export a soon to be created function
+    - ./client/src/lib/hooks/index.ts
+```ts
+export * from "./useScrollToTop";
+```
+- then, create a folder within the hooks folder titled useScrollToTop
+- within this folder, create an index.ts file
+- import useLayoutEffect from react and define the func as follows
+```tsx
+import { useLayoutEffect } from "react";
+
+export const useScrollToTop = () => {
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+};
+```
+- the window.scrollTo(0, 0) effect callback scrolls the user to the top of the webpage 
+    - that is, to the 0 pixel positions for the x and y axes
