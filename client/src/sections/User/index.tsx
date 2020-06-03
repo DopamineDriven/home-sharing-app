@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useParams } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 import { UserBookings, UserListings, UserProfile } from "./components";
 import { useQuery } from "@apollo/react-hooks";
@@ -31,15 +32,17 @@ export const User = ({
     viewer,
     setViewer, 
     match 
-}: Props & RouteComponentProps<MatchParams>) => {
+}: Props & RouteComponentProps) => {
     useScrollToTop();
     const [listingsPage, setListingsPage] = useState(1);
     const [bookingsPage, setBookingsPage] = useState(1);
 
+    const { id } = useParams<MatchParams>();
+
     const { data, loading, error, refetch } = useQuery<UserData, UserVariables>(
         USER, {
             variables: {
-                id: match.params.id,
+                id,
                 bookingsPage,
                 listingsPage,
                 limit: PAGE_LIMIT
@@ -59,7 +62,7 @@ export const User = ({
     ) : null;
 
     const user = data ? data.user : null;
-    const viewerIsUser = viewer.id === match.params.id;
+    const viewerIsUser = viewer.id === id;
 
     const userListings = user ? user.listings : null;
     const userBookings = user ? user.bookings : null;

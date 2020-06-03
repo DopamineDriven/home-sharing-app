@@ -2676,4 +2676,107 @@ export const useScrollToTop = () => {
 - the window.scrollTo(0, 0) effect callback scrolls the user to the top of the webpage 
     - that is, to the 0 pixel positions for the x and y axes
     - empty dependency array because only want it to run on initial render
-- then, import this function and instantiate it in individual section-level components (Home, Host, etc.)
+- then, import this function and instantiate it in individual section-level components (Home, Host, Listing, Listings, Login, Stripe, and User)
+
+### React Router Hooks
+- blog post
+    - https://reacttraining.com/blog/reach-react-router-future/
+- documentation
+    - https://reacttraining.com/react-router/web/api/Hooks
+- useParams
+    - to access URL params of a route, use the useParams() Hook
+- before (./client/src/sections/User/index.tsx)
+```tsx
+// ...
+interface MatchParams {
+    id: string;
+}
+
+// (b) 
+const { Content } = Layout;
+
+const PAGE_LIMIT = 4;
+
+export const User = ({ 
+    viewer,
+    setViewer, 
+    match 
+}: Props & RouteComponentProps<MatchParams>) => {
+    useScrollToTop();
+    const [listingsPage, setListingsPage] = useState(1);
+    const [bookingsPage, setBookingsPage] = useState(1);
+
+    const { data, loading, error, refetch } = useQuery<UserData, UserVariables>(
+        USER, {
+            variables: {
+                id: match.params.id,
+                bookingsPage,
+                listingsPage,
+                limit: PAGE_LIMIT
+            },
+            fetchPolicy: "cache-and-network"
+        }
+    );
+
+    const handleUserRefetch = async () => {
+        await refetch();
+    }
+
+    // URL constructor (for redirect to user on error from Stripe component)
+    const stripeError = new URL(window.location.href).searchParams.get("stripe_error");
+    const stripeErrorBanner = stripeError ? (
+        <ErrorBanner description="Error connecting with Stripe; please try again" />
+    ) : null;
+
+    const user = data ? data.user : null;
+    const viewerIsUser = viewer.id === match.params.id;
+// ...
+```
+- after (./client/src/sections/User/index.tsx)
+```tsx
+// ...
+interface MatchParams {
+    id: string;
+}
+
+// (b) 
+const { Content } = Layout;
+
+const PAGE_LIMIT = 4;
+
+export const User = ({ 
+    viewer,
+    setViewer, 
+    match 
+}: Props & RouteComponentProps) => {
+    useScrollToTop();
+    const [listingsPage, setListingsPage] = useState(1);
+    const [bookingsPage, setBookingsPage] = useState(1);
+
+    const { id } = useParams<MatchParams>();
+
+    const { data, loading, error, refetch } = useQuery<UserData, UserVariables>(
+        USER, {
+            variables: {
+                id,
+                bookingsPage,
+                listingsPage,
+                limit: PAGE_LIMIT
+            },
+            fetchPolicy: "cache-and-network"
+        }
+    );
+
+    const handleUserRefetch = async () => {
+        await refetch();
+    }
+
+    // URL constructor (for redirect to user on error from Stripe component)
+    const stripeError = new URL(window.location.href).searchParams.get("stripe_error");
+    const stripeErrorBanner = stripeError ? (
+        <ErrorBanner description="Error connecting with Stripe; please try again" />
+    ) : null;
+
+    const user = data ? data.user : null;
+    const viewerIsUser = viewer.id === id;
+```
