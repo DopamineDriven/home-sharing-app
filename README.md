@@ -2926,3 +2926,146 @@ export const AppHeader =({
     );
 };
 ```
+- access params of a route
+```tsx
+interface MatchParams {
+    id: string;
+}
+
+const { id } = useParams<MatchParams>();
+```
+- access history object 
+```tsx
+import { useHistory } from "react-router-dom";
+
+const history = useHistory();
+```
+- access location object for location-specific info of routes
+```tsx
+import { useLocation } from "react-router-dom";
+
+const location = useLocation();
+```
+
+
+### Disconnecting from Stripe and Revoking Access
+- https://stripe.com/docs/connect/standard-accounts#revoked-access
+- revoked and revoking access
+- capability to achieve account.application.deauthorized
+- from the stripe documentation
+```ts
+// Set your secret key. Remember to switch to your live secret key in production!
+// See your keys here: https://dashboard.stripe.com/account/apikeys
+const stripe = require('stripe')('sk_test_DKHAT8mHyojIDW038Rr31mtz001DW49gXg');
+
+const response = await stripe.oauth.deauthorize({
+  client_id: 'ca_HLohLSkqjsfkap3vLaIllmVPwJTkMweF',
+  stripe_user_id: 'acct_46NGPp6sofGvBG'
+});
+```
+- add disconnect functionality to ./server/src/lib/api/Stripe.ts
+```ts
+import stripe from "stripe";
+
+const client = new stripe(`${process.env.S_SECRET_KEY}`, {
+    apiVersion: "2020-03-02"
+});
+
+export const Stripe = {
+    connect: async (code: string) => {
+        /* eslint-disable @typescript-eslint/camelcase */
+        const response = await client.oauth.token({
+            grant_type: "authorization_code",
+            code
+        /* eslint-enable @typescript-eslint/camelcase */
+        });
+        return response;
+    },
+    disconnect: async (stripeUserId: string) => {
+        const response = await client.oauth.deauthorize({
+            /* eslint-disable @typescript-eslint/camelcase */
+            client_id: `${process.env.S_CLIENT_ID}`,
+            stripe_user_id: stripeUserId
+            /* eslint-enable @typescript-eslint/camelcase */
+        });
+
+        return response;
+    },
+    charge: async (
+        amount: number, 
+        source: string,
+        stripeAccount: string
+    ) => {
+        /* eslint-disable @typescript-eslint/camelcase */
+        const res = await client.charges.create(
+            {
+                amount,
+                currency: "usd",
+                source,
+                application_fee_amount: Math.round(amount*0.05)
+            },
+            {
+                stripeAccount: stripeAccount
+            }
+        );
+        /* eslint-enable @typescript-eslint/camelcase */
+
+        if (res.status !== "succeeded") {
+            throw new Error("failed to create charge with Stripe");
+        }
+    }
+};
+```
+- then, update the disconnectStripe resolver mutation in ./server/src/graphql/resolvers/Viewer/index.ts
+```ts
+    export const viewerResolvers: IResolvers = {
+        // ...
+        {
+            // ...
+        },
+		disconnectStripe: async (
+			_root: undefined,
+			_args: {},
+			{ db, req }: { db: Database; req: Request }
+		): Promise<Viewer | undefined> => {
+			try {
+				let viewer = await authorize(db, req);
+				if (!viewer) {
+					throw new Error("viewer not found");
+				}
+
+				const wallet = await Stripe.disconnect(viewer._id);
+				if (!wallet) {
+					throw new Error("stripe disconnect error");
+				}
+
+
+				const updateRes = await db.users.findOneAndUpdate(
+					{ _id: viewer._id },
+					{ $set: { walletId: undefined } },
+					{ returnOriginal: false }
+				);
+
+				if (!updateRes.value) {
+					throw new Error("viewer could not be updated");
+				}
+
+				viewer = updateRes.value;
+
+				return {
+					_id: viewer._id,
+					token: viewer.token,
+					avatar: viewer.avatar,
+					walletId: viewer.walletId,
+					didRequest: true
+				};
+
+			} catch (error) {
+				throw new Error(`Failed to disconnect with Stripe - ${error}`);
+			}
+		}
+    },
+
+    // ...
+}
+```
