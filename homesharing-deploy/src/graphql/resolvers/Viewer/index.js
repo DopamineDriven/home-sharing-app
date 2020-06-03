@@ -169,6 +169,10 @@ exports.viewerResolvers = {
                 if (!viewer) {
                     throw new Error("viewer not found");
                 }
+                const wallet = await api_1.Stripe.disconnect(viewer._id);
+                if (!wallet) {
+                    throw new Error("stripe disconnect error");
+                }
                 const updateRes = await db.users.findOneAndUpdate({ _id: viewer._id }, { $set: { walletId: undefined } }, { returnOriginal: false });
                 if (!updateRes.value) {
                     throw new Error("viewer could not be updated");

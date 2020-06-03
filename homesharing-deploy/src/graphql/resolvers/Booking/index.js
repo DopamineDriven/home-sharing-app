@@ -46,8 +46,17 @@ exports.bookingResolvers = {
                 if (listing.host === viewer._id) {
                     throw new Error("viewer cannot book their own listing");
                 }
+                const today = new Date();
                 const checkInDate = new Date(checkIn);
                 const checkOutDate = new Date(checkOut);
+                // checkin date cannot exceed one year from the current date
+                if (checkInDate.getTime() > today.getTime() + 365 * 86400000) {
+                    throw new Error("check in date cannot exceed year-to-date");
+                }
+                // assume average booking is 7 days, make checkout 372 days
+                if (checkOutDate.getTime() > today.getTime() + 372 * 86400000) {
+                    throw new Error("check out date cannot exceed year-to-date plus one week");
+                }
                 if (checkOutDate < checkInDate) {
                     throw new Error("check out date cannot be before check in date");
                 }

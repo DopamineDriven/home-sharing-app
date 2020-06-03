@@ -18,6 +18,15 @@ exports.Stripe = {
         });
         return response;
     },
+    disconnect: async (stripeUserId) => {
+        const response = await client.oauth.deauthorize({
+            /* eslint-disable @typescript-eslint/camelcase */
+            client_id: `${process.env.S_CLIENT_ID}`,
+            stripe_user_id: stripeUserId
+            /* eslint-enable @typescript-eslint/camelcase */
+        });
+        return response;
+    },
     charge: async (amount, source, stripeAccount) => {
         /* eslint-disable @typescript-eslint/camelcase */
         const res = await client.charges.create({

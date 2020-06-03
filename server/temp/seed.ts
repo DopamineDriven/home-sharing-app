@@ -1,4 +1,4 @@
-require("dotenv").config();
+// require("dotenv").config();
 // objectid class -> instantiate new objectid (12-byte)
 // generates new hexadecimal identifier
 import { ObjectId } from "mongodb";
