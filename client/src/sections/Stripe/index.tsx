@@ -21,14 +21,17 @@ interface Props {
 
 export const Stripe = ({ viewer, setViewer, history }: Props & RouteComponentProps) => {
     useScrollToTop();
-    
+
     const [connectStripe, { data, loading, error }] = useMutation<
         ConnectStripeData,
         ConnectStripeVariables
     >(CONNECT_STRIPE, {
         onCompleted: data => {
             if (data && data.connectStripe) {
-                setViewer({ ...viewer, hasWallet: data.connectStripe.hasWallet });
+                setViewer({ 
+                    ...viewer, 
+                    hasWallet: data.connectStripe.hasWallet 
+                });
                 displaySuccessNotification(
                     "Successfully connected to Stripe!",
                     "Head to the Host page to create new listings."
@@ -38,6 +41,8 @@ export const Stripe = ({ viewer, setViewer, history }: Props & RouteComponentPro
     });
     // useRef.current -> mutable
     const connectStripeRef = useRef(connectStripe);
+
+
 
     // (a)
     useEffect(() => {
@@ -54,7 +59,29 @@ export const Stripe = ({ viewer, setViewer, history }: Props & RouteComponentPro
         }
     }, [history]);
 
-    if (data && data.connectStripe) {
+    return error ? (
+        <Redirect to={`/user/${viewer.id}?stripe_error=true`} />
+    ) : data && data.connectStripe ? (
+        <Redirect to={`/user/${viewer.id}`} />
+    ) : loading ? (
+        <Content className="stripe">
+            <Spin size="large" tip="Connecting with Stripe account..." />
+        </Content>
+    ) : null;
+};
+
+/*
+    return error ? (
+        <Redirect to={`/user/${viewer.id}?stripe_error=true`} />
+    ) : data && data.connectStripe ? (
+        <Redirect to={`/user/${viewer.id}`} />
+    ) : loading ? (
+        <Content className="stripe">
+            <Spin size="large" tip="Connecting with Stripe account..." />
+        </Content>
+    ) : null;
+    
+        if (data && data.connectStripe) {
         return <Redirect to={`/user/${viewer.id}`} />;
     }
     
@@ -72,19 +99,7 @@ export const Stripe = ({ viewer, setViewer, history }: Props & RouteComponentPro
     }
 
     return null;
-};
 
-/*
-    return error ? (
-        <Redirect to={`/user/${viewer.id}?stripe_error=true`} />
-    ) : data && data.connectStripe ? (
-        <Redirect to={`/user/${viewer.id}`} />
-    ) : loading ? (
-        <Content className="stripe">
-            <Spin size="large" tip="Connecting with Stripe account..." />
-        </Content>
-	) : null;
-*/
 
 /*
 (a)
