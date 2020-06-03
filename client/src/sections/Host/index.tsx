@@ -1,5 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { useMutation } from "@apollo/react-hooks";
+import { useScrollToTop } from "../../lib/hooks";
 import { Link, Redirect } from "react-router-dom";
 import { Viewer } from "../../lib/types";
 import { ListingType } from "../../lib/graphql/globalTypes";
@@ -39,6 +40,7 @@ const { Content } = Layout;
 const { Text, Title } = Typography;
 
 export const Host = ({ viewer }: Props) => {
+    useScrollToTop();
     const [imageLoading, setImageLoading] = useState(false);
     const [imageBase64Value, setImageBase64Value] = useState<string | null>(null);
     

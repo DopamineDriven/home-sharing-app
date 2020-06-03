@@ -1,5 +1,6 @@
 import React from "react";
 import { useQuery } from "@apollo/react-hooks";
+import { useScrollToTop } from "../../lib/hooks";
 import { LISTINGS } from "../../lib/graphql/queries";
 import { ListingsFilter } from "../../lib/graphql/globalTypes";
 import {
@@ -29,6 +30,8 @@ export const Home = ({ history }: RouteComponentProps) => {
         },
         fetchPolicy: "cache-and-network"
     });
+
+    useScrollToTop();
 
 
     const onSearch = (value: string) => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { RouteComponentProps } from "react-router-dom";
 import { UserBookings, UserListings, UserProfile } from "./components";
 import { useQuery } from "@apollo/react-hooks";
+import { useScrollToTop } from "../../lib/hooks";
 import { USER } from "../../lib/graphql/queries/index";
 import {
     User as UserData,
@@ -31,6 +32,7 @@ export const User = ({
     setViewer, 
     match 
 }: Props & RouteComponentProps<MatchParams>) => {
+    useScrollToTop();
     const [listingsPage, setListingsPage] = useState(1);
     const [bookingsPage, setBookingsPage] = useState(1);
 

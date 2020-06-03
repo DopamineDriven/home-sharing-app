@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
+import { useScrollToTop } from "../../lib/hooks";
 import { Affix, Layout, List, Typography } from "antd";
 import { ErrorBanner, ListingCard } from "../../lib/components";
 import { LISTINGS } from "../../lib/graphql/queries";
@@ -23,6 +24,7 @@ const { Content } = Layout;
 const { PRICE_LOW_TO_HIGH } = ListingsFilter; //enum
 
 export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
+    useScrollToTop();
     // (a)
     const locationRef = useRef(match.params.location);
     const [filter, setFilter] = useState(PRICE_LOW_TO_HIGH);

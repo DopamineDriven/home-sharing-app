@@ -2675,3 +2675,5 @@ export const useScrollToTop = () => {
 ```
 - the window.scrollTo(0, 0) effect callback scrolls the user to the top of the webpage 
     - that is, to the 0 pixel positions for the x and y axes
+    - empty dependency array because only want it to run on initial render
+- then, import this function and instantiate it in individual section-level components (Home, Host, etc.)
