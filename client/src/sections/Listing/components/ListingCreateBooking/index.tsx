@@ -160,7 +160,7 @@ export const ListingCreateBooking = ({
                                             type="secondary"
                                             className="ant-calendar-footer-text"    
                                         >
-                                            Booking checkin cannot exceed one year-to-date
+                                            Booking checkin cannot exceed year-to-date
                                         </Text>
                                     </div>
                                 );

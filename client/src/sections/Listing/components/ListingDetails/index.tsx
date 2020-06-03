@@ -37,7 +37,13 @@ export const ListingDetails = ({ listing }: Props) => {
                     ellipsis
                 >
                     <Link to={`/listings/${city}`}>
-                        <EnvironmentOutlined style={{ color: iconColor }} />
+                        <EnvironmentOutlined 
+                            style={{ 
+                                color: iconColor,
+                                display: "inline-block", 
+                                verticalAlign: "middle"  
+                            }} 
+                        />
                         {city}
                     </Link>
                     <Divider type="vertical" />
