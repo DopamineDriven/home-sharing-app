@@ -3069,3 +3069,171 @@ export const Stripe = {
     // ...
 }
 ```
+
+
+### Listing DatePicker Changes
+- createBooking mutation is triggered when a user provides payment info and confirms the booking of a listing between certain dates
+    - DatePicker ensures 
+        - checkout date is not before checkin
+        - these dates don't overlap with existing bookings
+    - Goal
+        - additional check to confirm the user can't book dates that spans too far into the future
+        - 365 days, for example
+    - Execution
+        - Server-side validation in the createBooking() resolver function via Unix Epoch time (milliseconds) 
+- ./server/src/graphql/resolvers/Booking/index.ts
+```ts
+            // ...
+                const today = new Date();
+                const checkInDate = new Date(checkIn);
+                const checkOutDate = new Date(checkOut);
+
+                // checkin date cannot exceed one year from the current date
+                if (checkInDate.getTime() > today.getTime() + 365 * 86400000) {
+                    throw new Error(
+                        "check in date cannot exceed year-to-date"
+                    );
+                }
+
+                // assume average booking is 7 days, make checkout 372 days
+                if (checkOutDate.getTime() > today.getTime() + 372 * 86400000) {
+                    throw new Error(
+                        "check out date cannot exceed year-to-date plus one week"
+                    );
+                }
+
+                if (checkOutDate < checkInDate) {
+                    throw new Error(
+                        "check out date cannot be before check in date"
+                    );
+                }
+            // ...
+```
+- now, move to the client side to update the UI DatePicker elements to render aforementioned dates inaccessible
+- achieved by updating the disabledDate() function used by the disabledDate Antd prop
+- ./client/src/sections/Listing/components/ListingCreateBooking/index.tsx
+```tsx
+// ...
+    const dateIsBooked = (currentDate: Moment) => {
+        const year = moment(currentDate).year();
+        const month = moment(currentDate).month();
+        const day = moment(currentDate).day();
+
+        // if val for year or month cannot be found, automatically return false
+        if (bookingsIndexJSON[year] && bookingsIndexJSON[year][month]) {
+            return Boolean(bookingsIndexJSON[year][month][day]);
+        } else {
+            return false;
+        }
+    };
+
+    const disabledDateCheckIn = (currentDate?: Moment | any) => {
+        if (currentDate) {
+            const dateIsBeforeEndOfDay = currentDate.isBefore(moment().endOf("day"));
+            const dateIsMoreThanYTD = moment(currentDate).isAfter(
+                moment()
+                    .endOf("day")
+                    .add(365, "days")
+            );
+            
+            return (
+                dateIsBooked(currentDate) || 
+                dateIsBeforeEndOfDay || 
+                dateIsMoreThanYTD
+            );
+        } else {
+            return false;
+        }
+    };
+
+    const disabledDateCheckOut = (currentDate?: Moment | any) => {
+        if (currentDate) {
+            const dateIsBeforeEndOfDay = currentDate.isBefore(moment().endOf("day"));
+            const dateIsMoreThanYTDPlusOneWeek = moment(currentDate).isAfter(
+                moment()
+                    .endOf("day")
+                    .add(372, "days")
+            );
+            
+            return (
+                dateIsBooked(currentDate) || 
+                dateIsBeforeEndOfDay || 
+                dateIsMoreThanYTDPlusOneWeek
+            );
+        } else {
+            return false;
+        }
+    };
+// ...
+```
+- update props in the returned tsx
+```tsx
+// ...
+                    <div className="listing-booking__card-date-picker">
+                        <Paragraph strong>Check In</Paragraph>
+                        <DatePicker 
+                            value={checkInDate ? checkInDate : undefined}
+                            format={"YYYY/MM/DD"}
+                            showToday={true}
+                            disabled={checkInInputDisabled}
+                            disabledDate={disabledDateCheckIn}
+                            onOpenChange={() => setCheckOutDate(null)}
+                            onChange={dateValue => setCheckInDate(dateValue)}
+                            renderExtraFooter={() => {
+                                return (
+                                    <div>
+                                        <Text 
+                                            type="secondary"
+                                            className="ant-calendar-footer-text"    
+                                        >
+                                            Booking checkin cannot exceed one year-to-date
+                                        </Text>
+                                    </div>
+                                );
+                            }}
+                        />
+                    </div>
+                    <div className="listing-booking__card-date-picker">
+                        <Paragraph strong>Check Out</Paragraph>
+                        <DatePicker 
+                            value={checkOutDate ? checkOutDate : undefined}
+                            format={"YYYY/MM/DD"}
+                            showToday={false}
+                            disabled={checkOutInputDisabled}
+                            disabledDate={disabledDateCheckOut}
+                            onChange={dateValue => verifyAndSelectCheckOutDate(dateValue)}
+                            dateRender={current => {
+                                if (
+                                    moment(current).isSame(checkInDate ? checkInDate : undefined, "day")
+                                ) {
+                                    return (
+                                        <Tooltip title="check in date">
+                                            <div className="ant-calendar-date ant-calendar-date__check-in">
+                                                {current.date()}
+                                            </div>
+                                        </Tooltip>
+                                    );
+                                } else {
+                                    return (
+                                        <div className="ant-calendar-date">
+                                            {current.date()}
+                                        </div>
+                                    );
+                                }
+                            }}
+                            renderExtraFooter={() => {
+                                return (
+                                    <div>
+                                        <Text 
+                                            type="secondary"
+                                            className="ant-calendar-footer-text"    
+                                        >
+                                            Checkout cannot be before checkin date
+                                        </Text>
+                                    </div>
+                                );
+                            }}
+                        />
+                    </div>
+// ...
+```
