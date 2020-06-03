@@ -51,7 +51,8 @@ export const Host = ({ viewer }: Props) => {
         },
         onError: () => {
             displayErrorMessage("Unable to create listing. Please try again");
-        }
+        }, 
+        fetchPolicy: "cache-and-network"
     });
 
     const handleImageUpload = (info: UploadChangeParam) => {

@@ -2611,3 +2611,27 @@ export const User = ({
     );
 // ...
 ```
+- and again in the Host component
+```tsx
+export const Host = ({ viewer }: Props) => {
+    const [imageLoading, setImageLoading] = useState(false);
+    const [imageBase64Value, setImageBase64Value] = useState<string | null>(null);
+    
+    const [hostListing, { loading, data }] = useMutation<
+        HostListingData,
+        HostListingVariables
+    >(HOST_LISTING, {
+        onCompleted: () => {
+            displaySuccessNotification("Listing created successfully!");
+        },
+        onError: () => {
+            displayErrorMessage("Unable to create listing. Please try again");
+        }, 
+        fetchPolicy: "cache-and-network"
+    });
+```
+- SSR with Apollo-Client
+    - https://www.apollographql.com/docs/react/performance/server-side-rendering/
+    - use with next.js framework, for example
+- Interacting with cached data directly
+    - https://www.apollographql.com/docs/react/caching/cache-interaction/
