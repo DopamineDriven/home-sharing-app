@@ -3240,3 +3240,19 @@ export const Stripe = {
                     </div>
 // ...
 ```
+
+--------------------------------------------------------------------------------
+
+## NoSQL -> SQL Migration
+
+## SQL vs NoSQL
+- SQL
+    - defined schema
+    - structured data
+    - embraces rigidity for consistency
+- NoSQL
+    - dynamic schema
+    - unstructured or polymorphic data
+    - stored in JSON format (Mongo uses BSON specifically, machine readable)
+    - embraces flexibility
+
