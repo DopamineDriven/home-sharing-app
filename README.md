@@ -3513,3 +3513,325 @@ await user.remove();
 - https://github.com/typeorm/typeorm/blob/master/docs/entities.md#column-types
 - Installation
     - https://github.com/typeorm/typeorm#installation
+- ID in typeDefs
+    - ID! -> ID
+    - Why?
+        - PostgreSQL delete one method returns a deleted object without the ID
+
+### GQL Playground
+- find all listings using listings query
+```ts
+
+export const listingResolvers: IResolvers = {
+    // ...
+    listings: async (
+      _root: undefined,
+      _args: {},
+      { db }: { db: Database }
+    ): Promise<Listing[]> => {
+      return await db.listings.find();
+    },
+    // ...
+}
+```
+```ts
+{
+    listings {
+        id
+        title
+        image
+        address
+        price
+        numOfGuests
+        numOfBeds
+        numOfBaths
+        rating
+    }
+}
+```
+- which returns
+```ts
+{
+  "data": {
+    "listings": [
+      {
+        "id": "83e163edb2818e866d8fd090579b48e0",
+        "title": "Clean and fully furnished apartment. 5 min away from CN Tower",
+        "image": "https://res.cloudinary.com/tiny-house/image/upload/v1560641352/mock/Toronto/toronto-listing-1_exv0tf.jpg",
+        "address": "3210 Scotchmere Dr W, Toronto, ON, CA",
+        "price": 10000,
+        "numOfGuests": 2,
+        "numOfBeds": 1,
+        "numOfBaths": 2,
+        "rating": 5
+      },
+      {
+        "id": "6791fb85ad665f65f240cc368da8ea53",
+        "title": "Luxurious home with private pool",
+        "image": "https://res.cloudinary.com/tiny-house/image/upload/v1560645376/mock/Los%20Angeles/los-angeles-listing-1_aikhx7.jpg",
+        "address": "100 Hollywood Hills Dr, Los Angeles, California",
+        "price": 15000,
+        "numOfGuests": 2,
+        "numOfBeds": 1,
+        "numOfBaths": 1,
+        "rating": 4
+      },
+      {
+        "id": "cfebb88d23b235fde892abd6d1ddec48",
+        "title": "Single bedroom located in the heart of downtown San Fransisco",
+        "image": "https://res.cloudinary.com/tiny-house/image/upload/v1560646219/mock/San%20Fransisco/san-fransisco-listing-1_qzntl4.jpg",
+        "address": "200 Sunnyside Rd, San Fransisco, California",
+        "price": 25000,
+        "numOfGuests": 3,
+        "numOfBeds": 2,
+        "numOfBaths": 2,
+        "rating": 3
+      }
+    ]
+  }
+}
+```
+
+- find a single listing by specifying query variables
+```ts
+
+export const listingResolvers: IResolvers = {
+    // ...
+    listing: async (
+      _root: undefined,
+      { id }: { id: string },
+      { db }: { db: Database }
+    ): Promise<Listing> => {
+      const listing = await db.listings.findOne({ id });
+
+      if (!listing) {
+        throw new Error(`failed to find listing with id: ${id}`);
+      }
+
+      return listing;
+    },
+    // ...
+}
+```
+```ts
+# Write your query or mutation here
+query($id: ID!) {
+  listing(id: $id) {
+    id
+    title
+    image
+    address
+    price
+    numOfGuests
+    numOfBeds
+    numOfBaths
+    rating
+  }
+}
+```
+- click QUERY VARIABLES
+```ts
+{
+  "id": "83e163edb2818e866d8fd090579b48e0"
+}
+```
+- this returns
+```ts
+{
+  "data": {
+    "listing": {
+      "id": "83e163edb2818e866d8fd090579b48e0",
+      "title": "Clean and fully furnished apartment. 5 min away from CN Tower",
+      "image": "https://res.cloudinary.com/tiny-house/image/upload/v1560641352/mock/Toronto/toronto-listing-1_exv0tf.jpg",
+      "address": "3210 Scotchmere Dr W, Toronto, ON, CA",
+      "price": 10000,
+      "numOfGuests": 2,
+      "numOfBeds": 1,
+      "numOfBaths": 2,
+      "rating": 5
+    }
+  }
+}
+```
+
+- create a new listing using createListing
+```ts
+
+export const listingResolvers: IResolvers = {
+    // ...
+  Mutation: {
+    createListing: async (
+      _root: undefined,
+      _args: {},
+      { db }: { db: Database }
+    ): Promise<Listing> => {
+      const newListing = {
+        id: crypto.randomBytes(16).toString("hex"),
+        title: "[NEW] Clean and fully furnished apartment. 5 min away from CN Tower",
+        image: `https://res.cloudinary.com/tiny-house/image/
+          upload/v1560641352/mock/Toronto/toronto-listing-1_exv0tf.jpg`,
+        address: "3210 Scotchmere Dr W, Toronto, ON, CA",
+        price: 10000,
+        numOfGuests: 2,
+        numOfBeds: 1,
+        numOfBaths: 2,
+        rating: 5,
+      };
+
+      return await db.listings.create(newListing).save();
+    },
+    // ...
+}
+```
+```ts
+mutation {
+    createListing {
+        id
+        title
+        image
+        address
+        price
+        numOfGuests
+        numOfBeds
+        numOfBaths
+        rating
+    }
+}
+```
+- which returns
+```ts
+{
+  "data": {
+    "createListing": {
+      "id": "40a09358a17d62f784356114d58ce064",
+      "title": "[NEW] Clean and fully furnished apartment. 5 min away from CN Tower",
+      "image": "https://res.cloudinary.com/tiny-house/image/\n          upload/v1560641352/mock/Toronto/toronto-listing-1_exv0tf.jpg",
+      "address": "3210 Scotchmere Dr W, Toronto, ON, CA",
+      "price": 10000,
+      "numOfGuests": 2,
+      "numOfBeds": 1,
+      "numOfBaths": 2,
+      "rating": 5
+    }
+  }
+}
+```
+
+- update a listing with updateListing
+```ts
+
+export const listingResolvers: IResolvers = {
+    // ...
+    updateListing: async (
+      _root: undefined,
+      { id }: { id: string },
+      { db }: { db: Database }
+    ): Promise<Listing> => {
+      const listing = await db.listings.findOne({ id });
+
+      if (!listing) {
+        throw new Error(`failed to find listing with id: ${id}`);
+      }
+
+      listing.title = "[UPDATED] This is my updated title!";
+
+      return await listing.save();
+    },
+    // ...
+}
+```
+```ts
+mutation($id: ID!) {
+  updateListing(id: $id) {
+    id
+    title
+    image
+    address
+    price
+    numOfGuests
+    numOfBeds
+    numOfBaths
+    rating
+  }
+}
+```
+- click QUERY VARIABLES
+```ts
+{
+  "id": "83e163edb2818e866d8fd090579b48e0"
+}
+```
+- which returns
+```ts
+{
+  "data": {
+    "updateListing": {
+      "id": "83e163edb2818e866d8fd090579b48e0",
+      "title": "[UPDATED] This is my updated title!",
+      "image": "https://res.cloudinary.com/tiny-house/image/upload/v1560641352/mock/Toronto/toronto-listing-1_exv0tf.jpg",
+      "address": "3210 Scotchmere Dr W, Toronto, ON, CA",
+      "price": 10000,
+      "numOfGuests": 2,
+      "numOfBeds": 1,
+      "numOfBaths": 2,
+      "rating": 5
+    }
+  }
+}
+```
+
+- delete a listing with deleteListing
+```ts
+
+export const listingResolvers: IResolvers = {
+    // ...
+    deleteListing: async (
+      _root: undefined,
+      { id }: { id: string },
+      { db }: { db: Database }
+    ): Promise<Listing> => {
+      const listing = await db.listings.findOne({ id });
+
+      if (!listing) {
+        throw new Error(`failed to find listing with id: ${id}`);
+      }
+
+      return await listing.remove();
+    },
+    // ...
+}
+```
+```ts
+mutation($id: ID!) {
+  deleteListing(id: $id) {
+    id
+    title
+    image
+    address
+    price
+    numOfGuests
+    numOfBeds
+    numOfBaths
+    rating
+  }
+}
+```
+- which returns
+```ts
+{
+  "data": {
+    "deleteListing": {
+      "id": null,
+      "title": "[NEW] Clean and fully furnished apartment. 5 min away from CN Tower",
+      "image": "https://res.cloudinary.com/tiny-house/image/\n          upload/v1560641352/mock/Toronto/toronto-listing-1_exv0tf.jpg",
+      "address": "3210 Scotchmere Dr W, Toronto, ON, CA",
+      "price": 10000,
+      "numOfGuests": 2,
+      "numOfBeds": 1,
+      "numOfBaths": 2,
+      "rating": 5
+    }
+  }
+}
+```
+- hence, a returned object with a null id value (which is why ID is no longer ID!)
