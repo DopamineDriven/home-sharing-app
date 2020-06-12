@@ -20,7 +20,7 @@ import {
 } from "./sections";
 import { Affix, Spin, Layout } from "antd";
 import { Viewer } from "./lib/types";
-import { LOG_IN } from './lib/graphql/mutations/LogIn/index';
+import { LOG_IN } from './lib/graphql/mutations';
 import { 
 	LogIn as LogInData, 
 	LogInVariables 

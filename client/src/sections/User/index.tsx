@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useParams } from "react-router-dom";
-import { RouteComponentProps } from "react-router-dom";
 import { UserBookings, UserListings, UserProfile } from "./components";
 import { useQuery } from "@apollo/react-hooks";
 import { useScrollToTop } from "../../lib/hooks";
@@ -30,9 +29,8 @@ const PAGE_LIMIT = 4;
 
 export const User = ({ 
     viewer,
-    setViewer, 
-    match 
-}: Props & RouteComponentProps) => {
+    setViewer
+}: Props) => {
     useScrollToTop();
     const [listingsPage, setListingsPage] = useState(1);
     const [bookingsPage, setBookingsPage] = useState(1);
