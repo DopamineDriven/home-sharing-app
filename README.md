@@ -3256,3 +3256,212 @@ export const Stripe = {
     - stored in JSON format (Mongo uses BSON specifically, machine readable)
     - embraces flexibility
 
+## PostgreSQL - World's Most Advanced Open Source Relational Database
+- Powerful relational database
+- Boasts the highest rating for SQL compliance
+- fully open-source, developed and maintained by a large and active community
+    - https://www.postgresql.org/
+- Runs on all major operating systems
+    - ACID-compliant since 2001
+        - https://en.wikipedia.org/wiki/ACID
+- Offers powerful add-ons
+    - PostGIS geospatial database extender
+        - adds support for geographic objects allowing location queries to be run in SQL
+            - https://postgis.net/
+
+### Inexhaustive List of various features in PostgreSQL
+- Data Types
+    - Primitives 
+        - Integer, Numeric, String, Boolean
+    - Structured 
+        - Date/Time, Array, Range, UUID
+    - Document 
+        - JSON/JSONB (BSON), XML, Key-Value (Hstore)
+    - Geometry
+        - Point, Line, Circle, Polygon
+    - Customizations
+        - Composite, Custom Types
+- Data Integrity
+    - UNIQUE, NOT NULL
+    - Primary Keys
+    - Foreign Keys
+    - Exclusion Constraints
+    - Explicit Locks, Advisory Locks
+- Concurrency, Performance
+    - Indexing
+        - B-tree, Multicolumn, Expressions, Partial
+    - Advanced Indexing
+        - GiST, SP-Gist, KNN Gist, BRIN, Covering indexes, Bloom filters
+    - Sophisticated query planner/optimizer, index-only scans, multicolumn statistics
+    - Transactions, Nested Transactions (via savepoints)
+    - Multi-Version Concurrency Control (MVCC)
+    - Parallelization of read queries and building B-tree indexes
+    - Table partitioning
+    - All transaction isolation levels defined in the SQL standard, including Serializable
+    - Just-in-time (JIT) compilation of expressions
+- Reliability, Disaster Recovery
+    - Write-ahead Logging (WAL)
+    - Replication
+        - Asynchronous, Synchronous, Logical
+    - Point-in-time-recovery (PITR), Active Standbys
+    - Tablespaces
+- Security
+    - Authentication
+        - GSSAPI, SSPI, LDAP, SCRAM-SHA-256, Certificate, and more
+    - Robust access-control system
+    - Column and row-level security
+    - Multi-factor authentication with certificates and an additional method
+- Extensibility
+    - Stored functions and procedures
+    - Procedural Languages
+        - PL/PGSQL, Perl, Python, and many more
+    - SQL/JSON path expressions
+    - Foregin data wrappers
+        - connect to other databases or streams with a standard SQL interface
+    - Many extensions that provide additional functionality, including PostGIS (geospatial database extender)
+- Internationalization, Text Search
+    - Support for international character sets, e.g. through ICU collations
+    - Case-insensitive and accent-insensitive collations
+    - Full-text search
+
+### PostgreSQL Documenation
+- https://www.postgresql.org/docs/
+
+### PostgreSQL Data Types
+- https://www.postgresql.org/docs/current/datatype.html
+
+### PostgreSQL Download
+- https://www.postgresql.org/download/
+- choose super-user password
+- use the default "5432" port number
+- Open pgAdmin 4. enter super-user password
+
+### PostgreSQL Resources and Certifications
+- https://www.enterprisedb.com/postgresql-tutorial-resources-training?cid=48
+
+### pgAdmin 4
+- click servers
+- right click "Databases"
+    - "create database"
+    - "test_db_001" -> save
+- now, select schemas
+    - right click on tables
+    - "create table"
+    - name -> "test_users"
+- then, navigate to column tab to build a schema
+    - click plus icon to add a new column
+- Column One
+    - name -> id
+    - data type -> text
+    - Not NULL? -> Yes
+    - Primary Key? -> Yes
+- Column Two
+    - name -> name
+    - data type -> character varying
+    - length/precision -> 100
+    - Not NULL? -> Yes
+    - Primary Key? -> No
+- That's it for now, more later
+- Navigate to "tools"
+    - click "query tool"
+    - the following should appear
+```sql
+CREATE TABLE public.test_users (
+  id text NOT NULL,
+  name character varying(100) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+ALTER TABLE public.test_users OWNER to postgres;
+```
+- Copy this text
+- then, cancel the table (don't save)
+- Now, paste the copied sql syntax back into the query editor
+    - click execute 
+    - "Query returned successfully in 63 ms"
+- Check it out, a new table created using SQL
+
+## Executing CRUD using SQL
+- (SQL) INSERT INTO <-> insertOne({...}) (NoSQL)
+- Insert data into a table 
+```sql
+INSERT INTO public.test_users(id, name) VALUES ('001', 'andrew');
+INSERT INTO public.test_users(id, name) VALUES ('002', 'bobby');
+INSERT INTO public.test_users(id, name) VALUES ('003', 'tom');
+INSERT INTO public.test_users(id, name) VALUES ('004', 'james');
+```
+- then, execute the following
+```SQL
+SELECT * FROM public.test_users
+```
+- this returns
+
+|       |   **id**   |  **name**  |
+| ----- | ---------- | ---------- |
+|   1   |    001     |   andrew   |
+|   2   |    002     |   bobby    |
+|   3   |    003     |   tom      |
+|   4   |    004     |   james    |
+
+- Find a specific row of data
+    - run the SELECT statement with a WHERE clause
+        - this is equivalent to Mongo's find({ _id: ... }) func
+```sql
+SELECT * FROM public.test_users WHERE id='001';
+```
+- update an existing row of data
+    - run the UPDATE statement with a SET clause
+        - equivalent to Mongo's updateOne({ ... }) func
+```sql
+UPDATE public.test_users SET name='BOBBY' WHERE id='002';
+```
+- now run the following
+```SQL
+SELECT * FROM public.test_users
+```
+- the updated value (id 002) will appear at the bottom of the table
+
+|       |   **id**   |  **name**  |
+| ----- | ---------- | ---------- |
+|   1   |    001     |   andrew   |
+|   3   |    003     |   tom      |
+|   4   |    004     |   james    |
+|   2   |    002     |   BOBBY    |
+
+- Modify the table using the ALTER TABLE statment
+    - RENAME COLUMN and ADD COLUMN clauses
+        - rename name to username and add a new column, email, respectively
+```sql
+ALTER TABLE public.test_users RENAME COLUMN "name" TO "username";
+ALTER TABLE public.test_users ADD COLUMN email character varying(100);
+```
+- then run
+```sql
+INSERT INTO public.test_users(id, username, email) VALUES ('005', 'becky', 'becky@gmail.com');
+```
+- then run
+```sql
+UPDATE public.test_users SET email='andrew@gmail.com' WHERE id='001';
+UPDATE public.test_users SET email='tom@gmail.com' WHERE id='002';
+UPDATE public.test_users SET email='james@gmail.com' WHERE id='003';
+UPDATE public.test_users SET email='BOBBY@gmail.com' WHERE id='004';
+```
+- finally, run
+```sql
+SELECT * FROM public.test_users
+```
+- which returns
+
+|       |   **id**   | **username** |    **email**      |
+| ----- | ---------- | ------------ | ----------------- |
+|   5   |    005     |   becky      | becky@gmail.com   |
+|   1   |    001     |   andrew     | andrew@gmail.com  |
+|   2   |    002     |   BOBBY      | BOBBY@gmail.com   |
+|   3   |    003     |   tom        | tom@gmail.com     |
+|   4   |    004     |   james      | james@gmail.com   |
+
+- why is becky returned first?
+    - we inserted the new user before updating the null emails for the 4 previously existing users
+    - the users appear in the order they do because the update was synchronously executed as a function of id in increasing order
+    - had the update been executing in decreasing order w/ respect to id, it would appear 5 4 3 2 1 instead of 5 1 2 3 4
+        - ja feel?
