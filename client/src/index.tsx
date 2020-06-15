@@ -1,6 +1,3 @@
-import "react-app-polyfill/ie9";
-import "react-app-polyfill/ie11";
-import "react-app-polyfill/stable";
 import React, { useState, useEffect, useRef } from "react";
 import { render } from "react-dom";
 import ApolloClient from "apollo-boost";
