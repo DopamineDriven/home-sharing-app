@@ -22,7 +22,7 @@ const mount = async (app: Application) => {
 	);
 
 	app.get("/*", (_req, res) => {
-		res.sendFile(`${__dirname}/client/index.html`)
+		res.sendFile(`${__dirname}/client/index.html`);
 	});
 
 	// context func prop of Apollo is run with req res objects

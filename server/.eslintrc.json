@@ -14,6 +14,6 @@
         // could set "indent": [true, "tabs", 1]
 		"indent": "off",
         "@typescript-eslint/indent": "off",
-        "@typescript-eslint/explicit-function-return-type": "off"
+		"@typescript-eslint/explicit-function-return-type": "off"
 	}
 }
