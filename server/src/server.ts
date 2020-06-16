@@ -1,4 +1,4 @@
-// require("dotenv").config();
+require("dotenv").config();
 import express, { Application } from "express";
 import compression from "compression";
 import cors from "cors";
