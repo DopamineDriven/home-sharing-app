@@ -1,6 +1,10 @@
 # home-sharing-app
 GraphQL, Apollo, Typescript, Node, React, MongoDB Atlas, Stripe, Cloudinary, Google OAuth and Geocode API
 
+## A newline.io react masterclass
+- learn more
+    - https://www.tinyhouse.app/about
+
 ## Deployed Application
 https://gql-homesharing.herokuapp.com/
 

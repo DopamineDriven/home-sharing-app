@@ -10,6 +10,7 @@
 	"scripts": {
 		"devStart": "nodemon ./src/server.ts",
 		"seed": "ts-node temp/seed.ts",
+		"clear": "ts-node temp/clear.ts",
 		"build": "tsc -p ./"
 	},
 	"repository": {
@@ -35,6 +36,7 @@
 		"@types/lodash.merge": "^4.6.6",
 		"@types/mongodb": "^3.5.20",
 		"@types/node": "^13.13.12",
+		"@types/stripe": "^7.13.23",
 		"@typescript-eslint/eslint-plugin": "^2.34.0",
 		"@typescript-eslint/parser": "^2.34.0",
 		"dotenv": "^8.2.0",

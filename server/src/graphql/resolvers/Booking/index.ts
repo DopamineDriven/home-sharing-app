@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 import { Booking, BookingsIndex, Database, Listing } from "../../../lib/types";
 import { authorize } from "../../../lib/utils";
 import { CreateBookingArgs } from './types';
-import { Stripe } from "../../../lib/api";
+import { stripe } from "../../../lib/api";
 
 export const resolveBookingsIndex = (
     bookingsIndex: BookingsIndex,
@@ -114,7 +114,7 @@ export const bookingResolvers: IResolvers = {
                     );
                 }
 
-                await Stripe.charge(totalPrice, source, host.walletId);
+                await stripe.charge(totalPrice, source, host.walletId);
 
                 // update bookings collection
                 const insertRes = await db.bookings.insertOne({

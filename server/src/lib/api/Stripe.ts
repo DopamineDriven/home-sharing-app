@@ -1,10 +1,11 @@
-import stripe from "stripe";
+import Stripe from "stripe";
 
-const client = new stripe(`${process.env.S_SECRET_KEY}`, {
-    apiVersion: "2020-03-02"
+const client = new Stripe(`${process.env.S_SECRET_KEY}`, {
+    apiVersion: "2020-03-02",
+    typescript: true
 });
 
-export const Stripe = {
+export const stripe = {
     connect: async (code: string) => {
         /* eslint-disable @typescript-eslint/camelcase */
         const response = await client.oauth.token({
