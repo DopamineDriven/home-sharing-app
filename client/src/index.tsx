@@ -17,12 +17,12 @@ import {
 } from "./sections";
 import { Affix, Spin, Layout } from "antd";
 import { Viewer } from "./lib/types";
-import { LOG_IN } from './lib/graphql/mutations';
-import { 
-	LogIn as LogInData, 
-	LogInVariables 
-} from './lib/graphql/mutations/LogIn/__generated__/LogIn';
-import { AppHeaderSkeleton, ErrorBanner } from './lib/components';
+import { LOG_IN } from "./lib/graphql/mutations";
+import {
+	LogIn as LogInData,
+	LogInVariables
+} from "./lib/graphql/mutations/LogIn/__generated__/LogIn";
+import { AppHeaderSkeleton, ErrorBanner } from "./lib/components";
 import "./styles/index.css";
 import * as serviceWorker from "./serviceWorker";
 
@@ -30,7 +30,7 @@ import * as serviceWorker from "./serviceWorker";
 // https://www.apollographql.com/docs/react/get-started/#configuration-options
 const client = new ApolloClient({
 	uri: "/api",
-	request: async operation => {
+	request: async (operation) => {
 		const token = sessionStorage.getItem("token");
 		operation.setContext({
 			headers: {
@@ -41,21 +41,21 @@ const client = new ApolloClient({
 });
 
 const initalViewer: Viewer = {
-  id: null,
-  token: null,
-  avatar: null,
-  hasWallet: null,
-  didRequest: false
+	id: null,
+	token: null,
+	avatar: null,
+	hasWallet: null,
+	didRequest: false
 };
 
 const App = () => {
 	const [viewer, setViewer] = useState<Viewer>(initalViewer);
 	const [logIn, { error }] = useMutation<LogInData, LogInVariables>(LOG_IN, {
-		onCompleted: data => {
+		onCompleted: (data) => {
 			if (data && data.logIn) {
 				setViewer(data.logIn);
 
-				data.logIn.token 
+				data.logIn.token
 					? sessionStorage.setItem("token", data.logIn.token)
 					: sessionStorage.removeItem("token");
 			}
@@ -64,11 +64,11 @@ const App = () => {
 	const logInRef = useRef(logIn);
 
 	useEffect(() => {
-		logInRef.current()
+		logInRef.current();
 	}, []);
 
 	const logInErrorBannerElement = error ? (
-		<ErrorBanner description="unable to verify authenticated status; please try again"/>
+		<ErrorBanner description="unable to verify authenticated status; please try again" />
 	) : null;
 
 	return !viewer.didRequest && !error ? (
@@ -78,7 +78,7 @@ const App = () => {
 				<Spin size="large" tip="Launching App" />
 			</div>
 		</Layout>
-		) : (
+	) : (
 		<StripeProvider apiKey={process.env.REACT_APP_S_PUBLISHABLE_KEY as string}>
 			<Router>
 				<Layout id="app">
@@ -90,10 +90,10 @@ const App = () => {
 						<Route exact path="/">
 							<Home />
 						</Route>
-						<Route exact path="/host" >
+						<Route exact path="/host">
 							<Host viewer={viewer} />
 						</Route>
-						<Route exact path="/listing/:id" >
+						<Route exact path="/listing/:id">
 							<Elements>
 								<Listing viewer={viewer} />
 							</Elements>
@@ -101,7 +101,7 @@ const App = () => {
 						<Route exact path="/listings/:location?">
 							<Listings />
 						</Route>
-						<Route exact path ="/login">
+						<Route exact path="/login">
 							<Login setViewer={setViewer} />
 						</Route>
 						<Route exact path="/stripe">
