@@ -87,6 +87,7 @@ const logInViaGoogle = async (
 				avatar: userAvatar,
 				contact: userEmail,
 				income: 0,
+				walletId: "",
 				bookings: [],
 				listings: [],
 			});
@@ -233,7 +234,7 @@ export const viewerResolvers: IResolvers = {
 					throw new Error("viewer not found");
 				}
 
-				const wallet = await stripe.disconnect(viewer._id);
+				const wallet = await stripe.disconnect(viewer.walletId);
 				if (!wallet) {
 					throw new Error("stripe disconnect error");
 				}

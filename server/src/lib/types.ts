@@ -51,7 +51,7 @@ export interface User {
 	name: string;
 	avatar: string;
 	contact: string;
-	walletId?: string;
+	walletId: string;
 	income: number;
 	bookings: ObjectId[];
 	listings: ObjectId[];

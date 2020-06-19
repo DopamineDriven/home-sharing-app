@@ -1,4 +1,5 @@
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 import express, { Application } from "express";
 import compression from "compression";
 import cors from "cors";
@@ -15,15 +16,15 @@ const mount = async (app: Application) => {
 	app.use(
 		compression(),
 		express.json({ limit: "2mb" }),
-		express.static(`${__dirname}/client`),
+		// express.static(`${__dirname}/client`),
 		cookieParser(process.env.SECRET),
 		cors(),
 		Helmet()
 	);
 
-	app.get("/*", (_req, res) => {
-		res.sendFile(`${__dirname}/client/index.html`);
-	});
+	// app.get("/*", (_req, res) => {
+	// 	res.sendFile(`${__dirname}/client/index.html`);
+	// });
 
 	// context func prop of Apollo is run with req res objects
 	// pass req and res props as part of context obj for all resolvers
