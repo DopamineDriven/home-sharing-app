@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Redirect, RouteComponentProps } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { useMutation } from "@apollo/react-hooks";
 import { useScrollToTop } from "../../lib/hooks";
 import { Layout, Spin } from "antd";
@@ -19,8 +19,9 @@ interface Props {
     setViewer: (viewer: Viewer) => void;
 }
 
-export const Stripe = ({ viewer, setViewer, history }: Props & RouteComponentProps) => {
+export const Stripe = ({ viewer, setViewer }: Props) => {
     useScrollToTop();
+    const history = useHistory();
 
     const [connectStripe, { data, loading, error }] = useMutation<
         ConnectStripeData,

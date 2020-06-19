@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { useScrollToTop } from "../../lib/hooks";
 import { Affix, Layout, List, Typography } from "antd";
@@ -23,17 +23,18 @@ const { Paragraph, Text, Title } = Typography;
 const { Content } = Layout;
 const { PRICE_LOW_TO_HIGH } = ListingsFilter; //enum
 
-export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
+export const Listings = () => {
     useScrollToTop();
     // (a)
-    const locationRef = useRef(match.params.location);
+    const { location } = useParams<MatchParams>();
+    const locationRef = useRef(location);
     const [filter, setFilter] = useState(PRICE_LOW_TO_HIGH);
     const [page, setPage] = useState(1);
 
     const { data, error, loading } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
-        skip: locationRef.current !== match.params.location && page !== 1,
+        skip: locationRef.current !== location && page !== 1,
         variables: {
-            location: match.params.location,
+            location,
             filter, // obj shorthand syntax (OSS)
             limit: PAGE_LIMIT,
             page // OSS
@@ -42,8 +43,8 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
     // effect runs on location param change
     useEffect(() => {
         setPage(1);
-        locationRef.current = match.params.location;
-    }, [match.params.location]);
+        locationRef.current = location;
+    }, [location]);
 
     const listings = data ? data.listings : null;
     const listingsRegion = listings ? listings.region : null;

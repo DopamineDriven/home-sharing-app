@@ -8,7 +8,7 @@ import {
     ListingsVariables
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
 import { Col, Layout, Row, Typography } from "antd";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { Link, useHistory } from 'react-router-dom';
 import { HomeHero, HomeListings, HomeListingsSkeleton } from "./components";
 import { displayErrorMessage } from "../../lib/utils";
 import mapBackground from "./assets/map-background.jpg";
@@ -21,7 +21,7 @@ const { Paragraph, Title } = Typography;
 const PAGE_LIMIT = 4;
 const PAGE_NUMBER = 1;
 
-export const Home = ({ history }: RouteComponentProps) => {
+export const Home = () => {
     const { loading, data } = useQuery<ListingsData, ListingsVariables>(LISTINGS, {
         variables: {
             filter: ListingsFilter.PRICE_HIGH_TO_LOW,
@@ -30,6 +30,7 @@ export const Home = ({ history }: RouteComponentProps) => {
         },
         fetchPolicy: "cache-and-network"
     });
+    const history = useHistory();
 
     useScrollToTop();
 
