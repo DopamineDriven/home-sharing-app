@@ -6,12 +6,12 @@
 		"sourceType": "module"
 	},
 	"extends": ["plugin:@typescript-eslint/recommended"],
+	"plugins": ["@typescript-eslint"],
 	"env": {
 		"node": true,
 		"es6": true
 	},
 	"rules": {
-        // could set "indent": [true, "tabs", 1]
 		"indent": "off",
         "@typescript-eslint/indent": "off",
 		"@typescript-eslint/explicit-function-return-type": "off"
