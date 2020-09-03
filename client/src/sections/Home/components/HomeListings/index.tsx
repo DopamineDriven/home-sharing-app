@@ -9,6 +9,7 @@ interface Props {
 }
 
 const { Title } = Typography;
+const { Item } = List;
 
 export const HomeListings = ({ title, listings }: Props) => {
     return (
@@ -25,9 +26,9 @@ export const HomeListings = ({ title, listings }: Props) => {
                 }}
                 dataSource={listings}
                 renderItem={listing => (
-                    <List.Item>
+                    <Item>
                         <ListingCard listing={listing} />
-                    </List.Item>
+                    </Item>
                 )}
             />
         </div>

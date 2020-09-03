@@ -23,7 +23,7 @@ import {
 import { UploadChangeParam } from "antd/lib/upload";
 // import  FormComponentProps  from "antd/lib/form";
 import {
-	Button,
+
 	Form,
 	Input,
 	InputNumber,
@@ -32,7 +32,7 @@ import {
 	Typography,
 	Upload
 } from "antd";
-
+import Button from "antd/lib/button";
 interface Props {
 	viewer: Viewer;
 }

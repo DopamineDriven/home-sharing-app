@@ -4,8 +4,8 @@
 	"description": "GraphQL, Apollo, Typescript, Node, React, MongoDB Atlas, Stripe, Cloudinary, Google OAuth and Geocode API",
 	"main": "server.ts",
 	"engines": {
-		"node": "14.4.0",
-		"npm": "6.14.5"
+		"node": "14.8.0",
+		"npm": "6.14.8"
 	},
 	"scripts": {
 		"devStart": "nodemon ./src/server.ts",
