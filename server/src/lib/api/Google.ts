@@ -61,3 +61,6 @@ export const Google = {
         return parseAddress(res.json.results[0].address_components)
     }
 };
+
+
+/*eslint-disable @typescript-eslint/camelcase */
